@@ -39,7 +39,7 @@ console.log(email,password)
   if (!isMatch) return res.status(401).json({ message: 'Invalid credentials' });
     console.log(user.id,user.role)
   const token = generateToken(user.id, user.role);
-  res.json({ token });
+  res.json({ token ,user});
 };
 
 export const getProfile = async (req: Request, res: Response) => {

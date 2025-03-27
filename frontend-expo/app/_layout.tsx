@@ -1,16 +1,34 @@
-import { Slot, Tabs, useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
-import { getToken } from '../utils/storage';
+import { Stack } from 'expo-router';
+import { useEffect } from 'react';
+import { useRouter } from 'expo-router';
+import useAuthStore from '@/store/useAuthStore';
+import { QueryClientProvider } from '@tanstack/react-query';
+import queryClient from '@/utils/queryClient';
+import { getToken } from '@/utils/storage';
+import { getProfile } from '@/api/auth';
 
-export default function Layout() {
+
+export default function RootLayout() {
+  const { isAuthenticated ,setUser,setToken} = useAuthStore();
   const router = useRouter();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
       const token = await getToken();
+      
       if (token) {
-        setIsAuthenticated(true);
+        const data = await getProfile(token||"");
+        setUser({
+          id: data.user.id,
+          email: data.user.email,
+          role: data.user.role,
+          usn: data.user.usn,
+          name: data.user.name,
+        });
+        setToken(token);
+
+        router.replace('/(tabs)/profile');
+   
       } else {
         router.replace('/login');
       }
@@ -18,12 +36,11 @@ export default function Layout() {
     checkAuth();
   }, []);
 
-  return (  <Tabs>
-        {/* Define your screens */}
-        <Tabs.Screen name="index" options={{ title: 'Home' }} />
-        <Tabs.Screen name="login" options={{ title: 'Login' }} />
-        <Tabs.Screen name="protected" options={{ title: 'Login' }} />
-        <Tabs.Screen name="register" options={{ title: 'Register' }} />
-      </Tabs>
+
+  return ( 
+    <QueryClientProvider client={queryClient}>
+      <Stack screenOptions={{headerShown:false}} />
+    </QueryClientProvider>
+
 )
 }
