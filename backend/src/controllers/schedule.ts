@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { prisma } from "../lib/db";
 import dayjs from 'dayjs';
+import { BranchType, SemesterType } from "@prisma/client";
 export const createSchedule = async (req: Request, res: Response) => {
   try {
     const {
@@ -64,22 +65,89 @@ export const createSchedule = async (req: Request, res: Response) => {
     res.status(500).json({ error: error });
   }
 };  
-export const edithSchedule = async (req: Request, res: Response) => {
-  try {
-    const { title, date, description } = req.body;
-    const schedule = 1
-    res.status(201).json({ schedule });
-  } catch (error) {
-    res.status(500).json({ error: error });
-  }
-};
-export const getSchedule = async (req: Request, res: Response) => {
-  try {
-    const { branch, semester, date } = req.query;
+export const updateSchedule = async (req: Request, res: Response) => {
+    const { id, subject, staff, startTime, endTime, subjectCode, isLab } = req.body;
+  console.log('from the updateSchedule',req.body)
+    try {
+      const updatedPeriod = await prisma.period.update({
+        where: { id },
+        data: { subject, staff, startTime: new Date(startTime), endTime: new Date(endTime), subjectCode, isLab },
+      });
+  
+      res.json({ message: 'Period updated successfully', period: updatedPeriod });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Failed to update period' });
+    }
+  };
 
-    const schedules = 2
-    res.send(`Branch: ${branch}, Semester: ${semester}, Date: ${date}`);
-  } catch (error) {
-    res.status(500).json({ error: error });
-  }
-}
+  export const deleteSchedule = async (req: Request, res: Response) => {
+    const { id } = req.params;
+  console.log('from the deleteSchedule',req.params)
+    try {
+      await prisma.period.delete({ where: { id } });
+      res.json({ message: 'Period deleted successfully' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Failed to delete period' });
+    }
+  };
+
+export const getSchedule = async (req: Request, res: Response) => {
+    try {
+      const { branch, semester, date } = req.query;
+        
+      if (!branch || !semester || !date) {
+        return res.status(400).json({ error: 'Branch, Semester, and Date are required' });
+      }
+  
+      // Validate branch and semester enums
+      if (!Object.values(BranchType).includes(branch as BranchType)) {
+        return res.status(400).json({ error: 'Invalid branch' });
+      }
+      if (!Object.values(SemesterType).includes(semester as SemesterType)) {
+        return res.status(400).json({ error: 'Invalid semester' });
+      }
+  
+      // Convert date using dayjs and ensure proper format
+      const selectedDate = dayjs(date.toString(), 'YYYY-MM-DD').toDate();
+  
+      // Find timetable using composite key
+      const result = await prisma.timetableOfDay.findUnique({
+        where: {
+          date_branchName_semesterNumber: {
+            date: selectedDate,
+            branchName: branch as BranchType,
+            semesterNumber: semester as SemesterType,
+          },
+        },
+        select: {
+          Periods: {
+            select: {
+            id: true,
+              periodNumber: true,
+              startTime: true,
+              endTime: true,
+              subject: true,
+              staff: true,
+              subjectCode: true,
+              isLab: true,
+            },
+          },
+          
+        },
+      });
+      if (result && result.Periods) {
+        result.Periods.sort((a, b) => a.periodNumber - b.periodNumber);
+      }
+      if (!result) {
+        return res.status(404).json({ error: 'No schedule found for the given date, branch, and semester' });
+      }
+  
+      res.json(result);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  };
+  

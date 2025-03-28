@@ -1,11 +1,13 @@
 import express from 'express';
-import { createSchedule, edithSchedule, getSchedule } from '../controllers/schedule';
+import { createSchedule, updateSchedule, getSchedule, deleteSchedule } from '../controllers/schedule';
 
 
 const router = express.Router();
 
 router.post('/create', createSchedule);
-router.post('/edit', edithSchedule);
+router.post('/update', updateSchedule);
 router.get('/', getSchedule);
+router.delete('/delete/:id', deleteSchedule);
+
 
 export default router;
