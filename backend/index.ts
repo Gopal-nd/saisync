@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './src/routes/auth'
-
+import scheduleRoutes from './src/routes/schedule'
 dotenv.config();
 
 const app = express();
@@ -19,6 +19,13 @@ app.use('/api/auth', authRoutes);
 app.get('/',(req,res)=>{
   res.send("i am alive")
 })
+
+// // create brance and semster
+// app.get('/api/branch',barnchRoutes)
+// app.get('/api/semester',semesterRoutes)
+
+// // create schedule
+app.use('/api/schedule',scheduleRoutes)
 
 // Health check route
 app.get('/health', (req, res) => {

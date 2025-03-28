@@ -16,6 +16,10 @@ export default function StudentLayout() {
         name="calender"
         options={{ tabBarIcon: ({ color, size }) => <Ionicons name="easel-outline" size={size} color={color} />, title: 'calender' }}
       />
+            <Tabs.Screen
+        name="register"
+        options={{ tabBarIcon: ({ color, size }) => <Ionicons name="add-circle" size={size} color={color} />, title: 'create' }}
+        />
     </Tabs>
   );
 }

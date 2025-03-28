@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,20 +7,83 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id             String   @id @default(uuid())
-  email          String   @unique
-  password       String
-  name           String?
-  usn             String?
-  role           Role     @default(STUDENT)
-  isVerified      Boolean @default(false)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-}
-
 enum Role {
   STUDENT
   ADMIN
   STAFF
+}
+
+enum BranchType {
+  AIML
+  ECE
+  CSE
+  EEE
+  ISE
+  MECH
+}
+
+enum SemesterType {
+  S1
+  S2
+  S3
+  S4
+  S5
+  S6
+  S7
+  S8
+}
+
+model User {
+  id           String      @id @default(uuid())
+  email        String      @unique
+  password     String
+  name         String?
+  usn          String?
+  branch       BranchType? @default(AIML)
+  semester     SemesterType? @default(S1)
+  role         Role        @default(STUDENT)
+  isVerified   Boolean     @default(false)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
+model Branch {
+  name       BranchType @id
+  Semesters  Semester[]
+}
+
+model Semester {
+  id           String        @id @default(uuid())
+  branchName   BranchType
+  number       SemesterType
+  branch       Branch         @relation(fields: [branchName], references: [name])
+  Timetables   TimetableOfDay[]
+
+  @@unique([branchName, number]) // Ensure unique semester per branch
+}
+
+model TimetableOfDay {
+  id               String           @id @default(uuid())
+  date             DateTime
+  branchName       BranchType
+  semesterNumber   SemesterType
+  semester         Semester         @relation(fields: [branchName, semesterNumber], references: [branchName, number])
+  Periods          Period[]
+
+  @@unique([date, branchName, semesterNumber]) // Ensure one timetable per day for each branch and semester
+}
+
+model Period {
+  id           String           @id @default(uuid())
+  timetableId  String
+  periodNumber Int @default(autoincrement())
+  timetable    TimetableOfDay   @relation(fields: [timetableId], references: [id])
+  startTime    DateTime
+  endTime      DateTime
+  subject      String
+  staff        String
+  subjectCode  String
+  isLab        Boolean          @default(false)
+
+  @@unique([timetableId, periodNumber]) // Ensure no duplicate period numbers
 }
