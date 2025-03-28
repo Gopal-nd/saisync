@@ -18,6 +18,22 @@ export const loginUser = async (email: string, password: string) => {
   }
 };
 
+export const registerUser = async (email: string, password: string) => {
+  console.log('Attempting to register with:', email, password);
+  try {
+    const response = await axios.post(`${API_URL}/api/auth/sign-up`, { email, password });
+    console.log('Response:', response.data);
+    return response.data;
+    
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('Axios Error:', error.response?.data || error.message);
+    } else {
+      console.error('Unexpected Error:', error);
+    }
+  }
+};
+
 export const getProfile = async (token: string) => {
   const response = await axios.get(`${API_URL}/api/auth/profile`, {
     headers: { Authorization: `Bearer ${token}` },

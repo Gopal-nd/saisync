@@ -9,7 +9,7 @@ import { getProfile } from '@/api/auth';
 
 
 export default function RootLayout() {
-  const { isAuthenticated ,setUser,setToken} = useAuthStore();
+  const { isAuthenticated ,setUser,setToken,user} = useAuthStore();
   const router = useRouter();
 
   useEffect(() => {
@@ -17,6 +17,7 @@ export default function RootLayout() {
       const token = await getToken();
       
       if (token) {
+        console.log("token is ",token)
         const data = await getProfile(token||"");
         setUser({
           id: data.user.id,
@@ -27,7 +28,11 @@ export default function RootLayout() {
         });
         setToken(token);
 
-        router.replace('/(tabs)/profile');
+        user?.role === "STUDENT" && router.replace('/(student)/profile') 
+        user?.role === "STAFF" && router.replace('/(staff)/classes') 
+        user?.role === "ADMIN" && router.replace('/(admin)/adminprofile') 
+        router.replace('/login');
+        
    
       } else {
         router.replace('/login');
@@ -39,7 +44,7 @@ export default function RootLayout() {
 
   return ( 
     <QueryClientProvider client={queryClient}>
-      <Stack screenOptions={{headerShown:false}} />
+      <Stack screenOptions={{headerShown:false, }} />
     </QueryClientProvider>
 
 )

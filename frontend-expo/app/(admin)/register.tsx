@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
-import { registerUser } from '../api/auth';
+import { registerUser } from '../../api/auth';
 
 export default function RegisterScreen() {
   const router = useRouter();
@@ -27,6 +27,7 @@ export default function RegisterScreen() {
       <Text>Register</Text>
       <TextInput placeholder="email" value={email} onChangeText={setUsername} />
       <TextInput placeholder="Password" value={password} onChangeText={setPassword} secureTextEntry />
+      
       <Button title="Register" onPress={handleRegister} />
       <Button title="Back to Login" onPress={() => router.push('/login')} />
     </View>

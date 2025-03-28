@@ -13,7 +13,12 @@ const timetable = [
   { time: '3:00 - 4:00', subject: 'Yoga' },
 ];
 
-const isCurrentTime = (timeRange) => {
+type ClassItem = {
+  subject: string;
+  time: string;
+};
+
+const isCurrentTime = (timeRange:any) => {
   const [start, end] = timeRange.split(' - ');
   const now = dayjs();
   const startTime = dayjs().hour(parseInt(start.split(':')[0])).minute(parseInt(start.split(':')[1]));
@@ -23,7 +28,7 @@ const isCurrentTime = (timeRange) => {
 };
 
 const CollegeTimetable = () => {
-  const [selectedClass, setSelectedClass] = useState(null);
+  const [selectedClass, setSelectedClass] = useState<ClassItem|null>(null);
 
   return (
     <View style={styles.container}>
