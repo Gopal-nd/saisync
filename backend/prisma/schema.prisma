@@ -39,12 +39,16 @@ model User {
   password     String
   name         String?
   usn          String?
+  section      String?
   branch       BranchType? @default(AIML)
   semester     SemesterType? @default(S1)
   role         Role        @default(STUDENT)
   isVerified   Boolean     @default(false)
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
+
+  // group the users basedon the branch and semester
+  @@index([branch, semester,section]) // Index for faster queries based on branch and semester
 }
 
 model Branch {
@@ -58,8 +62,22 @@ model Semester {
   number       SemesterType
   branch       Branch         @relation(fields: [branchName], references: [name])
   Timetables   TimetableOfDay[]
+  Subjects      Subject[]
+  @@unique([branchName, number]) 
+}
 
-  @@unique([branchName, number]) // Ensure unique semester per branch
+model Subject {
+  id           String        @id @default(uuid())
+  subjectName         String
+  subjectCode        String
+  branchName   BranchType
+  noOfCredits   Int
+  semesterNumber SemesterType
+  semester     Semester      @relation(fields: [branchName, semesterNumber], references: [branchName, number])
+  staffName        String
+  isLab        Boolean       @default(false)
+
+  @@unique([branchName, semesterNumber, subjectCode]) 
 }
 
 model TimetableOfDay {

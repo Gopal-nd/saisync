@@ -7,6 +7,9 @@ import Semester from '../pages/Semester';
 import Calendar from '@/pages/Calendar';
 import DaySchedule from '@/pages/DaySchedule';
 import SeeSchedule from '@/pages/SeeSchedule';
+import SemAcadamics from '@/pages/SemAcadamics';
+import Staff from '@/pages/Staff';
+import StaffSchedule from '@/pages/StaffSchedule';
 
 export default function AppRoutes() {
   return (
@@ -18,6 +21,14 @@ export default function AppRoutes() {
       <Route path="/branch/:branch/:semester/:day" element={<DaySchedule />} />
       <Route path="/branch/:branch/:semester/:day/see" element={<SeeSchedule />} />
 
+      <Route path="/subjects/:branch" element={<Branch />} />
+      <Route path="/subjects/:branch/:semester" element={<Semester />} />
+      <Route path="/subjects/:branch/:semester/create" element={<Calendar />} />
+      <Route path="/subjects/:branch/:semester/:schema" element={<SemAcadamics />} />
+      
+      <Route path="/staff" element={<Staff />} />
+      <Route path="/staff/:day" element={<StaffSchedule />} />
+      
     </Routes>
   );
 }

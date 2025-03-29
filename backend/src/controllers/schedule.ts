@@ -19,6 +19,8 @@ export const createSchedule = async (req: Request, res: Response) => {
       const selectedDate = dayjs(date, 'YYYY-MM-DD').toDate();
       const start = dayjs(`${date} ${startTime}`, 'YYYY-MM-DD hh-mmA').toDate();
       const end = dayjs(`${date} ${endTime}`, 'YYYY-MM-DD hh-mmA').toDate();
+
+      console.log('from the createSchedule',req.body)
   
     let timeTableofDate = await prisma.timetableOfDay.findUnique({
       where: {
@@ -64,6 +66,7 @@ export const createSchedule = async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).json({ error: error });
   }
+
 };  
 export const updateSchedule = async (req: Request, res: Response) => {
     const { id, subject, staff, startTime, endTime, subjectCode, isLab } = req.body;
