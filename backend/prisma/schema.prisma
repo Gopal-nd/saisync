@@ -49,6 +49,7 @@ model User {
 
   // group the users basedon the branch and semester
   @@index([branch, semester,section]) // Index for faster queries based on branch and semester
+  Attendance Attendance[]
 }
 
 model Branch {
@@ -95,13 +96,37 @@ model Period {
   id           String           @id @default(uuid())
   timetableId  String
   periodNumber Int @default(autoincrement())
-  timetable    TimetableOfDay   @relation(fields: [timetableId], references: [id])
+  timetable    TimetableOfDay   @relation(fields: [timetableId], references: [id],onDelete: Cascade)
   startTime    DateTime
   endTime      DateTime
   subject      String
   staff        String
   subjectCode  String
+  whatlearned  String?
+  // attendence here 
   isLab        Boolean          @default(false)
 
   @@unique([timetableId, periodNumber]) // Ensure no duplicate period numbers
+  Attendance Attendance[]
+}
+
+model Attendance {
+  id           String      @id @default(uuid())
+  userId       String
+  periodId     String
+  date         DateTime
+  name  String?
+  usn  String?
+  status       AttendanceStatus @default(NOT_TAKEN)
+
+  user         User        @relation(fields: [userId], references: [id],onDelete: Cascade)
+  period       Period      @relation(fields: [periodId], references: [id] , onDelete: Cascade)
+
+  @@unique([userId, periodId]) // Ensure no duplicate attendance for the same student in the same period
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  NOT_TAKEN
 }

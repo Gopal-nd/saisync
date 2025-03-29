@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import authRoutes from './src/routes/auth'
 import scheduleRoutes from './src/routes/schedule'
 import { prisma } from './src/lib/db';
-import type { BranchType, SemesterType } from '@prisma/client';
+import type { AttendanceStatus, BranchType, SemesterType } from '@prisma/client';
 import { startOfDay, endOfDay } from 'date-fns';
 
 dotenv.config();
@@ -93,7 +93,7 @@ const upperSubjectCode = subjectCode.toUpperCase()
       semesterNumber,
     },
   });
-  console.log(subject)
+  // console.log(subject)
 
    res.status(201).json(subject);
 });
@@ -121,6 +121,7 @@ app.get('/staff/class',async (req, res) => {
         staff:'babu'
       },
       select:{
+        id:true,
         subject:true,
         startTime:true,
         endTime:true,
@@ -131,6 +132,74 @@ app.get('/staff/class',async (req, res) => {
     }
   })
    res.status(200).json({subjects});
+});
+
+// students
+app.get('/student/class',async (req, res) => {
+  const { branch, semester ,periodId} = req.query;
+  // const dateToMatch = new Date(day as string)
+  // console.log(dateToMatch)
+
+  
+  const subjects = await prisma.attendance.findMany({
+    where:{
+      periodId:periodId as string,
+      status:'NOT_TAKEN'
+    },select:{
+      userId:true,
+      id:true,
+      name:true,
+      usn:true
+    }
+  })
+   res.status(200).json({subjects});
+});
+app.put('/student/attendance',async (req, res) => {
+  const { userId,periodId,status } = req.body
+console.log(userId,periodId,status)
+
+const exist = await prisma.attendance.findUnique({
+  where: {
+    userId_periodId: {
+      userId:userId as string,
+      periodId: periodId as string
+    },
+  },
+})
+
+console.log(exist)
+  const response = await prisma.attendance.update({
+    where: {
+      userId_periodId: {
+      userId:userId as string,
+      periodId: periodId as string
+      },
+    },
+    data: { status: status as AttendanceStatus },
+
+  });
+
+  console.log(response, 'user attendance')
+ 
+   res.status(200).json({response:'sucess'});
+});
+app.get('/student/attendance/absent',async (req, res) => {
+  const { userId,periodId} = req.body;
+
+
+
+  const response = await prisma.attendance.findMany({
+    where: {
+      periodId:periodId as string,
+      status:'ABSENT'
+    }
+  });
+
+  console.log(response, 'user attendance he is absent')
+
+  
+ 
+   res.status(200).json({response});
 });
 
 

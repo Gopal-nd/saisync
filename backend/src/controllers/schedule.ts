@@ -29,7 +29,6 @@ export const createSchedule = async (req: Request, res: Response) => {
             semesterNumber,
             branchName
         }
-
       },
     });
     console.log('Timetable of Date:', timeTableofDate);
@@ -56,8 +55,38 @@ export const createSchedule = async (req: Request, res: Response) => {
             isLab,
           },
         });
+
+      console.log('period created',period)
+const users = await prisma.user.findMany({
+  where: {
+    role: 'STUDENT',
+    branch:branchName as BranchType,
+    semester:semesterNumber as SemesterType
+  },
+  select:{
+    id:true,
+    name:true,
+    usn:true
+  }
+})
+
+console.log('users are select to create attendence',users)
+users.map(async(user)=>{
+
+  const attendance = await prisma.attendance.create({
+    data: {
+      userId: user.id,
+      periodId: period.id,
+      date: selectedDate,
+      name:user.name,
+      usn:user.usn
+    },
+  })
+  console.log('attendance created of the user',user.id,'==>',attendance)
+})
+
     
-        res.status(201).json({ message: 'Period added successfully!', period });
+res.status(201).json({ message: 'Period added successfully!', period });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: error });

@@ -32,6 +32,8 @@ function DaySchedule() {
     },
   });
 
+  console.log(subjectData)
+
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
