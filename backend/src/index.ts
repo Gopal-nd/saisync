@@ -1,24 +1,9 @@
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import authRoutes from './src/routes/auth'
-import scheduleRoutes from './src/routes/schedule'
-import { prisma } from './src/lib/db';
+import scheduleRoutes from './routes/schedule'
+import { prisma } from './lib/db';
 import type { AttendanceStatus, BranchType, SemesterType } from '@prisma/client';
 import { startOfDay, endOfDay } from 'date-fns';
+import app from './app';
 
-dotenv.config();
-
-const app = express();
-const PORT = process.env.PORT || 5000;
-// Middleware
-app.use(cors({ origin: '*' }));
-app.use(express.json());
-app.use(express.urlencoded({extended:true}))
-
-// Routes
-app.use('/api/auth', authRoutes);
-// app.use('/api/users', authenticateToken, userRoutes);
 
 app.get('/',(req,res)=>{
   res.send("i am alive")
@@ -211,6 +196,6 @@ app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok' });
 });
 
-app.listen(3000, () => {
-  console.log('Server running on localhost:3000');
+app.listen(process.env.PORT!, () => {
+  console.log('Server running on localhost:5000');
 });

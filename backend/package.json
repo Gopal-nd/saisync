@@ -3,7 +3,7 @@
   "module": "index.ts",
   "type": "module",
   "scripts": {
-    "dev": "bun --watch index.ts",
+    "dev": "bun --watch src/index.ts",
     "build": "tsc",
     "start": "index.ts",
     "seed": "bun run  prisma/seed.ts",
@@ -23,13 +23,16 @@
   },
   "dependencies": {
     "@prisma/client": "^6.5.0",
+    "@types/cookie-parser": "^1.4.8",
     "bcryptjs": "^3.0.2",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
-    "prisma": "^6.5.0"
+    "prisma": "^6.5.0",
+    "zod": "^3.24.2"
   }
 }
