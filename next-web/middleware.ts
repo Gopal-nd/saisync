@@ -1,56 +1,60 @@
 import { NextResponse } from 'next/server';
+import axios from 'axios';
 
-// Middleware Function
 export async function middleware(req) {
   const authToken = req.cookies.get('token');
 
-  // Define route access
+  // Define routes
   const publicRoutes = ['/sign-in', '/register'];
   const adminRoutes = ['/admin'];
   const userRoutes = ['/dashboard'];
+  const homeRoutes = ['/'];
 
-  // If no token and not on public routes, redirect to sign-in
-  if (!authToken && !publicRoutes.includes(req.nextUrl.pathname)) {
-    return NextResponse.redirect(new URL('/sign-in', req.url));
+
+  if (!authToken) {
+
+    if (!publicRoutes.includes(req.nextUrl.pathname)) {
+      return NextResponse.redirect(new URL('/sign-in', req.url));
+    }
+    return NextResponse.next();
   }
 
-  // If user is accessing sign-in while already authenticated, redirect to dashboard
-  if (authToken && publicRoutes.includes(req.nextUrl.pathname)) {
+  if (publicRoutes.includes(req.nextUrl.pathname)) {
     return NextResponse.redirect(new URL('/dashboard', req.url));
   }
 
-  // Validate the token using the API route
   try {
-    const response = await fetch('http://localhost:3000/api/auth/validate', {
-      method: 'GET',
+
+    const response = await axios.get(`${req.nextUrl.origin}/api/auth/validate`, {
       headers: {
-        Cookie: `authToken=${authToken.value}`,
+        Cookie: `token=${authToken?.value}`,
       },
+      withCredentials: true,
     });
 
-    if (!response.ok) {
-      return NextResponse.redirect(new URL('/sign-in', req.url));
-    }
+    const data = response.data;
 
-    const data = await response.json();
-
-    // Role-Based Authorization
-    if (adminRoutes.includes(req.nextUrl.pathname) && data.role !== 'A') {
+  
+    if (adminRoutes.includes(req.nextUrl.pathname) && data.role !== 'ADMIN') {
       return NextResponse.redirect(new URL('/unauthorized', req.url));
     }
 
-    if (userRoutes.includes(req.nextUrl.pathname) && data.role !== 'STUDENT' ) {
+    if (userRoutes.includes(req.nextUrl.pathname) && data.role !== 'STUDENT') {
+      return NextResponse.redirect(new URL('/sign-in', req.url));
+    }
+
+    if (homeRoutes.includes(req.nextUrl.pathname) && !data.isValid) {
       return NextResponse.redirect(new URL('/sign-in', req.url));
     }
 
     return NextResponse.next();
   } catch (error) {
-    console.error('Error validating token:', error);
+    console.error('Error validating token:', error?.response?.data || error.message);
     return NextResponse.redirect(new URL('/sign-in', req.url));
   }
 }
 
 // Apply middleware to relevant routes
 export const config = {
-  matcher: ['/dashboard', '/admin/:path*', '/sign-in', '/register'],
+  matcher: ['/dashboard', '/admin/:path*', '/sign-in', '/register', '/'],
 };
