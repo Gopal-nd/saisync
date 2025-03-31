@@ -1,14 +1,17 @@
 import { NextResponse } from 'next/server';
 import axios from 'axios';
+import axiosInstance from './lib/axiosInstance';
 
-export async function middleware(req) {
+export async function middleware(req:any) {
+
   const authToken = req.cookies.get('token');
 
   // Define routes
-  const publicRoutes = ['/sign-in', '/register'];
+  const publicRoutes = ['/sign-in', '/sign-up'];
   const adminRoutes = ['/admin'];
-  const userRoutes = ['/dashboard'];
-  const homeRoutes = ['/'];
+  const studentRoutes = ['/student'];
+  const staffRoutes = ['/staff'];
+  const dashboardRoutes = ['/dashboard'];
 
 
   if (!authToken) {
@@ -25,36 +28,42 @@ export async function middleware(req) {
 
   try {
 
-    const response = await axios.get(`${req.nextUrl.origin}/api/auth/validate`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/validate`, {
+      method: 'GET',
+      credentials: 'include',
       headers: {
-        Cookie: `token=${authToken?.value}`,
-      },
-      withCredentials: true,
+        'Content-Type': 'application/json', 
+        cookie: `token=${authToken.value}`
+      }
     });
+    const data = await response.json();
+    const role = data.role
 
-    const data = response.data;
+    console.log(response.ok)
 
   
-    if (adminRoutes.includes(req.nextUrl.pathname) && data.role !== 'ADMIN') {
-      return NextResponse.redirect(new URL('/unauthorized', req.url));
+    if (adminRoutes.includes(req.nextUrl.pathname) && role!== 'ADMIN') {
+      return NextResponse.redirect(new URL('/', req.url));
     }
 
-    if (userRoutes.includes(req.nextUrl.pathname) && data.role !== 'STUDENT') {
-      return NextResponse.redirect(new URL('/sign-in', req.url));
+    if (studentRoutes.includes(req.nextUrl.pathname) && role !== 'STUDENT' && authToken) {
+      return NextResponse.redirect(new URL('/', req.url));
     }
 
-    if (homeRoutes.includes(req.nextUrl.pathname) && !data.isValid) {
-      return NextResponse.redirect(new URL('/sign-in', req.url));
+    if (staffRoutes.includes(req.nextUrl.pathname) && role !== 'STAFF' && authToken) {
+      return NextResponse.redirect(new URL('/', req.url));
     }
 
-    return NextResponse.next();
+    // return NextResponse.next();
   } catch (error) {
-    console.error('Error validating token:', error?.response?.data || error.message);
+    // console.error('Error validating token:', error.message); );
     return NextResponse.redirect(new URL('/sign-in', req.url));
+
+
   }
 }
 
 // Apply middleware to relevant routes
 export const config = {
-  matcher: ['/dashboard', '/admin/:path*', '/sign-in', '/register', '/'],
+  matcher: ['/dashboard', '/', '/admin/:path*','/staff/:path*' ,'/student/:path*' ,'/sign-in', '/sign-up'],
 };

@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import authRoutes from './routes/auth'
+import errorHandler from './middleware/errorHandler';
 dotenv.config({
   path:'../src/.env'
 })
@@ -22,5 +23,6 @@ app.use(express.urlencoded({extended:true}))
 // Routes
 app.use('/api/auth', authRoutes);
 // app.use('/api/users', authenticateToken, userRoutes);
+
 
 export default app;

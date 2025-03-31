@@ -19,14 +19,14 @@
 // }
 
 
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 
 const SECRET_KEY = 'secret';
 
 
 
-export async function GET(req) {
+export async function GET(req:any) {
   const token = req.cookies.get('token');
 
   if (!token) {
@@ -35,7 +35,7 @@ export async function GET(req) {
 
   try {
     const decoded = jwt.verify(token.value, SECRET_KEY);
-    return NextResponse.json({ isValid: true, role: decoded.role });
+    return NextResponse.json({ isValid: true, role: decoded });
   } catch (error) {
     return NextResponse.json({ isValid: false, error: 'Invalid token' }, { status: 403 });
   }

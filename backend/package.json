@@ -10,6 +10,7 @@
     "generate": "prisma generate"
   },
   "devDependencies": {
+    "@tanstack/eslint-plugin-query": "^5.68.0",
     "@types/bcryptjs": "^3.0.0",
     "@types/bun": "latest",
     "@types/cors": "^2.8.17",
@@ -24,6 +25,7 @@
   "dependencies": {
     "@prisma/client": "^6.5.0",
     "@types/cookie-parser": "^1.4.8",
+    "@types/nodemailer": "^6.4.17",
     "bcryptjs": "^3.0.2",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
@@ -31,7 +33,9 @@
     "dayjs": "^1.11.13",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "express-validator": "^7.2.1",
     "jsonwebtoken": "^9.0.2",
+    "nodemailer": "^6.10.0",
     "prisma": "^6.5.0",
     "zod": "^3.24.2"
   }

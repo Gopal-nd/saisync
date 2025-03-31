@@ -38,8 +38,9 @@ model User {
   email        String      @unique
   password     String
   name         String?
-  usn          String?
-  section      String?
+  usn          String? @unique
+  section      String? 
+  schema       String?
   branch       BranchType? @default(AIML)
   semester     SemesterType? @default(S1)
   role         Role        @default(STUDENT)
@@ -129,4 +130,14 @@ enum AttendanceStatus {
   PRESENT
   ABSENT
   NOT_TAKEN
+}
+
+
+model OtpVerification {
+  id           String      @id @default(uuid())
+  email        String      @unique
+  otp          Int
+  otpExpiresAt DateTime
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
 }

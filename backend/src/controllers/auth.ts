@@ -4,49 +4,64 @@ import { type Request ,type Response } from 'express';
 import { generateToken } from '../lib/jwt';
 import { prisma } from '../lib/db';
 import * as z from 'zod'
+import jwt  from 'jsonwebtoken'
+import asyncHandler from '../utils/async-handler';
+import { APIError } from '../utils/api-error';
+import { ApiResponse } from '../utils/api-response';
+import { sendEmail } from '../lib/mail';
 
-export const register = async (req: Request, res: Response) => {
-  const { email, password, name, usn, role } = req.body;
 
-  console.log(email,password,"from the backend")
 
-if(!email || !password){
-    console.log('user details is required')
+export const register = asyncHandler(async (req: Request, res: Response) => {
+  const { email, password, name, usn, role, branch, section,semester,schema } = req.body;
 
-return res.status(400).json({ message: 'email and password is required' });
-}
+  // do validation check :TODO
+  //for now assume you will get correct data
+  // console.log(req.body)
+  
   const existingUser = await prisma.user.findUnique({ where: { email } });
 
   if (existingUser) {
-    
-      console.log('user alredy exist')
-    return res.status(400).json({ message: 'User already exists' })
-}
+    console.log('user alredy exist from /sign-up route')
+    throw new APIError({status:400,message:"User already exist"})
+  }
 
   const hashedPassword = await bcrypt.hash(password, 10);
+
   const user = await prisma.user.create({
-    data: { email, password: hashedPassword, name, usn, role },
+    data: { email, password: hashedPassword, name, usn, role,branch,section,semester,schema },
+    select:{
+      id: true,
+      email: true,
+      name: true,
+      usn: true,
+      role: true,
+      branch:true,
+      section:true,
+      semester:true,
+    }
   });
-  console.log('user created',user)
 
-  res.json({ message: 'User registered successfully', user });
-};
+  // console.log('user created',user)
 
-export const login = async (req: Request, res: Response) => {
+  res.status(201).json(new ApiResponse({data:user,statusCode:201,message:"User created successfully"}));
+})
 
- try {
+export const login = asyncHandler(async (req: Request, res: Response) => {
+
+ 
    const { email, password } = req.body;
  
    const user = await prisma.user.findUnique({ where: { email } });
 
    if (!user){
-     return  res.status(400).json({message:"Invalid credentials",data:null})
+    throw new APIError({status:401,message:"Invalid credentials"})
    }
  
    const isMatch = await bcrypt.compare(password, user.password);
  
    if (!isMatch) {
-   return  res.status(400).json({message:"Invalid credentials",data:null})
+    throw new APIError({status:401,message:"Invalid credentials"})
   }
 
    const token = generateToken(user.id, user.role);
@@ -67,56 +82,117 @@ export const login = async (req: Request, res: Response) => {
     usn:user.usn
    }
 
-   res.status(200).json({message:"Login Success",data:{token,sendUser}});
-
- } catch (error) {
-  console.log("Something went wrong in login route ",error)
- res.status(500).json({message:"Something went wrong in login route",data:error})
-
- }
-};
+   res.status(200).json(new ApiResponse({data:{sendUser,token},statusCode:200,message:'Login Success'}));
 
 
-export const verifyToken = async (req: Request, res: Response) => {
-  try {
-    // The user is already verified by the authenticateToken middleware
-    // Just return the user data
-    
-    // @ts-ignore - req.user is set by the authenticateToken middleware
-    const userId = req.user.id;
-    
-    const user = await prisma.user.findUnique({ 
-      where: { id: userId },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        role: true,
-        branch: true,
-        semester: true,
-        section: true,
-        usn: true
-      }
-    });
+})
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found", data: null });
+
+export const ResetPassword = asyncHandler(async (req: Request, res: Response) => {
+ 
+
+    const {email ,otp , password } = req.body
+    console.log(req.body)
+    const exist  = await  prisma.user.findUnique({where:{email}})
+    if(!exist){
+      throw new APIError({status:401,message:'Invalid email'})
     }
 
-    res.status(200).json({ 
-      message: "Token verified", 
-      user 
-    });
-  } catch (error) {
-    console.error("Error verifying token:", error);
-    res.status(500).json({ message: "Error verifying token", data: null });
-  }
-};
+    if(email && otp && !password){
+      const user = await prisma.otpVerification.findUnique({where:{email}})
+      if(!user){
+        throw new APIError({status:401,message:'Invalid email'})
+      }
+      const time = user?.otpExpiresAt
+      const currentTime = new Date()
+
+      if(time < currentTime){
+        await prisma.otpVerification.delete({where:{email}})
+        throw new APIError({status:401,message:'OTP Expired try again later'})
+      }
+console.log(otp)
+      const isMatch = Number(otp) === user.otp
+
+      if(!isMatch){
+        throw new APIError({status:401,message:'Invalid OTP'})
+      }
+
+      res.status(200).json(new ApiResponse({data:'',statusCode:200,message:' create the new password now'}));
+    }
+
+    if(email && password && otp){ 
+
+      const user = await prisma.otpVerification.findUnique({where:{email}})
+      if(!user){
+        throw new APIError({status:401,message:'Invalid email'})
+      }
+      const time = user?.otpExpiresAt
+      const currentTime = new Date()
+
+      if(time < currentTime){
+        await prisma.otpVerification.delete({where:{email}})
+        throw new APIError({status:401,message:'OTP Expired try again later'})
+      }
+
+      const isMatch = Number(otp) === user.otp
+
+      if(!isMatch){
+        throw new APIError({status:401,message:'Invalid OTP'})
+      }
+
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      await prisma.user.update({
+        where:{email},
+        data:{password:hashedPassword}
+      })
+
+      await prisma.otpVerification.delete({where:{email}})
+
+      res.status(200).json(new ApiResponse({data:'',statusCode:200,message:'Password reset successfully'}));
+    }
+
+    if(email && !otp && !password){
+
+      
+      const user = await prisma.otpVerification.findUnique({where:{email}})
+      
+      if(user){
+        await prisma.otpVerification.delete({where:{email}}) 
+      }
+      
+      // 6 digit otp
+      const userOtp =( Math.floor(Math.random() * 900000) + 100000)
+      console.log(userOtp)
+      
+      const otpExpiration = new Date(Date.now() + 5 * 60 * 1000); // 15 minutes from now
+      
+      const otpVerification = await prisma.otpVerification.create({
+        data: {
+          email: email,
+          otp: userOtp,
+          otpExpiresAt: otpExpiration
+        },
+        select:{
+          id: true,
+          email: true
+        }
+      });
+      const mailresponse = await sendEmail(email, 'OTP Verification', `Your OTP is: ${userOtp}`);
+      
+      otpVerification && res.status(200).json(new ApiResponse({data:'',statusCode:200,message:'OTP sent successfully'}));
+    }
+
+ 
+})
+
 
 export const logout = async (req: Request, res: Response) => {
   try {
     // Clear the cookie for web clients
     res.clearCookie('token');
+    
+      console.log(req.user)
     
     res.status(200).json({ message: "Logged out successfully" });
   } catch (error) {
@@ -125,11 +201,33 @@ export const logout = async (req: Request, res: Response) => {
   }
 };
 
-export const getProfile = async (req: Request, res: Response) => {
-  const { userId } = req.body.user;
+export const validate = asyncHandler(async (req: Request, res: Response) => {
+  
+    // Ensure cookie-parser is used to read cookies
+    const token = req.cookies?.token;
 
-  const user = await prisma.user.findUnique({ where: { id: userId } });
-  if (!user) return res.status(404).json({ message: 'User not found' });
 
-  res.json({ user });
-};
+    if (!token) {
+      throw new APIError({ status: 401, message: 'Token Not Provided' });
+    }
+
+
+    // Verify token using JWT
+    const decoded = jwt.verify(token, process.env.SECRET_KEY as string) as { role: string };
+    res.status(200).json(new ApiResponse({ statusCode: 200, data: {role:decoded.role}, }));
+})
+
+export const getProfile = asyncHandler(async (req: Request, res: Response) => {
+  const userId = req.user?.userId; // Assuming authenticated user
+  if (!userId) {
+    throw new APIError({ status: 401, message: 'Unauthorized: No User ID' });
+  }
+
+  const user = await prisma.user.findUnique({ where: { id: userId } ,select:{id:true,name:true,email:true,semester:true,branch:true,section:true,usn:true}});
+
+  if (!user) {
+    throw new APIError({ status: 404, message: 'User not found' });
+  }
+
+  res.status(200).json(new ApiResponse({ statusCode: 200, data: user }));
+});

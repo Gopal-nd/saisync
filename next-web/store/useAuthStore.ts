@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist, PersistOptions } from 'zustand/middleware';
 
 type User = {
   id: string;
@@ -14,6 +15,7 @@ type User = {
 type AuthState = {
   isAuthenticated: boolean;
   user: User | null;
+  role: string | null;
   token: string | null;
   setUser: (user: User) => void;
   clearUser: () => void;
@@ -23,48 +25,61 @@ type AuthState = {
   logout: () => void;
 };
 
-const useAuthStore = create<AuthState>((set) => ({
-  isAuthenticated: false,
-  user: null,
-  token: null,
-
-  setUser: (user) =>
-    set(() => ({
-      user: { ...user },
-      isAuthenticated: true,
-    })),
-
-  clearUser: () =>
-    set(() => ({
+const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
+      isAuthenticated: false,
       user: null,
-      isAuthenticated: false,
-    })),
-
-  setToken: (token) =>
-    set(() => ({
-      token,
-      isAuthenticated: true,
-    })),
-
-  clearToken: () =>
-    set(() => ({
+      role: null,
       token: null,
-      isAuthenticated: false,
-    })),
 
-  setAuth: (token, user) =>
-    set(() => ({
-      token,
-      user: { ...user },
-      isAuthenticated: true,
-    })),
+      setUser: (user) =>
+        set(() => ({
+          user: { ...user },
+          role: user.role,
+          isAuthenticated: true,
+        })),
 
-  logout: () =>
-    set(() => ({
-      token: null,
-      user: null,
-      isAuthenticated: false,
-    })),
-}));
+      clearUser: () =>
+        set(() => ({
+          user: null,
+          role: null,
+          isAuthenticated: false,
+        })),
+
+      setToken: (token) =>
+        set(() => ({
+          token,
+          isAuthenticated: true,
+        })),
+
+      clearToken: () =>
+        set(() => ({
+          token: null,
+          isAuthenticated: false,
+        })),
+
+      setAuth: (token, user) =>
+        set(() => ({
+          token,
+          user: { ...user },
+          role: user.role,
+          isAuthenticated: true,
+        })),
+
+      logout: () =>
+        set(() => ({
+          token: null,
+          user: null,
+          role: null,
+          isAuthenticated: false,
+        })),
+    }),
+    {
+      name: 'auth-storage', // Key to store in localStorage
+      getStorage: () => localStorage, // Persist using localStorage
+    } as PersistOptions<AuthState>
+  )
+);
 
 export default useAuthStore;
