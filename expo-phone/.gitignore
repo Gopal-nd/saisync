@@ -2,7 +2,6 @@
 
 # dependencies
 node_modules/
-node_modules
 
 # Expo
 .expo/
@@ -37,4 +36,3 @@ yarn-error.*
 *.tsbuildinfo
 
 app-example
-.env
