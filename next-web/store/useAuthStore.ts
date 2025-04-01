@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist, PersistOptions } from 'zustand/middleware';
 
-type User = {
+export type User = {
   id: string;
   email: string;
   role: string;
@@ -10,9 +10,11 @@ type User = {
   branch?: string;
   semester?: string;
   section?: string;
+  schema?:string;
+  image?:string;
 };
 
-type AuthState = {
+export type AuthState = {
   isAuthenticated: boolean;
   user: User | null;
   role: string | null;
@@ -67,17 +69,19 @@ const useAuthStore = create<AuthState>()(
           isAuthenticated: true,
         })),
 
-      logout: () =>
+      logout: () => {
+        localStorage.removeItem('auth-storage'); 
         set(() => ({
           token: null,
           user: null,
           role: null,
           isAuthenticated: false,
-        })),
+        }));
+      },
     }),
     {
-      name: 'auth-storage', // Key to store in localStorage
-      getStorage: () => localStorage, // Persist using localStorage
+      name: 'auth-storage', 
+      getStorage: () => localStorage, 
     } as PersistOptions<AuthState>
   )
 );

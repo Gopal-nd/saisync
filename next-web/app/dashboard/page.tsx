@@ -1,12 +1,14 @@
 'use client';
-import useAuth from '@/hooks/useAuth';
+import useAuthValidate from '@/hooks/useAuthValidate';
+import useAuthStore from '@/store/useAuthStore';
+
 
 export default function Dashboard() {
-//   const { loading, role } = useAuth();
+const {role} = useAuthStore()
 
   
 
-//   return <h1>Welcome to Dashboard, {role === 'admin' ? 'Admin' : 'User'}!</h1>;
-  return <h1>Welcome to Dashboard, </h1>;
+  return <h1>Welcome to Dashboard, {role === 'ADMIN' ? 'Admin' : 'User'}!</h1>;
+
 
 }

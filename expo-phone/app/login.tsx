@@ -26,7 +26,7 @@ import axios from 'axios';
 
 // Correct image import
 // Make sure this path is correct for your project structure
-import logo from '../assets/images/sailogin.jpg';
+// import logo from '../assets/images/sailogin.jpg';
 
 const { width, height } = Dimensions.get('window');
 
@@ -120,11 +120,11 @@ export default function Login(): JSX.Element {
             <View style={styles.logoContainer}>
               <View style={styles.logoCircle}>
                 {/* Fixed image rendering */}
-                <Image 
+                {/* <Image 
                   source={logo} 
                   style={styles.logoImage} 
                   resizeMode="cover"
-                />
+                /> */}
               </View>
               <Text style={styles.appName}>Sai Sync</Text>
               <Text style={styles.tagline}>Your Learning Journey Starts Here</Text>

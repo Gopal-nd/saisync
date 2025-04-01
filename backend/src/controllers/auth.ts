@@ -52,7 +52,7 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
  
    const { email, password } = req.body;
  
-   const user = await prisma.user.findUnique({ where: { email } });
+   const user = await prisma.user.findUnique({ where: { email } ,select:{password:true,email:true,branch:true,semester:true,name:true,id:true,usn:true,role:true,schema:true,section:true}});
 
    if (!user){
     throw new APIError({status:401,message:"Invalid credentials"})
@@ -79,7 +79,9 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
     branch:user.branch,
     semester:user.semester,
     section:user.section,
-    usn:user.usn
+    usn:user.usn,
+    schema:user.schema,
+    email:user.email
    }
 
    res.status(200).json(new ApiResponse({data:{sendUser,token},statusCode:200,message:'Login Success'}));
@@ -223,7 +225,7 @@ export const getProfile = asyncHandler(async (req: Request, res: Response) => {
     throw new APIError({ status: 401, message: 'Unauthorized: No User ID' });
   }
 
-  const user = await prisma.user.findUnique({ where: { id: userId } ,select:{id:true,name:true,email:true,semester:true,branch:true,section:true,usn:true}});
+  const user = await prisma.user.findUnique({ where: { id: userId } ,select:{id:true,name:true,email:true,semester:true,branch:true,section:true,usn:true,schema:true}});
 
   if (!user) {
     throw new APIError({ status: 404, message: 'User not found' });

@@ -6,10 +6,12 @@ import { useRouter } from 'next/navigation'
 import axiosInstance from '@/lib/axiosInstance'
 const Logout = () => {
     const router = useRouter()
+    // const {clearUser} = useAuthStore()
     const {clearToken, clearUser,  logout} = useAuthStore()
     const handlelogout = async()=>{
         const res = await axiosInstance.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/logout`,{})
         console.log(res.data)
+        logout()
         router.push('/sign-in')
     }
 

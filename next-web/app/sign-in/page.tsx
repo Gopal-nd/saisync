@@ -24,6 +24,7 @@ import { Label } from '@/components/ui/label';
 import axiosInstance from '@/lib/axiosInstance';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import useAuthStore from '@/store/useAuthStore';
 
 const branches = ['AIML', 'ECE', 'CSE', 'EEE', 'ISE', 'MECH'] as const;
 const semesters = ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8'] as const;
@@ -34,11 +35,12 @@ const roles = ['STUDENT', 'ADMIN', 'STAFF']
 
 
 export default function LoginPage() {
+  const  {setUser} = useAuthStore()
 
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues:{
-      password:'sairam123',
+      // password:'sairam123',
     }
   })
 
@@ -47,11 +49,27 @@ export default function LoginPage() {
   const mutation = useMutation({
     mutationFn: async (data: any) => {
       const response = await axiosInstance.post('/api/auth/sign-in', data);
+
       return response.data;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast.success('Login successful');
       router.push('/dashboard')
+      console.log(data.data.sendUser.email)
+      console.log(data)
+
+      setUser({
+        email:data.data.sendUser.email,
+        id:data.data.sendUser.id,
+        role:data.data.sendUser.role,
+        branch:data.data.sendUser.branch,
+        name:data.data.sendUser.name,
+        semester:data.data.sendUser.semester,
+        section:data.data.sendUser.section,
+        usn:data.data.sendUser.usn,
+        schema:data.data.sendUser.schema
+      })
+
     },
     onError: (error) => {
       console.log(error)
@@ -64,8 +82,9 @@ export default function LoginPage() {
   });
 
   const onSubmit = (data: any) => {
-    console.log(data)
-    mutation.mutate(data)
+    // console.log(data)
+   const output =  mutation.mutate(data)
+
   }
 
   return (

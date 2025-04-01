@@ -10,7 +10,7 @@ export default function Home() {
     <div>
 
       <ModeToggle />
-      {token}
+      {/* {token} */}
       {JSON.stringify(user)}
       <Logout />
       

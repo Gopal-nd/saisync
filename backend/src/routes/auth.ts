@@ -14,7 +14,7 @@ router.post('/logout', logout);
 router.get('/validate',validate)
 
 // router.get('/verify-token', authenticateToken, verifyToken);
-router.get('/logout', authenticateToken, logout);
+// router.get('/logout', authenticateToken, logout);
 router.get('/me',authenticateToken,getProfile)
 
 

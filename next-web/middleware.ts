@@ -37,10 +37,8 @@ export async function middleware(req:any) {
       }
     });
     const data = await response.json();
-    const role = data.role
-
-    console.log(response.ok)
-
+    const role = data.data.role
+    
   
     if (adminRoutes.includes(req.nextUrl.pathname) && role!== 'ADMIN') {
       return NextResponse.redirect(new URL('/', req.url));
