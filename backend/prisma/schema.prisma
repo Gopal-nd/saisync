@@ -78,7 +78,7 @@ model Subject {
   semester     Semester      @relation(fields: [branchName, semesterNumber], references: [branchName, number])
   staffName        String
   isLab        Boolean       @default(false)
-
+  
   @@unique([branchName, semesterNumber, subjectCode]) 
 }
 

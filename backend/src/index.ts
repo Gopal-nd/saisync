@@ -11,15 +11,7 @@ app.get('/',(req,res)=>{
   res.send("i am alive")
 })
 
-app.get('/staff',async (req, res) => {
-  const staff = await prisma.user.findMany({
-    where: {
-      role: 'STAFF' 
-    },
-  });
 
-   res.status(200).json(staff);
-});
 
 
 app.get('/test',async (req, res) => {
@@ -57,33 +49,9 @@ app.get('/code',async (req, res) => {
    res.status(200).json(code);
 });
 
-app.post('/api/subjects/create',async (req, res) => {
-  const { 
-    noOfCredits,
-    subjectName,
-    staffName,
-    subjectCode,
-    isLab,
-    branchName,
-    semesterNumber,
-   } = req.body;
-   console.log(req.body)
-const upperSubjectCode = subjectCode.toUpperCase()
-  const subject = await prisma.subject.create({
-    data: {
-      subjectCode:upperSubjectCode,
-      subjectName,
-      staffName,
-      noOfCredits,
-      isLab,
-      branchName,
-      semesterNumber,
-    },
-  });
-  // console.log(subject)
+// app.post('/api/subjects/create',async (req, res) => {
 
-   res.status(201).json(subject);
-});
+// });
 
 
 

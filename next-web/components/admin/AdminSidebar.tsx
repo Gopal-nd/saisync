@@ -86,9 +86,9 @@ export function AdminSidebar() {
 
               {/* Students with submenu */}
               <SidebarMenuItem>
-                <Collapsible defaultOpen={pathname?.startsWith("/admin/dashboard/students")}>
+                <Collapsible defaultOpen={pathname?.startsWith("/admin/students")}>
                   <CollapsibleTrigger asChild>
-                    <SidebarMenuButton isActive={pathname?.startsWith("/admin/dashboard/students")}>
+                    <SidebarMenuButton isActive={pathname?.startsWith("/admin/students")}>
                       <Users className="size-4" />
                       <span>Students</span>
                       <ChevronDown className="ml-auto size-4 transition-transform group-data-[state=open]/collapsible:rotate-180" />
@@ -97,18 +97,18 @@ export function AdminSidebar() {
                   <CollapsibleContent>
                     <SidebarMenuSub>
                       <SidebarMenuSubItem>
-                        <SidebarMenuSubButton asChild isActive={pathname === "/admin/dashboard/students"}>
-                          <Link href="/admin/dashboard/students">All Students</Link>
+                        <SidebarMenuSubButton asChild isActive={pathname === "/admin/students"}>
+                          <Link href="/admin/students">All Students</Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                       <SidebarMenuSubItem>
-                        <SidebarMenuSubButton asChild isActive={pathname === "/admin/dashboard/students/add"}>
-                          <Link href="/admin/dashboard/students/add">Add Student</Link>
+                        <SidebarMenuSubButton asChild isActive={pathname === "/admin/students/add"}>
+                          <Link href="/admin/students/add">Add Student</Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                       <SidebarMenuSubItem>
-                        <SidebarMenuSubButton asChild isActive={pathname === "/admin/dashboard/students/profile"}>
-                          <Link href="/admin/dashboard/students/profile">Student Profile</Link>
+                        <SidebarMenuSubButton asChild isActive={pathname === "/admin/students/profile"}>
+                          <Link href="/admin/students/profile">Student Profile</Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                     </SidebarMenuSub>
@@ -118,9 +118,9 @@ export function AdminSidebar() {
 
               {/* Faculty with submenu */}
               <SidebarMenuItem>
-                <Collapsible defaultOpen={pathname?.startsWith("/admin/dashboard/faculty")}>
+                <Collapsible defaultOpen={pathname?.startsWith("/admin/faculty")}>
                   <CollapsibleTrigger asChild>
-                    <SidebarMenuButton isActive={pathname?.startsWith("/admin/dashboard/faculty")}>
+                    <SidebarMenuButton isActive={pathname?.startsWith("/admin/faculty")}>
                       <GraduationCap className="size-4" />
                       <span>Faculty</span>
                       <ChevronDown className="ml-auto size-4 transition-transform group-data-[state=open]/collapsible:rotate-180" />
@@ -129,13 +129,13 @@ export function AdminSidebar() {
                   <CollapsibleContent>
                     <SidebarMenuSub>
                       <SidebarMenuSubItem>
-                        <SidebarMenuSubButton asChild isActive={pathname === "/admin/dashboard/faculty"}>
-                          <Link href="/admin/dashboard/faculty">All Faculty</Link>
+                        <SidebarMenuSubButton asChild isActive={pathname === "/admin/faculty"}>
+                          <Link href="/admin/faculty">All Faculty</Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                       <SidebarMenuSubItem>
-                        <SidebarMenuSubButton asChild isActive={pathname === "/admin/dashboard/faculty/add"}>
-                          <Link href="/admin/dashboard/faculty/add">Add Faculty</Link>
+                        <SidebarMenuSubButton asChild isActive={pathname === "/admin/faculty/add"}>
+                          <Link href="/admin/faculty/add">Add Faculty</Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                     </SidebarMenuSub>
@@ -145,9 +145,9 @@ export function AdminSidebar() {
 
               {/* Courses with submenu */}
               <SidebarMenuItem>
-                <Collapsible defaultOpen={pathname?.startsWith("/admin/dashboard/courses")}>
+                <Collapsible defaultOpen={pathname?.startsWith("/admin/courses")}>
                   <CollapsibleTrigger asChild>
-                    <SidebarMenuButton isActive={pathname?.startsWith("/admin/dashboard/courses")}>
+                    <SidebarMenuButton isActive={pathname?.startsWith("/admin/courses")}>
                       <BookOpen className="size-4" />
                       <span>Courses</span>
                       <ChevronDown className="ml-auto size-4 transition-transform group-data-[state=open]/collapsible:rotate-180" />
@@ -156,13 +156,13 @@ export function AdminSidebar() {
                   <CollapsibleContent>
                     <SidebarMenuSub>
                       <SidebarMenuSubItem>
-                        <SidebarMenuSubButton asChild isActive={pathname === "/admin/dashboard/courses"}>
-                          <Link href="/admin/dashboard/courses">All Courses</Link>
+                        <SidebarMenuSubButton asChild isActive={pathname === "/admin/courses"}>
+                          <Link href="/admin/courses">All Courses</Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                       <SidebarMenuSubItem>
-                        <SidebarMenuSubButton asChild isActive={pathname === "/admin/dashboard/courses/add"}>
-                          <Link href="/admin/dashboard/courses/add">Add Course</Link>
+                        <SidebarMenuSubButton asChild isActive={pathname === "/admin/courses/add"}>
+                          <Link href="/admin/courses/add">Add Course</Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                     </SidebarMenuSub>
@@ -172,8 +172,8 @@ export function AdminSidebar() {
 
               {/* Attendance */}
               <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={pathname?.startsWith("/admin/dashboard/attendance")}>
-                  <Link href="/admin/dashboard/attendance">
+                <SidebarMenuButton asChild isActive={pathname?.startsWith("/admin/attendance")}>
+                  <Link href="/admin/attendance">
                     <ClipboardList className="size-4" />
                     <span>Attendance</span>
                   </Link>
@@ -182,18 +182,36 @@ export function AdminSidebar() {
 
               {/* Timetable */}
               <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={pathname?.startsWith("/admin/dashboard/timetable")}>
-                  <Link href="/admin/dashboard/timetable">
-                    <Calendar className="size-4" />
-                    <span>Timetable</span>
-                  </Link>
-                </SidebarMenuButton>
+                <Collapsible defaultOpen={pathname?.startsWith("/admin/timetable")}>
+                  <CollapsibleTrigger asChild>
+                    <SidebarMenuButton isActive={pathname?.startsWith("/admin/timetable")}>
+                      <BookOpen className="size-4" />
+                      <span>Timetable</span>
+                      <ChevronDown className="ml-auto size-4 transition-transform group-data-[state=open]/collapsible:rotate-180" />
+                    </SidebarMenuButton>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <SidebarMenuSub>
+                      <SidebarMenuSubItem>
+                        <SidebarMenuSubButton asChild isActive={pathname === "/admin/timetable"}>
+                          <Link href="/admin/timetable">TimeTable</Link>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                      {/* <SidebarMenuSubItem>
+                        <SidebarMenuSubButton asChild isActive={pathname === "/admin/timetable/add"}>
+                          <Link href="/admin/timetable/add">Add Course</Link>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem> */}
+                    </SidebarMenuSub>
+                  </CollapsibleContent>
+                </Collapsible>
               </SidebarMenuItem>
+
 
               {/* Reports */}
               <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={pathname?.startsWith("/admin/dashboard/reports")}>
-                  <Link href="/admin/dashboard/reports">
+                <SidebarMenuButton asChild isActive={pathname?.startsWith("/admin/reports")}>
+                  <Link href="/admin/reports">
                     <BarChart3 className="size-4" />
                     <span>Reports</span>
                   </Link>
@@ -202,8 +220,8 @@ export function AdminSidebar() {
 
               {/* Settings */}
               <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={pathname?.startsWith("/admin/dashboard/settings")}>
-                  <Link href="/admin/dashboard/settings">
+                <SidebarMenuButton asChild isActive={pathname?.startsWith("/admin/settings")}>
+                  <Link href="/admin/settings">
                     <Settings className="size-4" />
                     <span>Settings</span>
                   </Link>
@@ -212,8 +230,8 @@ export function AdminSidebar() {
 
               {/* Help */}
               <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={pathname?.startsWith("/admin/dashboard/help")}>
-                  <Link href="/admin/dashboard/help">
+                <SidebarMenuButton asChild isActive={pathname?.startsWith("/admin/help")}>
+                  <Link href="/admin/help">
                     <LifeBuoy className="size-4" />
                     <span>Help</span>
                   </Link>
@@ -224,6 +242,7 @@ export function AdminSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SideBarFooter />
+
       <SidebarRail />
     </Sidebar>
   )

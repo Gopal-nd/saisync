@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+
 import axios from 'axios';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import  dayjs from 'dayjs';
@@ -14,18 +14,18 @@ interface Period {
   isLab: boolean;
 }
 
-function DaySchedule() {
-  const { branch, semester, day: date } = useParams<{ branch: string; semester: string; day: string }>();
+function SeeDaySchedule({ branch, semester, day } :{branch:string,semester:string,day:string}) {
+  
   const [error, setError] = useState<string | null>(null);
   const [editPeriod, setEditPeriod] = useState<Period | null>(null);
   const queryClient = useQueryClient();
 
   // ✅ Fetch Schedule
   const { data: schedule, isLoading, error: queryError } = useQuery<Period[]>({
-    queryKey: ['schedule', branch, semester, date],
+    queryKey: ['schedule', branch, semester, day],
     queryFn: async () => {
       console.log('Fetching schedule...');
-      const { data } = await axios.get(`http://localhost:3000/api/schedule`, { params: { branch, semester, date } });
+      const { data } = await axios.get(`http://localhost:3000/api/schedule`, { params: { branch, semester, date:day } });
       console.log('Fetched schedule:', data);
       return data.Periods;
     },
@@ -46,7 +46,7 @@ function DaySchedule() {
     },
     onSuccess: () => {
       alert('Period updated successfully');
-      queryClient.invalidateQueries(['schedule', branch, semester, date]);
+      queryClient.invalidateQueries(['schedule', branch, semester, day]);
       setEditPeriod(null)
     },
     onError: (error) => {
@@ -63,7 +63,7 @@ function DaySchedule() {
     },
     onSuccess: () => {
       alert('Period deleted successfully');
-      queryClient.invalidateQueries(['schedule', branch, semester, date]);
+      queryClient.invalidateQueries(['schedule', branch, semester, day]);
     },
     onError: (error) => {
       console.error('Delete Error:', error);
@@ -94,7 +94,7 @@ function DaySchedule() {
 
   return (
     <div className="p-8">
-      <h1 className="text-2xl font-bold mb-4">Schedule for {branch} - Semester {semester} - {date}</h1>
+      <h1 className="text-2xl font-bold mb-4">Schedule for {branch} - Semester {semester} - {day}</h1>
       
       {/* Edit Form */}
       {editPeriod && (
@@ -193,4 +193,4 @@ function DaySchedule() {
   );
 }
 
-export default DaySchedule;
+export default SeeDaySchedule;

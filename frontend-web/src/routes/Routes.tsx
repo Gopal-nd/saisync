@@ -15,51 +15,44 @@ import LoginForm from '@/pages/auth/Login';
 import RoleProtectedRoute from '@/components/RoleProtectedRoute';
 
 export default function AppRoutes() {
-  const { token, setAuth, isAuthenticated, logout } = useAuthStore();
-  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
   
   // Verify token and fetch user if we have a token but no user data
-  useEffect(() => {
-    const verifyAuth = async () => {
-      if (token) {
-        try {
-          // Set token for all requests
-          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  // useEffect(() => {
+  //   const verifyAuth = async () => {
+  //     if (token) {
+  //       try {
+  //         // Set token for all requests
+  //         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
           
-          // Verify token and get fresh user data
-          const res = await axios.get(`${backendUrl}/api/auth/verify-token`);
+  //         // Verify token and get fresh user data
+  //         const res = await axios.get(`${backendUrl}/api/auth/verify-token`);
           
-          if (res.data.user) {
-            // Update user data in store
-            setAuth(token, res.data.user);
-          } else {
-            // If verification fails, logout
-            logout();
-          }
-        } catch (error) {
-          console.error('Token verification failed:', error);
-          logout();
-        }
-      }
-    };
+  //         if (res.data.user) {
+  //           // Update user data in store
+  //           setAuth(token, res.data.user);
+  //         } else {
+  //           // If verification fails, logout
+  //           logout();
+  //         }
+  //       } catch (error) {
+  //         console.error('Token verification failed:', error);
+  //         logout();
+  //       }
+  //     }
+  //   };
     
-    verifyAuth();
-  }, [token, backendUrl, setAuth, logout]);
+  //   verifyAuth();
+  // }, [token, backendUrl, setAuth, logout]);
 
   return (
     <Routes>
-      {/* Public Route - accessible to all */}
-      <Route path="/login" element={
-        isAuthenticated ? <Navigate to="/" replace /> : <LoginForm />
-      } />
-
-      {/* Protected Routes - require authentication */}
-      <Route path="/" element={
-        isAuthenticated ? <Home /> : <Navigate to="/login" replace />
-      } />
+    
 
       {/* Admin-Only Routes */}
-      <Route element={<RoleProtectedRoute allowedRoles={['ADMIN']} />}>
+      <Route >
+      <Route path="/" element={<Home />} />
+
         <Route path="/branch/:branch" element={<Branch />} />
         <Route path="/branch/:branch/:semester" element={<Semester />} />
         <Route path="/branch/:branch/:semester/calendar" element={<Calendar />} />
@@ -79,9 +72,7 @@ export default function AppRoutes() {
       </Route>
 
       {/* Catch-all: redirect to login if not authenticated, home if authenticated */}
-      <Route path="*" element={
-        isAuthenticated ? <Navigate to="/" replace /> : <Navigate to="/login" replace />
-      } />
+    
     </Routes>
   );
 }

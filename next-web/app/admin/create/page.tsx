@@ -66,7 +66,7 @@ export default function RegisterPage() {
 
   return (
     <div className="max-w-md mx-auto mt-10 p-6 border rounded-xl">
-      <h2 className="text-2xl font-bold mb-6">Register</h2>
+      <h2 className="text-2xl font-bold mb-6">Register A New User</h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
@@ -241,7 +241,7 @@ export default function RegisterPage() {
             )}
           />
 
-          <Button type="submit">Submit</Button>
+          <Button type="submit">create</Button>
         </form>
       </Form>
       
