@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import authRoutes from './routes/auth'
 import allUsersRoutes from './routes/allusers'
 import subjectsRoute from './routes/subjects'
+import scheduleRoutes from './routes/schedule'
 
 import errorHandler from './middleware/errorHandler';
 import { authenticateToken } from './middleware/auth';
@@ -29,8 +30,10 @@ app.use(express.urlencoded({extended:true}))
 app.use('/api/auth', authRoutes);
 app.use('/api', allUsersRoutes);
 app.use('/api/subjects',subjectsRoute)
+app.use('/api/schedule',scheduleRoutes)
 
 app.get('/subjects',authenticateToken,getSubjectNames)
+
 
 
 

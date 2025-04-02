@@ -27,7 +27,7 @@ function SeeDaySchedule({ branch, semester, day } :{branch:string,semester:strin
       console.log('Fetching schedule...');
       const { data } = await axios.get(`http://localhost:3000/api/schedule`, { params: { branch, semester, date:day } });
       console.log('Fetched schedule:', data);
-      return data.Periods;
+      return data.data.Periods;
     },
   });
 

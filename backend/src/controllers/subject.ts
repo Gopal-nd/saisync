@@ -174,7 +174,7 @@ if (!id || typeof id !== "string") {
     new ApiResponse({
       statusCode: 201,
       data: subject,
-      message: "Subject created successfully",
+      message: "Subject success",
     })
   );
 });

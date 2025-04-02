@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import axiosInstance from "@/lib/axiosInstance";
 import { toast } from "sonner";
@@ -21,13 +21,15 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { format } from "date-fns";
-import { CalendarIcon, Plus } from "lucide-react";
+import { CalendarIcon, Edit, Plus, Trash2 } from "lucide-react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+
 
 const branches = ["AIML", "ECE", "CSE", "EEE", "ISE", "MECH"];
 const semesters = ["S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8"];
@@ -43,12 +45,12 @@ const TimeTablePage = () => {
     queryFn: async () => {
       try {
         const formattedDate = format(date, "yyyy-MM-dd");
-        const response = await axiosInstance.get("/api/timetable", {
+        const response = await axiosInstance.get("/api/schedule", {
           params: { branch, semester, date: formattedDate },
         });
-        return response.data;
+        return response.data.data;
       } catch (error) {
-        toast.error("Failed to fetch timetable.");
+        toast.error(" Time Table not Found.");
         return [];
       }
     },
@@ -58,6 +60,38 @@ const TimeTablePage = () => {
   useEffect(() => {
     refetch();
   }, [branch, semester, date, refetch]);
+
+//   console.log(data)
+const mutate = useMutation({
+    mutationFn: async (id: string) => {
+        const res = await axiosInstance.delete(`/api/schedule/delete/${id}`);
+        return res.data;
+      },
+      onSuccess: (data) => {
+        console.log(data)
+        toast.success(data?.message)
+        refetch()
+        // queryClient.invalidateQueries(['subjects', searchTerm, branch, semester, page]); 
+
+
+
+      },
+      onError: (error) => {
+        console.error("Error deleting subject:", error);
+      },
+  })
+
+  const handleEdit = async (id:string)=>{
+    console.log(id)
+    redirect(`/admin/timetable/${id}/edit`)
+
+
+  }
+
+  const handleDelete = async (id:string)=>{
+    console.log(id)
+    mutate.mutate(id)
+  }
 
   return (
     <div className="max-w-4xl mx-auto p-6">
@@ -131,25 +165,81 @@ const TimeTablePage = () => {
        {/* Timetable Table */}
        {isLoading ? (
         <p className="mt-2">Loading...</p>
-      ) : data && data.length > 0 ? (
+      ) : data && data?.Periods?.length > 0 ? (
+
         <Table>
-          <TableHeader>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Period Number</TableHead>
+            <TableHead>Subject Name</TableHead>
+            <TableHead>Subject Code</TableHead>
+            <TableHead>Staff Name</TableHead>
+            <TableHead>Start Time</TableHead>
+            <TableHead>End Time</TableHead>
+            <TableHead>Is Lab</TableHead>
+            <TableHead>Edit</TableHead>
+            <TableHead>Delete</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {data && data?.Periods?.length === 0 && (
             <TableRow>
-              <TableHead>Time</TableHead>
-              <TableHead>Subject</TableHead>
-              <TableHead>Professor</TableHead>
+              <TableCell colSpan={8} className="text-center">
+                No Results Found
+              </TableCell>
             </TableRow>
-          </TableHeader>
-          <TableBody>
-            {data.map((item: any, index: number) => (
-              <TableRow key={index}>
-                <TableCell>{item.time}</TableCell>
-                <TableCell>{item.subject}</TableCell>
-                <TableCell>{item.professor}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+          )}
+          
+          {data?.Periods?.map((period: any) => (
+            <TableRow key={period.id}>
+              <TableCell>{period.periodNumber}</TableCell>
+              <TableCell>{period.subject}</TableCell>
+              <TableCell>{period.subjectCode}</TableCell>
+              <TableCell>{period.staff}</TableCell>
+              <TableCell>{new Date(period.startTime).toLocaleTimeString()}</TableCell>
+              <TableCell>{new Date(period.endTime).toLocaleTimeString()}</TableCell>
+              <TableCell>{period.isLab ? "Yes" : "No"}</TableCell>
+              <TableCell>
+              <Link
+  href={{
+    pathname: "/admin/timetable/edit",
+    query: {
+      sem: semester,
+      branch: branch,
+      day: format(date, "yyyy-MM-dd"), 
+      id:period.id
+    },
+  }}>
+                <Edit className="text-blue-500 cursor-pointer" />
+        </Link>
+              </TableCell>
+              <TableCell>
+                <Trash2 className="text-red-500 cursor-pointer" onClick={() => handleDelete(period.id)} />
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+      
+        // <Table>
+        //   <TableHeader>
+        //     <TableRow>
+        //       <TableHead>Time</TableHead>
+        //       <TableHead>Subject</TableHead>
+        //       <TableHead>Professor</TableHead>
+        //     </TableRow>
+        //   </TableHeader>
+        //   <TableBody>
+        //     {data.Periods.map((item: any, index: number) => (
+        //       <TableRow key={index}>
+        //         {/* <TableCell>{item.time}</TableCell>
+        //         <TableCell>{item.subject}</TableCell>
+        //         <TableCell>{item.professor}</TableCell> */}
+        //         <p>hi</p>
+        //       </TableRow>
+        //     ))}
+        //   </TableBody>
+        // </Table>
       ) : (
         <p className="text-center text-gray-500">No timetable available.</p>
       )}

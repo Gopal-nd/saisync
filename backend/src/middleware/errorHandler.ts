@@ -8,7 +8,7 @@ import { APIError } from "../utils/api-error";
 import { ApiResponse } from "../utils/api-response";
 
 const errorHandler = (err: Error | APIError, req: Request, res: Response, next: NextFunction) => {
-  
+
   // Handle APIError (custom application errors)
   if (err instanceof APIError) {
     return res.status(err.status).json(new ApiResponse({ 
@@ -30,9 +30,10 @@ const errorHandler = (err: Error | APIError, req: Request, res: Response, next: 
   // ✅ Handle Prisma Errors
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
     let message = "Database error occurred";
+    console.log(err.stack)
     
     // Handle specific Prisma error codes
-    if (err.code === "P2002") message = "Subject with this code already exists";
+    if (err.code === "P2002") message = "Unique constraint failed on the field :( ";
     
     return res.status(400).json(new ApiResponse({ 
       statusCode: 400, 

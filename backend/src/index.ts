@@ -1,4 +1,3 @@
-import scheduleRoutes from './routes/schedule'
 import { prisma } from './lib/db';
 import type { AttendanceStatus, BranchType, SemesterType } from '@prisma/client';
 import { startOfDay, endOfDay } from 'date-fns';
@@ -24,18 +23,7 @@ app.get('/test',async (req, res) => {
    res.status(200).json(students);
 });
 
-app.get('/subjects',async (req, res) => {
- 
-  const { branch, semester } = req.query;
-  const subjects = await prisma.subject.findMany({
-    where: {
-      branchName: branch as  BranchType,
-      semesterNumber: semester as SemesterType
-    },
-  });
-  console.log(subjects)
-   res.status(200).json(subjects);
-});
+
 app.get('/code',async (req, res) => {
   
   const { branch, semester } = req.query;
@@ -159,7 +147,6 @@ app.get('/student/attendance/absent',async (req, res) => {
 
 
 // // create schedule
-app.use('/api/schedule',scheduleRoutes)
 
 // Health check route
 app.get('/health', (req, res) => {

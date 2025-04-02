@@ -35,7 +35,7 @@ import { DayScheduleSchema } from "@/schema";
 type DayScheduleFormData = z.infer<typeof DayScheduleSchema>;
 
 
-export default function DaySchedule() {
+export default function PeriodSchedule() {
   const searchParams = useSearchParams();
   const semester = searchParams.get("sem") 
   const branch = searchParams.get("branch") 
@@ -78,7 +78,7 @@ export default function DaySchedule() {
 
   const mutation = useMutation({
     mutationFn:async(data:any)=>{
-        const response =     await axiosInstance.post("/api/schedule/create", data);
+        const response =     await axiosInstance.post("/api/schedule/update", data);
         return response.data
         console.log(response.data)
         toast.success("Period added successfully!");

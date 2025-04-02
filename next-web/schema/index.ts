@@ -52,3 +52,13 @@ export const SubjectSchema = z.object({
   staffName: z.string().min(1, "Required"),
   isLab: z.boolean().default(false),
 });
+
+export const  DayScheduleSchema = z.object({
+  periodNumber: z.coerce.number({ invalid_type_error: "Period number is required" }),
+  startTime: z.string().nonempty("Start time is required"),
+  endTime: z.string().nonempty("End time is required"),
+  subject: z.string().nonempty("Subject is required"),
+  staff: z.string().nonempty("Staff is required"),
+  subjectCode: z.string().nonempty("Subject code is required"),
+  isLab: z.boolean().default(false),
+});
