@@ -51,6 +51,7 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
 
  
    const { email, password } = req.body;
+   console.log(email,password)
  
    const user = await prisma.user.findUnique({ where: { email } ,select:{password:true,email:true,branch:true,semester:true,name:true,id:true,usn:true,role:true,schema:true,section:true}});
 

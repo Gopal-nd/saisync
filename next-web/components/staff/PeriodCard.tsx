@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import axiosInstance from "@/lib/axiosInstance";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useState } from "react";
@@ -31,7 +32,7 @@ const PeriodCard: React.FC<PeriodCardProps> = ({
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ['students', periodId],
     queryFn: async () => {
-      const response = await axios.get('http://localhost:5000/student/class', {
+      const response = await axiosInstance.get('/student/class', {
         params: { branch: branchName, semester: semesterNumber,periodId, },
       });
       console.log(response.data)
@@ -43,7 +44,7 @@ console.log(data)
   const { data:Absenties, isLoading: AbsentiesLoading, isError: AbsentiesError, refetch: AbsentiesRefetch } = useQuery({
     queryKey: ['students',"absenties" ,periodId],
     queryFn: async () => {
-      const response = await axios.get('http://localhost:3000/student/attendance/absent', {
+      const response = await axiosInstance.get('/student/attendance/absent', {
         params: { branch: branchName, semester: semesterNumber,periodId, day },
       });
       return response.data;
@@ -61,7 +62,7 @@ console.log(data)
   };
 
   const handleAttendance = async (userId: string,periodId:string,status:string) => {
-    const response = await axios.put('http://localhost:5000/student/attendance', { userId,periodId,status });
+    const response = await axiosInstance.put('/student/attendance', { userId,periodId,status });
     if(response.status === 200){
       toast.success('attendance updated')
     }
@@ -71,7 +72,7 @@ console.log(data)
     await refetch(); 
   };
   const handleAttendanceForAbsenties = async (userId: string,periodId:string,status:string) => {
-    const response = await axios.put('http://localhost:5000/student/attendance', { userId,periodId,status });
+    const response = await axiosInstance.put('/student/attendance', { userId,periodId,status });
     if(response.status === 200){
       toast.success('attendance updated')
     }
@@ -84,7 +85,7 @@ console.log(data)
 
 console.log(Absenties)
   return (
-    <div className="mb-4 p-4 border rounded-lg shadow-sm bg-white">
+    <div className="mb-4 p-4 border rounded-lg shadow-sm ">
       <p className="font-bold">Branch: {branchName}</p>
       <p className="font-bold">Semester: {semesterNumber}</p>
 

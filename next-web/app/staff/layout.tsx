@@ -22,7 +22,7 @@ export default function DashboardShell({ children }: DashboardShellProps) {
       <div className="flex items-start h-10 p-2 w-full justify-between">
         <div className="flex items-center gap-2">
           <SidebarTrigger className="h-9 w-9" />
-          <h1 className="text-2xl font-bold tracking-tight">STUDENT</h1>
+          <h1 className="text-2xl font-bold tracking-tight">STAFF</h1>
         </div>
         <div className="flex items-center gap-2">
         <NavbarProfile/>

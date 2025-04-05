@@ -46,6 +46,9 @@ app.get('/code',async (req, res) => {
 app.get('/staff/class',async (req, res) => {
   const { staff ,day} = req.query;
   const dateToMatch = new Date(day as string)
+  if(!staff||typeof staff !=='string'){
+    res.status(500).json({message:'invalid'})
+  }
   console.log(dateToMatch)
 
   
@@ -61,7 +64,7 @@ app.get('/staff/class',async (req, res) => {
       semesterNumber:true,
     Periods:{
       where:{
-        staff:'babu'
+        staff:'raju'
       },
       select:{
         id:true,
@@ -70,6 +73,7 @@ app.get('/staff/class',async (req, res) => {
         endTime:true,
         subjectCode:true,
         isLab:true
+        
       }
     }
     }

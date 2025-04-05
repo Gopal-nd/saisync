@@ -20,6 +20,10 @@ enum BranchType {
   EEE
   ISE
   MECH
+  CYBER
+  DS 
+  IOT
+  BLOCKCHAIN
 }
 
 enum SemesterType {
@@ -33,14 +37,39 @@ enum SemesterType {
   S8
 }
 
+enum SectionType {
+  A
+  B 
+  C
+  D
+  E
+  F
+  G
+  H
+  I
+  J
+  K
+  L
+}
+
+enum Schema {
+  Y_2022
+  Y_2021
+  Y_2018
+  Y_2024
+}
+
+//      User Model      //
+
 model User {
   id           String      @id @default(uuid())
   email        String      @unique
   password     String
-  name         String?
-  usn          String? @unique
-  section      String? 
-  schema       String?
+  name         String
+  usn          String?     @unique
+  collageId    String?     @unique
+  section      SectionType @default(A)
+  schema       Schema
   branch       BranchType? @default(AIML)
   semester     SemesterType? @default(S1)
   role         Role        @default(STUDENT)
@@ -48,90 +77,398 @@ model User {
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
 
-  // group the users basedon the branch and semester
-  @@index([branch, semester,section]) // Index for faster queries based on branch and semester
-  Attendance Attendance[]
+  userPersonalDetails  UserPersonalDetails?
+  userFamilyDetails    UserFamilyDetails?
+  userWorkDetails      UserWorkDetails?
+  userAcademicDetails  UserAcademicDetails?
+  userDocuments        UserDocuments?
+  userHostelDetails    UserHostelDetails?
+  userBusDetails       UserBusDetails?
+  
+  @@index([branch, semester, section]) 
+
+  // Mentor - Mentees relationship (self-relation)
+  mentorId     String? 
+  mentor       User?      @relation("Mentorship", fields: [mentorId], references: [id])
+  mentees      User[]     @relation("Mentorship")
+
+  Attendance           Attendance[]
+  universityExams      UniversityExams[]
+  iaTests              IATests[]
+  achievements         Achievements[]
+  projects             Projects[]
+  activities           Activities[]
+
+  StudyMaterial        StudyMaterial[]
+
+  // Assignments
+  assignments          Assignment[]
+  AssignmentSubmission AssignmentSubmission[]
+
+  // Notifications
+  sentNotifications     Notification[] // as sender
+  receivedNotifications Notification[] @relation("NotificationReceiver") // as receiver
+  Placements Placements[]
 }
 
+//   Notification Model //
+
+model Notification {
+  id         String     @id @default(uuid())
+  senderId   String
+  sender     User       @relation(fields: [senderId], references: [id])
+
+  receiverId String?    // For specific user notifications
+  receiver   User?      @relation("NotificationReceiver", fields: [receiverId], references: [id])
+
+  branch     BranchType?
+  semester   SemesterType?
+  section    SectionType?
+
+  isGlobal   Boolean    @default(false) // Global notification flag
+  message    String
+  createdAt  DateTime   @default(now())
+
+  @@index([receiverId])
+  @@index([branch, semester, section])
+  @@index([isGlobal])
+}
+
+//    Assignment Model  //
+
+model Assignment {
+  id         String         @id @default(uuid())
+  title      String
+  content    String
+  type       AssignmentType @default(ASSIGNMENT) // e.g., homework, project
+  createdAt  DateTime       @default(now())
+  dueDate    DateTime
+
+  // Creator of the assignment (only STAFF role)
+  createdById String
+  createdBy   User          @relation(fields: [createdById], references: [id])
+
+  branch     BranchType
+  semester   SemesterType
+  section    SectionType
+
+  // Submissions
+  submissions AssignmentSubmission[]
+}
+
+enum AssignmentType {
+  ASSIGNMENT
+  HOMEWORK
+  PROJECT
+}
+
+// AssignmentSubmission //
+
+model AssignmentSubmission {
+  id            String       @id @default(uuid())
+  assignmentId  String
+  submittedById String
+  submissionUrl String
+  submittedAt   DateTime     @default(now())
+
+  assignment    Assignment   @relation(fields: [assignmentId], references: [id])
+  submittedBy   User         @relation(fields: [submittedById], references: [id])
+}
+
+//  Achievements Model  //
+
+model Achievements {
+  id          String        @id @default(uuid())
+  userId      String        // Remove
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  semester    SemesterType
+  branch      BranchType
+  name        String?
+  description String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+//    Projects Model    //
+
+model Projects {
+  id          String        @id @default(uuid())
+  userId      String        
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  semester    SemesterType
+  branch      BranchType
+  name        String?
+  description String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+//   Activities Model   //
+
+model Activities {
+  id            String        @id @default(uuid())
+  userId        String        // Remo
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  semester      SemesterType
+  branch        BranchType
+  name          String?
+  subjectName   String
+  subjectCode   String
+  obtainedMarks Int
+  totalMarks    Int
+  description   String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+//      IATests Model   //
+
+model IATests {
+  id            String        @id @default(uuid())
+  userId        String        // Removed @unique
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  semester      SemesterType
+  branch        BranchType
+  testNo        Int
+  name          String?
+  subjectName   String
+  subjectCode   String
+  obtainedMarks Int
+  totalMarks    Int
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+//  UniversityExams Model //
+
+model UniversityExams {
+  id            String        @id @default(uuid())
+  userId        String        // Removed @unique
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  semester      SemesterType
+  branch        BranchType
+  name          String?
+  subjectName   String
+  subjectCode   String
+  obtainedMarks Int
+  totalMarks    Int
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+//   UserBusDetails Model  //
+
+model UserBusDetails {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+//  UserHostelDetails Model //
+
+model UserHostelDetails {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// UserPersonalDetails Model //
+
+model UserPersonalDetails {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// UserFamilyDetails Model //
+
+model UserFamilyDetails {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// UserAcademicDetails Model //
+
+model UserAcademicDetails {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// UserWorkDetails Model //
+
+model UserWorkDetails {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// UserDocuments Model //
+
+model UserDocuments {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+//   Branch Model       //
+
 model Branch {
-  name       BranchType @id
+  branchName BranchType @id
   Semesters  Semester[]
 }
 
+//   Semester Model     //
+
 model Semester {
-  id           String        @id @default(uuid())
-  branchName   BranchType
-  number       SemesterType
-  branch       Branch         @relation(fields: [branchName], references: [name])
-  Timetables   TimetableOfDay[]
-  Subjects      Subject[]
-  @@unique([branchName, number]) 
+  id              String        @id @default(uuid())
+  branchName      BranchType
+  semesterName  SemesterType
+  branch          Branch        @relation(fields: [branchName], references: [branchName], onDelete: Cascade)
+  
+  @@unique([branchName, semesterName]) 
+  Sections      Section[]
 }
+
+//   Section Model      //
+
+model Section {
+  id             String        @id @default(uuid())
+  sectionName    SectionType
+  branchName     BranchType
+  semesterName SemesterType
+  Semester       Semester      @relation(fields: [branchName, semesterName], references: [branchName, semesterName], onDelete: Cascade)
+  Timetables     TimetableOfDay[]
+
+  @@unique([branchName, semesterName, sectionName])
+}
+
+//   Subject Model      //
 
 model Subject {
-  id           String        @id @default(uuid())
-  subjectName         String
-  subjectCode        String
+  id           String         @id @default(uuid())
+  subjectName  String
+  subjectCode  String         @unique
   branchName   BranchType
-  noOfCredits   Int
-  semesterNumber SemesterType
-  semester     Semester      @relation(fields: [branchName, semesterNumber], references: [branchName, number])
-  staffName        String
-  isLab        Boolean       @default(false)
-  
-  @@unique([branchName, semesterNumber, subjectCode]) 
+  noOfCredits  Int
+  examType     ExamType       @default(INTERNAL)
+  writtenType  WrittenType    @default(MSQ)
+  syllabus     String?
+  noOfHours    Int?
+  staffName    String
+  isLab        Boolean        @default(false)
+
+  studyMaterial StudyMaterial[]  // Corrected field name
 }
+
+enum ExamType {
+  INTERNAL
+  EXTERNAL
+}
+ 
+enum WrittenType {
+  MSQ
+  WRITTEN
+}
+
+//   StudyMaterial Model //
+
+model StudyMaterial {
+  id          String       @id @default(uuid())
+  subjectId   String
+  subject     Subject      @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  url         String
+  // Uploaded by (the user's id)
+  uploadedBy  String
+  user        User         @relation(fields: [uploadedBy], references: [id], onDelete: Cascade)
+}
+
+//  TimetableOfDay Model //
 
 model TimetableOfDay {
-  id               String           @id @default(uuid())
-  date             DateTime
-  branchName       BranchType
-  semesterNumber   SemesterType
-  semester         Semester         @relation(fields: [branchName, semesterNumber], references: [branchName, number])
-  Periods          Period[]
+  id             String         @id @default(uuid())
+  date           DateTime
+  sectionName    SectionType
+  branchName     BranchType
+  semesterName SemesterType
+  section        Section        @relation(fields: [branchName, semesterName, sectionName], references: [branchName, semesterName, sectionName], onDelete: Cascade)
+  Periods        Period[]
 
-  @@unique([date, branchName, semesterNumber]) // Ensure one timetable per day for each branch and semester
+  @@unique([date, branchName, semesterName, sectionName]) 
 }
 
+//   Period Model       //
+
 model Period {
-  id           String           @id @default(uuid())
+  id           String         @id @default(uuid())
   timetableId  String
-  periodNumber Int @default(autoincrement())
-  timetable    TimetableOfDay   @relation(fields: [timetableId], references: [id],onDelete: Cascade)
+  periodNumber Int @default(autoincrement()) @unique
+  timetable    TimetableOfDay @relation(fields: [timetableId], references: [id], onDelete: Cascade)
   startTime    DateTime
   endTime      DateTime
   subject      String
   staff        String
   subjectCode  String
   whatlearned  String?
-  // attendence here 
-  isLab        Boolean          @default(false)
+  isLab        Boolean        @default(false)
+  topics       TopicCovered[]
 
-  @@unique([timetableId, periodNumber]) // Ensure no duplicate period numbers
-  Attendance Attendance[]
+  @@unique([timetableId, periodNumber]) 
+  Attendance   Attendance[]
 }
 
+//  TopicCovered Model  //
+
+model TopicCovered {
+  id                String    @id @default(uuid())
+  periodId          String 
+  topicTitle        String
+  topicDescription  String
+  period            Period    @relation(fields: [periodId], references: [id], onDelete: Cascade)
+}
+
+//   Attendance Model   //
+
 model Attendance {
-  id           String      @id @default(uuid())
-  userId       String
-  periodId     String
-  date         DateTime
-  name  String?
-  usn  String?
-  status       AttendanceStatus @default(NOT_TAKEN)
+  id       String           @id @default(uuid())
+  userId   String
+  periodId String
+  date     DateTime
+  name     String?
+  usn      String?
+  status   AttendanceStatus @default(NOT_TAKEN)
 
-  user         User        @relation(fields: [userId], references: [id],onDelete: Cascade)
-  period       Period      @relation(fields: [periodId], references: [id] , onDelete: Cascade)
+  user     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  period   Period           @relation(fields: [periodId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, periodId]) // Ensure no duplicate attendance for the same student in the same period
+  @@unique([userId, periodId])
 }
 
 enum AttendanceStatus {
   PRESENT
   ABSENT
   NOT_TAKEN
+  OD
 }
 
+//  OtpVerification Model //
 
 model OtpVerification {
   id           String      @id @default(uuid())
@@ -140,4 +477,26 @@ model OtpVerification {
   otpExpiresAt DateTime
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
+}
+
+
+model Placements {
+  id            String        @id @default(uuid())
+  userId        String        
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  placementDate DateTime
+  placementType PlacementType
+  year          Int
+  placementName String
+  company       String
+  ctc           String?
+  location      String?
+  description   String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+enum PlacementType {
+  INTERNSHIP
+  JOB
 }

@@ -1,4 +1,4 @@
-import { PrismaClient, BranchType, SemesterType } from '@prisma/client';
+import { PrismaClient, BranchType, SemesterType, SectionType } from '@prisma/client';
 import { prisma } from '../src/lib/db';
 
 
@@ -7,47 +7,69 @@ async function main() {
   // Create branches
   const branches = await Promise.all(
     Object.values(BranchType).map(async (branch) => {
-      return prisma.branch.upsert({
-        where: { name: branch },
+      return await prisma.branch.upsert({
+        where: {
+          branchName: branch,
+        },
         update: {},
-        create: { name: branch },
+        create: {
+          branchName: branch,
+        },
       });
     })
-  );
+  )
+  console.log('✅ Branches created:', branches.map((b) => b.branchName));
 
-  console.log('Branches created:', branches);
+  // Create semesters and sections
+  for (const branch of branches) {
+    for (const sem of Object.values(SemesterType)) {
+      const semester = await prisma.semester.upsert({
+        where: {
+          branchName_semesterName: {
+            branchName: branch.branchName,
+            semesterName: sem,
+          },
+        },
+        update: {},
+        create: {
+          branchName: branch.branchName,
+          semesterName: sem,
+        },
+      });
 
-  // Create semesters for each branch using branchName instead of branchId
-  await Promise.all(
-    branches.map(async (branch) => {
-      const semesters = Object.values(SemesterType).map((sem) => ({
-        branchName: branch.name,
-        number: sem,
-      }));
+      console.log(`📘 Semester ${sem} created for ${branch.branchName}`);
 
+      // Create sections for each semester
       await Promise.all(
-        semesters.map(async (semester) => {
-          await prisma.semester.upsert({
+        Object.values(SectionType).map(async (section) => {
+          await prisma.section.upsert({
             where: {
-              branchName_number: {
-                branchName: semester.branchName,
-                number: semester.number,
+              branchName_semesterName_sectionName: {
+                branchName: branch.branchName,
+                semesterName: sem,
+                sectionName:section,
               },
             },
             update: {},
-            create: semester,
+            create: {
+              branchName: branch.branchName,
+              semesterName: sem,
+              sectionName:section
+            },
           });
         })
       );
-    })
-  );
 
-  console.log('Semesters created for all branches');
+      console.log(` Sections created for ${branch.branchName} - Semester ${sem}`);
+    }
+  }
+
+  console.log('✅ All data seeded!');
 }
 
 main()
   .catch((e) => {
-    console.error('Error seeding database:', e);
+    console.error(' Error seeding database:', e);
     process.exit(1);
   })
   .finally(async () => {

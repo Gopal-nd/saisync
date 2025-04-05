@@ -66,7 +66,7 @@ export default function AppRoutes() {
       </Route>
 
       {/* Staff-Only Routes */}
-      <Route element={<RoleProtectedRoute allowedRoles={['STAFF']} />}>
+      <Route >
         <Route path="/staff" element={<Staff />} />
         <Route path="/staff/:day" element={<StaffSchedule />} />
       </Route>
