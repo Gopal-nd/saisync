@@ -14,12 +14,8 @@ export const RegisterSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6, 'Password must be at least 6 characters'),
   name: z.string().optional(),
-  usn: z.string().optional(),
-  role: z.string().optional(),
-  branch: z.string().optional(),
-  semester: z.string().optional(),
-  section: z.string().optional(),
-  schema: z.string().optional(),
+  role: z.string(),
+
 });
 
 export const LoginSchema = z.object({

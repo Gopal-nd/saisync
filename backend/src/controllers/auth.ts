@@ -28,8 +28,18 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  const user = await prisma.user.create({
-    data: { email, password: hashedPassword, name, usn, role,branch,section,semester,schema },
+  const user  = await prisma.user.create({
+    data:{
+      email,
+      password:hashedPassword,
+      name:name,
+      usn:usn,
+      role:role,
+      branch:branch,
+      section:section,
+      semester:semester,
+      schema:schema
+    },
     select:{
       id: true,
       email: true,
@@ -40,7 +50,8 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
       section:true,
       semester:true,
     }
-  });
+  })
+    
 
   // console.log('user created',user)
 

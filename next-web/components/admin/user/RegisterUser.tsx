@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -41,6 +41,14 @@ export default function RegisterPage() {
     }
   })
 
+  const {} = useQuery({
+    queryKey: ['userDetails',],
+    queryFn: async () => {
+      const res = await axiosInstance.get('/api/branches')
+      return res.data.data
+    }
+  })
+
   const mutation = useMutation({
     mutationFn: async (data: any) => {
       const response = await axiosInstance.post('/api/auth/sign-up', data);
@@ -49,10 +57,10 @@ export default function RegisterPage() {
     onSuccess: () => {
       toast.success('Registration successful');
     },
-    onError: (error:any) => {
+    onError: (error) => {
       console.log(error)
       if (axios.isAxiosError(error)) {
-        toast.error(error?.response?.data.message);
+        toast.error(error.response?.data.message);
       } else {
         toast.error('something went wrong ,Registration Failed')
       }

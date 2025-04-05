@@ -69,7 +69,7 @@ model User {
   usn          String?     @unique
   collageId    String?     @unique
   section      SectionType @default(A)
-  schema       Schema
+  schema       Schema @default(Y_2022)
   branch       BranchType? @default(AIML)
   semester     SemesterType? @default(S1)
   role         Role        @default(STUDENT)
@@ -262,6 +262,10 @@ model UserBusDetails {
   id        String   @id @default(uuid())
   userId    String   @unique
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  route      String
+  busNumber  String
+  pickupPoint String
+  isUsingBus Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -272,6 +276,10 @@ model UserHostelDetails {
   id        String   @id @default(uuid())
   userId    String   @unique
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+   block       String
+  roomNumber  String
+  wardenName  String?
+  isStaying   Boolean @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -282,6 +290,32 @@ model UserPersonalDetails {
   id        String   @id @default(uuid())
   userId    String   @unique
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // list all the personal details
+   dob       DateTime
+   phone     String?
+  gender    String?
+  bloodGroup String?
+  height    String?
+  weight    String?
+  maritalStatus String?
+  nationality String?
+  aadharNumber String?
+  panNumber String?
+
+
+  // permanent address
+  permanentAddress String?
+  permanentCity    String?
+  permanentState   String?
+  permanentPincode String?
+
+//current address
+  currentAddress String?
+  currentCity    String?
+  currentState   String?
+  currentPincode String?
+
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -292,6 +326,19 @@ model UserFamilyDetails {
   id        String   @id @default(uuid())
   userId    String   @unique
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    fatherName String?
+  fatherPhone String?
+    fatherIncome       Float?
+  fatherOccupation   String?
+  motherName String?
+  motherPhone String?
+  motherOccupation String?
+  motherIncome Float?
+  gardianName String?
+  guardianPhone String?
+  seblingName String?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -302,6 +349,26 @@ model UserAcademicDetails {
   id        String   @id @default(uuid())
   userId    String   @unique
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+   tenthBoard        String?
+  tenthSchoolName   String?
+  tenthMarks        Float?
+  tenthMaxMarks     Float?
+  tenthPercentage   Float?
+
+  twelfthBoard      String?
+  twelfthSchoolName String?
+  twelfthMarks      Float?
+  twelfthMaxMarks   Float?
+  twelfthPercentage Float?
+
+  // Entrance Exam Details
+  entranceExamName     String? // e.g., CET, JEE, NEET
+  entranceExamScore    Float?
+  entranceExamMaxScore Float?
+  entranceExamRank     Int?
+
+
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -312,6 +379,14 @@ model UserWorkDetails {
   id        String   @id @default(uuid())
   userId    String   @unique
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+
+  companyName   String?
+  position      String?
+  startDate     DateTime?
+  endDate       DateTime?
+  isCurrentlyWorking Boolean @default(false)
+  experiance    String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -322,6 +397,16 @@ model UserDocuments {
   id        String   @id @default(uuid())
   userId    String   @unique
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    aadharCard     String? // file path or URL
+  marksheet10    String?
+  marksheet12    String?
+  transferCert   String?
+  photo          String?
+  panCard        String?
+  motherPhoto    String?
+  fatherPhoto    String?
+  seblingPhoto   String?
+  entrenceExamCert    String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

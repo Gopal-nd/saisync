@@ -66,10 +66,11 @@ export function AdminSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {/* Dashboard */}
+
               <SidebarMenuItem>
                 <SidebarMenuButton asChild isActive={pathname === "/admin/dashboard"}>
                   <Link href="/admin/create">
-                    <UserPlus  className="size-4" />
+                    <UserPlus className="size-4" />
                     <span>create</span>
                   </Link>
                 </SidebarMenuButton>
