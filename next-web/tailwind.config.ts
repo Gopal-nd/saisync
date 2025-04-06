@@ -1,4 +1,9 @@
+import 'tailwindcss';
+import 'uploadthing/tw/v4';
+// @source "../node_modules/@uploadthing/react/dist";
+import "@uploadthing/react/styles.css";
 /** @type {import('tailwindcss').Config} */
+
 module.exports = {
     theme: {
       extend: {
@@ -14,4 +19,4 @@ module.exports = {
       },
     },
   }
-  
+

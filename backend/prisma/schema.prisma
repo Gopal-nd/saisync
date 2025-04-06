@@ -262,9 +262,9 @@ model UserBusDetails {
   id        String   @id @default(uuid())
   userId    String   @unique
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  route      String
-  busNumber  String
-  pickupPoint String
+  route      String?
+  busNumber  String?
+  pickupPoint String?
   isUsingBus Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -276,8 +276,8 @@ model UserHostelDetails {
   id        String   @id @default(uuid())
   userId    String   @unique
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-   block       String
-  roomNumber  String
+   block       String?
+  roomNumber  String?
   wardenName  String?
   isStaying   Boolean @default(true)
   createdAt DateTime @default(now())
@@ -291,7 +291,7 @@ model UserPersonalDetails {
   userId    String   @unique
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   // list all the personal details
-   dob       DateTime
+   dob       DateTime?
    phone     String?
   gender    String?
   bloodGroup String?
@@ -329,12 +329,12 @@ model UserFamilyDetails {
 
     fatherName String?
   fatherPhone String?
-    fatherIncome       Float?
+    fatherIncome       String?
   fatherOccupation   String?
   motherName String?
   motherPhone String?
   motherOccupation String?
-  motherIncome Float?
+  motherIncome String?
   gardianName String?
   guardianPhone String?
   seblingName String?

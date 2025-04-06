@@ -72,7 +72,7 @@ const BasicUserDetails = ({ id }: { id: string }) => {
       }
     }
   })
-/*******  b98b5205-d417-4fcb-91fc-d6af111de864  *******/
+
 
   const onSubmit = (formData: z.infer<typeof schema>) => {
     console.log(formData)
@@ -227,7 +227,7 @@ const BasicUserDetails = ({ id }: { id: string }) => {
             )}
           />
 
-          <Button type="submit" className="w-full">Submit</Button>
+          <Button type="submit" disabled={form.formState.isSubmitting || !form.formState.isDirty} className="w-full">Submit</Button>
         </form>
       </Form>
     </div>
