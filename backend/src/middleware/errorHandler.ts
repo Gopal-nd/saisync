@@ -30,15 +30,22 @@ const errorHandler = (err: Error | APIError, req: Request, res: Response, next: 
   // ✅ Handle Prisma Errors
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
     let message = "Database error occurred";
+    let statusCode = 500;
     console.log(err.stack)
     
+    if (err.code === 'P2002') {
+      statusCode = 400
+      const fields = (err.meta?.target as string[]).join(', ') || 'field'
+      message = `Unique constraint failed on the field(s): ${fields}`
+    }
+  
     // Handle specific Prisma error codes
-    if (err.code === "P2002") message = "Unique constraint failed on the field :( ";
+  
     
     return res.status(400).json(new ApiResponse({ 
       statusCode: 400, 
       data: null, 
-      message,
+      message: message,
     }));
   }
 

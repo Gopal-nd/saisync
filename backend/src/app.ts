@@ -6,7 +6,7 @@ import authRoutes from './routes/auth'
 import studentsRoute from './routes/students'
 import subjectsRoute from './routes/subjects'
 import scheduleRoutes from './routes/schedule'
-
+import staffRoute from './routes/faculty'
 import errorHandler from './middleware/errorHandler';
 import { authenticateToken } from './middleware/auth';
 import { getSubjectNames } from './controllers/subject';
@@ -37,6 +37,7 @@ app.use(
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/students',studentsRoute)
+app.use('/api/staff',staffRoute)
 app.use('/api/subjects',subjectsRoute)
 app.use('/api/schedule',scheduleRoutes)
 

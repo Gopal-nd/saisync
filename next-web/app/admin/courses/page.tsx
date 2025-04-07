@@ -17,9 +17,9 @@ import { toast } from 'sonner';
 const branches = ['AIML', 'ECE', 'CSE', 'EEE', 'ISE', 'MECH'];
 const semesters = ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8'];
 
-const fetchSubjects = async (query: string, branch: string, semester: string, page: number) => {
+const fetchSubjects = async (query: string,  page: number) => {
   const response = await axiosInstance.get('/api/subjects/search', {
-    params: { query, branch, semester, page, limit: 10 },
+    params: { query,  page, limit: 10 },
   });
   return response.data;
 };
@@ -27,8 +27,7 @@ const fetchSubjects = async (query: string, branch: string, semester: string, pa
 const SearchPage = () => {
 
   const [searchTerm, setSearchTerm] = useState('');
-  const [branch, setBranch] = useState('');
-  const [semester, setSemester] = useState('');
+
   const [page, setPage] = useState(1);
   
   const debouncedSearch = debounce((value) => {
@@ -36,8 +35,8 @@ const SearchPage = () => {
   }, 700);
 
   const { data, isLoading,refetch } = useQuery({
-    queryKey: ['subjects', searchTerm, branch, semester, page],
-    queryFn: () => fetchSubjects(searchTerm, branch, semester, page),
+    queryKey: ['subjects', searchTerm, page],
+    queryFn: () => fetchSubjects(searchTerm,  page),
 
   });
   const mutate = useMutation({
@@ -84,26 +83,7 @@ const SearchPage = () => {
           placeholder="Search by Subject Name or Code..."
           onChange={(e) => debouncedSearch(e.target.value)}
         />
-        <Select onValueChange={setBranch}>
-          <SelectTrigger className="w-40">
-            <SelectValue placeholder="Select Branch" />
-          </SelectTrigger>
-          <SelectContent>
-            {branches.map((b) => (
-              <SelectItem key={b} value={b}>{b}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select onValueChange={setSemester}>
-          <SelectTrigger className="w-40">
-            <SelectValue placeholder="Select Semester" />
-          </SelectTrigger>
-          <SelectContent>
-            {semesters.map((s) => (
-              <SelectItem key={s} value={s}>{s}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+       
       </div>
       {isLoading ? (
         <p>Loading...</p>
@@ -115,27 +95,27 @@ const SearchPage = () => {
             <TableRow>
               <TableHead>Subject Name</TableHead>
               <TableHead>Subject Code</TableHead>
-              <TableHead>Staff Name</TableHead>
-              <TableHead>Branch</TableHead>
-              <TableHead>Semester</TableHead>
+              <TableHead>Exam Type</TableHead>
+              <TableHead>isLab</TableHead>
+              <TableHead>Year</TableHead>
               <TableHead>Edit</TableHead>
               <TableHead>Delete</TableHead>
 
             </TableRow>
           </TableHeader>
           <TableBody>
-          {data?.data?.subjects.length==0 && (
+          { data  && data?.data?.subjects.length==0 && (
             <TableCell>No Results Found</TableCell>
 
             )}
 
-            {data?.data?.subjects?.map((subject: any) => (
-                <TableRow key={subject.id}>
+            {data && data?.data?.subjects?.map((subject: any) => (
+                <TableRow key={subject.id} onClick={()=>redirect(`/admin/courses/${subject.id}`)}>
                 <TableCell>{subject.subjectName}</TableCell>
                 <TableCell>{subject.subjectCode}</TableCell>
-                <TableCell>{subject.staffName}</TableCell>
-                <TableCell>{subject.branchName}</TableCell>
-                <TableCell>{subject.semesterNumber}</TableCell>
+                <TableCell>{subject.examType}</TableCell>
+                <TableCell>{subject.isLab?'Yes':'-'}</TableCell>
+                <TableCell>{subject.year}</TableCell>
                 <TableCell onClick={()=>handleEdit(subject.id)}><Edit className='text-blue-500 cursor-pointer'/></TableCell>
                 <TableCell onClick={()=>handleDelete(subject.id)}><Trash2 className='text-red-500 cursor-pointer'/></TableCell>
               </TableRow>

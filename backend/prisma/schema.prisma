@@ -56,7 +56,13 @@ enum Schema {
   Y_2022
   Y_2021
   Y_2018
-  Y_2024
+  Y_2026
+}
+
+enum LabBatch {
+  B1
+  B2
+  B3
 }
 
 //      User Model      //
@@ -76,6 +82,8 @@ model User {
   isVerified   Boolean     @default(false)
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
+  labBatch     LabBatch    @default(B1)
+  openElectives  String?
 
   userPersonalDetails  UserPersonalDetails?
   userFamilyDetails    UserFamilyDetails?
@@ -449,13 +457,12 @@ model Subject {
   id           String         @id @default(uuid())
   subjectName  String
   subjectCode  String         @unique
-  branchName   BranchType
+  year         String           @default("2022")
   noOfCredits  Int
   examType     ExamType       @default(INTERNAL)
-  writtenType  WrittenType    @default(MSQ)
+  writtenType  WrittenType    @default(MCQ)
   syllabus     String?
   noOfHours    Int?
-  staffName    String
   isLab        Boolean        @default(false)
 
   studyMaterial StudyMaterial[]  // Corrected field name
@@ -467,7 +474,7 @@ enum ExamType {
 }
  
 enum WrittenType {
-  MSQ
+  MCQ
   WRITTEN
 }
 

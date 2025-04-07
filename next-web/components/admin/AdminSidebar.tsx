@@ -194,16 +194,31 @@ export function AdminSidebar() {
                   <CollapsibleContent>
                     <SidebarMenuSub>
                       <SidebarMenuSubItem>
-                        <SidebarMenuSubButton asChild isActive={pathname === "/admin/timetable"}>
-                          <Link href="/admin/timetable">TimeTable</Link>
+                        <SidebarMenuSubButton asChild isActive={pathname === "/admin/timetable/define"}>
+                          <Link href="/admin/timetable/define">TimeTable Definition</Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
-                      {/* <SidebarMenuSubItem>
+                      <SidebarMenuSubItem>
                         <SidebarMenuSubButton asChild isActive={pathname === "/admin/timetable/add"}>
                           <Link href="/admin/timetable/add">Add Course</Link>
                         </SidebarMenuSubButton>
-                      </SidebarMenuSubItem> */}
+                      </SidebarMenuSubItem>
                     </SidebarMenuSub>
+                    <SidebarMenuSubItem>
+                      <SidebarMenuSubButton asChild isActive={pathname === "/admin/timetable/add"}>
+                        <Link href="/admin/timetable/add">Add Course</Link>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>    
+                    <SidebarMenuSubItem>
+                      <SidebarMenuSubButton asChild isActive={pathname === "/admin/timetable/add"}>
+                        <Link href="/admin/timetable/add">Add Course</Link>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>  
+                      <SidebarMenuSubItem>
+                      <SidebarMenuSubButton asChild isActive={pathname === "/admin/timetable/add"}>
+                        <Link href="/admin/timetable/add">Add Course</Link>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>
                   </CollapsibleContent>
                 </Collapsible>
               </SidebarMenuItem>

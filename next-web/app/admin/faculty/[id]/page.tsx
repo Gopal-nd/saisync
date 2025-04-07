@@ -20,7 +20,7 @@ const StudentDetails = () => {
         queryKey:["student",id],
         queryFn: async () => {
             if(!id) throw new Error("No ID provided");
-            const res = await axiosInstance.get('/api/students', {params: {id}})
+            const res = await axiosInstance.get('/api/staff', {params: {id}})
             return res.data.data
         },
     })
@@ -41,7 +41,7 @@ const StudentDetails = () => {
       <AcademicsDetails id={id as string}/>
       <UserBusDetails id={id as string}/>
       <UserHostelDetails id={id as string}/>
-      {/* <UserWorkDetails id={id as string}/> */}
+      <UserWorkDetails id={id as string}/>
       <UserDocuments id={id as string}/>
 
 

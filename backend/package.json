@@ -7,7 +7,11 @@
     "build": "tsc",
     "start": "index.ts",
     "seed": "bun run  prisma/seed.ts",
-    "generate": "prisma generate"
+    "clean":"bun run prisma/dataCleanUp.ts",
+    "generate": "prisma generate",
+    "push": "bunx prisma db push",
+    "migrate": "bunx prisma migrate dev"
+    
   },
   "devDependencies": {
     "@tanstack/eslint-plugin-query": "^5.68.0",

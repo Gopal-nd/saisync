@@ -74,7 +74,7 @@ const AllStudents = () => {
   return (
     <div className="container mx-auto p-6">
         <div className='flex flex-row items-center justify-between m-2'>
-      <p className="text-2xl items-center font-bold mb-4">Search Subjects {data?.data?.totalCount}</p>
+      <p className="text-2xl items-center font-bold mb-4">Search Students {data?.data?.totalCount}</p>
       <Link href='/admin/courses/add'>
       <Button className='flex items-center ' variant={'outline'}><Plus /> Add</Button>
       </Link>
