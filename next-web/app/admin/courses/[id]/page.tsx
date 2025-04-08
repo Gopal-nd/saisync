@@ -16,6 +16,8 @@ import { Textarea } from '@/components/ui/textarea'
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { Plus } from 'lucide-react'
+import StudyMaterialForm from '@/components/courses/StudyMaterialForm'
+import Link from 'next/link'
 
 
 export default function SubjectForm() {
@@ -87,6 +89,7 @@ export default function SubjectForm() {
     )
   }
 
+  console.log(data)
   return (
     <div className="max-w-xl mx-auto mt-10 p-6 ">
         <h2 className="text-2xl font-bold border-b pb-2">Subject Details</h2>
@@ -110,10 +113,24 @@ export default function SubjectForm() {
       {
         open && (
           <div className='mt-4'>
-            <StudyMaterialForm id={id} refetch={refetch} setOpen={setOpen}/>
+            <StudyMaterialForm id={id as string} refetch={refetch} /> 
+            {/* id={id} refetch={refetch} setOpen={setOpen} */}
           </div>
         )
       }
+      {
+        data?.studyMaterial?.length > 0 && (
+          data?.studyMaterial?.map((material: any,index:number) => (
+            
+          <div className='mt-4 border p-4' key={index} >
+             <h2 className="text-2xl font-bold ">{material?.name} </h2>
+             <p className='mt-2'>{material?.description}</p>
+             <Link href={material?.url} target='_blank' className='text-blue-500 mt-2'>View</Link>
+          </div>
+          ))
+        )
+      }
+
     </div>
   )
 }

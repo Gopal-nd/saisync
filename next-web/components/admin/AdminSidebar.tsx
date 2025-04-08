@@ -193,32 +193,22 @@ export function AdminSidebar() {
                   </CollapsibleTrigger>
                   <CollapsibleContent>
                     <SidebarMenuSub>
+                    <SidebarMenuSubItem>
+                        <SidebarMenuSubButton asChild isActive={pathname === "/admin/timetable"}>
+                          <Link href="/admin/timetable">TimeTable</Link>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
                       <SidebarMenuSubItem>
                         <SidebarMenuSubButton asChild isActive={pathname === "/admin/timetable/define"}>
-                          <Link href="/admin/timetable/define">TimeTable Definition</Link>
+                          <Link href="/admin/timetable/define">Definition</Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                       <SidebarMenuSubItem>
                         <SidebarMenuSubButton asChild isActive={pathname === "/admin/timetable/add"}>
-                          <Link href="/admin/timetable/add">Add Course</Link>
+                          <Link href="/admin/timetable/add">Add Schedule</Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                     </SidebarMenuSub>
-                    <SidebarMenuSubItem>
-                      <SidebarMenuSubButton asChild isActive={pathname === "/admin/timetable/add"}>
-                        <Link href="/admin/timetable/add">Add Course</Link>
-                      </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>    
-                    <SidebarMenuSubItem>
-                      <SidebarMenuSubButton asChild isActive={pathname === "/admin/timetable/add"}>
-                        <Link href="/admin/timetable/add">Add Course</Link>
-                      </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>  
-                      <SidebarMenuSubItem>
-                      <SidebarMenuSubButton asChild isActive={pathname === "/admin/timetable/add"}>
-                        <Link href="/admin/timetable/add">Add Course</Link>
-                      </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>
                   </CollapsibleContent>
                 </Collapsible>
               </SidebarMenuItem>

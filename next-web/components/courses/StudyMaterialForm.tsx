@@ -1,11 +1,157 @@
-import React from 'react'
+'use client'
 
-const StudyMaterialForm = () => {
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from '@/components/ui/form'
+
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Textarea } from '@/components/ui/textarea'
+import { useMutation } from '@tanstack/react-query'
+import { toast } from 'sonner'
+import axiosInstance from '@/lib/axiosInstance'
+import { useState } from 'react'
+import {
+  StudyMaterialFormType,
+  studyMaterialSchema
+} from '@/schema/subjects'
+import useAuthStore from '@/store/useAuthStore'
+import { UploadDropzone } from '@/utils/uploadthing'
+
+interface Subject {
+  id: string
+  refetch: () => void
+}
+
+export default function StudyMaterialForm({ id ,refetch}: Subject) {
+  const { user } = useAuthStore()
+  const [fileUrl, setFileUrl] = useState('')
+  const [fileError, setFileError] = useState('')
+
+  const form = useForm<StudyMaterialFormType>({
+    resolver: zodResolver(studyMaterialSchema),
+    defaultValues: {
+      name: '',
+      description: '',
+      url: '',
+    }
+  })
+
+  const mutation = useMutation({
+    mutationFn: async (values: StudyMaterialFormType) => {
+      const payload = {
+        ...values,
+        id: id,
+        uploadedBy: user?.id, // Make sure user.id is available
+      }
+
+      return await axiosInstance.post('/api/study-materials/create', payload)
+    },
+    onSuccess: (data) => {
+      console.log(data.data?.message)
+
+      refetch()
+      setFileUrl('')
+      form.reset()
+    },
+    onError: (error) => {
+      console.error(error)
+      toast.error("Failed to upload material. Please try again.")
+    }
+  })
+
+  const onSubmit = async (values: any) => {
+    if (!fileUrl) {
+      setFileError("Please upload a file before submitting")
+      return
+    }
+
+    setFileError('')
+    console.log(values)
+    mutation.mutate({
+   
+      name: values.name,
+      description: values.description,
+      url: fileUrl,
+    })
+  }
+
   return (
-    <div>
-        study material
+    <div className="max-w-xl mx-auto mt-10 p-6 border rounded-xl shadow">
+      <h2 className="text-xl font-bold mb-6 text-center">Upload Study Material</h2>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Material Name</FormLabel>
+                <FormControl><Input placeholder="Eg: Unit 1 Notes" {...field} /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Description (optional)</FormLabel>
+                <FormControl><Textarea placeholder="E.g. Chapter 1 to 3 summary" {...field} /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormItem>
+            <FormLabel>Upload File</FormLabel>
+            <FormControl>
+              {fileUrl ? (
+                <iframe
+                  src={fileUrl}
+                  className="w-full h-64 border rounded-md"
+                />
+              ) : (
+                <UploadDropzone
+                  endpoint="pdfUploader"
+                  appearance={{
+                    label: "text-sm text-gray-500",
+                    allowedContent: "text-xs text-muted-foreground",
+                  }}
+                  className="w-full"
+                  onClientUploadComplete={(res) => {
+                    const url = res[0].ufsUrl
+                    form.setValue("url", url)
+                    setFileUrl(url)
+                    setFileError('')
+                  }}
+                  onUploadError={(error: Error) => {
+                    setFileError(`Upload failed: ${error.message}`)
+                  }}
+                />
+              )}
+            </FormControl>
+            {fileError && (
+              <p className="text-sm text-red-500 mt-1">{fileError}</p>
+            )}
+          </FormItem>
+
+          <Button type="submit" className="w-full" disabled={mutation.isPending}>
+            {mutation.isPending ? 'Uploading...' : 'Submit'}
+          </Button>
+        </form>
+      </Form>
     </div>
   )
 }
-
-export default StudyMaterialForm

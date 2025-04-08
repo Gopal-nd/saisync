@@ -13,3 +13,14 @@ export const subjectSchema = z.object({
 })
 
 export type SubjectFormType = z.infer<typeof subjectSchema>
+
+
+export const studyMaterialSchema = z.object({
+  // subjectId: z.string().min(1, "Subject is required"),
+  name: z.string().min(1, "Name is required"),
+  description: z.string().optional(),
+  url: z.string().url("Invalid URL"),
+})
+
+export type StudyMaterialFormType = z.infer<typeof studyMaterialSchema>
+

@@ -8,25 +8,18 @@ import type { BranchType, SemesterType } from "@prisma/client";
 
 
 
-export const createSubject = asyncHandler(async (req: Request, res: Response) => {
+export const createStudyMaterial = asyncHandler(async (req: Request, res: Response) => {
   //  Validate request body using Zod (throws error if invalid)
   // req.body = SubjectSchema.parse(req.body);
 
 
-  const { subjectName, subjectCode, year, noOfCredits, examType, writtenType, syllabus, noOfHours, isLab } = req.body;
-  const upperSubjectCode = subjectCode.toUpperCase();
+  const { id ,...rest} = req.body;
 
-  const subject = await prisma.subject.create({
+
+  const material = await prisma.studyMaterial.create({
     data: {
-      subjectCode: upperSubjectCode,
-      subjectName,
-      year,
-      noOfCredits,
-      examType,
-      writtenType,
-      syllabus,
-      noOfHours,
-      isLab
+    subjectId: id,
+      ...rest
 
     },
   });
@@ -34,14 +27,14 @@ export const createSubject = asyncHandler(async (req: Request, res: Response) =>
   res.status(201).json(
     new ApiResponse({
       statusCode: 201,
-      data: subject,
-      message: "Subject created successfully",
+      data: material,
+      message: "Studay material created successfully",
     })
   );
 });
 
 
-export const editSubject = asyncHandler(async (req: Request, res: Response) => {
+export const editStudyMaterial = asyncHandler(async (req: Request, res: Response) => {
   //  Validate request body using Zod (throws error if invalid)
   const {id} = req.body
 
@@ -77,7 +70,7 @@ export const editSubject = asyncHandler(async (req: Request, res: Response) => {
   );
 });
 
-export const deleteSubject = asyncHandler(async (req: Request, res: Response) => {
+export const deleteStudyMaterial = asyncHandler(async (req: Request, res: Response) => {
   //  Validate request body using Zod (throws error if invalid)
   const {id} = req.params
   if (!id || typeof id !== "string") {
@@ -99,7 +92,7 @@ await prisma.subject.delete({where:{id}})
 
 
 
-export const getSubjects = asyncHandler(async (req: Request, res: Response) => {
+export const getStudyMaterials = asyncHandler(async (req: Request, res: Response) => {
 
   let { query,  page = "1", limit = "10" } = req.query;
 
@@ -150,7 +143,7 @@ export const getSubjects = asyncHandler(async (req: Request, res: Response) => {
 
 
 
-export const getSubjectById = asyncHandler(async (req: Request, res: Response) => {
+export const getStudyMaterialsById = asyncHandler(async (req: Request, res: Response) => {
 const {id} = req.query
 
 
@@ -161,22 +154,8 @@ if (!id || typeof id !== "string") {
   const subject = await prisma.subject.findUnique({
     where:{
       id:id
-    },
-    select:{
-      studyMaterial: true,
-      id:true,
-      noOfCredits:true,
-      subjectCode:true,
-      subjectName:true,
-      year:true,
-      examType:true,
-      writtenType:true,
-      syllabus:true,
-      noOfHours:true,
-      isLab:true
     }
   });
-
 
   res.status(201).json(
     new ApiResponse({
@@ -187,47 +166,6 @@ if (!id || typeof id !== "string") {
   );
 });
 
-export const getSubjectNames = asyncHandler(async (req: Request, res: Response) => {
 
-    const { name } = req.query;
-    if(!name || typeof name !== "string" ){
-      throw new APIError({message:'Branch and semester is required ',status:400})
-    }
-    const subjects = await prisma.subject.findMany({
-      where: {
-        subjectName: {
-          contains: name,
-          mode: "insensitive",
-        },
-      },
-    });
-    console.log(subjects)
 
-  
-    res.status(201).json(
-      new ApiResponse({
-        statusCode: 200,
-        data: subjects,
-        message: "success",
-      })
-    );
-  });
-  
-
-  export const getSubjectDetails = asyncHandler(async (req: Request, res: Response) => {
-
-// const {Branch, Semester} = req.query;
-    const subjects = await prisma.subject.findMany({
-    });
-    console.log(subjects)
-
-  
-    res.status(201).json(
-      new ApiResponse({
-        statusCode: 200,
-        data: subjects,
-        message: "success",
-      })
-    );
-  });
 

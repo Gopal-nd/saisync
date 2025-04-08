@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import { prisma } from "../lib/db";
 import dayjs from 'dayjs';
-import { BranchType, SemesterType } from "@prisma/client";
+import { BranchType, SectionType, SemesterType } from "@prisma/client";
 import asyncHandler from "../utils/async-handler";
 import { ApiResponse } from "../utils/api-response";
 import { APIError } from "../utils/api-error";
@@ -11,13 +11,11 @@ import { DayScheduleSchema } from "../types";
 
 export const createSchedule = asyncHandler(async (req: Request, res: Response) => {
 
-  const data= DayScheduleSchema.safeParse(req.body)
-  if(!data.success){
-    throw new APIError({message:"validation error",status:400, errors:data.error})
-  }
+
   const {
-    branchName,
+    section,
     semesterNumber,
+    branchName,
     date,
     periodNumber,
     startTime,
@@ -26,7 +24,9 @@ export const createSchedule = asyncHandler(async (req: Request, res: Response) =
     staff,
     subjectCode,
     isLab
-  } = data.data
+  } = req.body
+
+  console.log(req.body)
 
   const selectedDate = dayjs(date, 'YYYY-MM-DD').toDate();
   
@@ -36,21 +36,25 @@ export const createSchedule = asyncHandler(async (req: Request, res: Response) =
 
   let timeTableofDate = await prisma.timetableOfDay.findUnique({
     where: {
-      date_branchName_semesterNumber: {
-        date: selectedDate,
-        semesterNumber:semesterNumber as SemesterType,
-        branchName:branchName as BranchType
-      }
+        date_branchName_semesterName_sectionName: {
+            date: selectedDate,
+            branchName:branchName as BranchType,
+            semesterName:semesterNumber as SemesterType,
+            sectionName:section as SectionType
+        }
     },
   });
 
   if (!timeTableofDate) {
     timeTableofDate = await prisma.timetableOfDay.create({
-      data: {
-        date: selectedDate,
-        semesterNumber:semesterNumber as SemesterType,
-        branchName:branchName as BranchType
-      },
+     data: {
+  
+            date: selectedDate,
+            branchName:branchName as BranchType,
+            semesterName:semesterNumber as SemesterType,
+            sectionName:section as SectionType
+        
+     }
     });
 
   }
@@ -65,6 +69,7 @@ export const createSchedule = asyncHandler(async (req: Request, res: Response) =
       staff,
       subjectCode,
       isLab,
+      
     },
   });
 
@@ -73,7 +78,8 @@ export const createSchedule = asyncHandler(async (req: Request, res: Response) =
     where: {
       role: 'STUDENT',
       branch: branchName as BranchType,
-      semester: semesterNumber as SemesterType
+      semester: semesterNumber as SemesterType,
+      section:section as SectionType
     },
     select: {
       id: true,
@@ -90,6 +96,7 @@ export const createSchedule = asyncHandler(async (req: Request, res: Response) =
         userId: user.id,
         periodId: period.id,
         date: selectedDate,
+        status: 'NOT_TAKEN',
         name: user.name,
         usn: user.usn
       },

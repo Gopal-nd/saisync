@@ -4,7 +4,7 @@ import {  authenticateToken } from '../middleware/auth';
 import { adminMiddleware } from '../middleware/adminMiddleware';
 import {  deleteUsers,  getAllStudents, getUserById, editStudent, editAcadamicDetails, editBusDetails, editDocumentsDetails, editFamilyDetails,
     editHostelDetails, editPersonalDetails, editWorkDetails, getAcadamicDetails, getBusDetails, getDocumentsDetails, getFamilyDetails, getHostelDetails, getPersonalDetails, getWorkDetails
-} from '../controllers/faculty';
+} from '../controllers/staff';
 
 
 const router = express.Router();

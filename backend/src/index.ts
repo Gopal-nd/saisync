@@ -4,6 +4,7 @@ import { startOfDay, endOfDay } from 'date-fns';
 import app from './app';
 import errorHandler from './middleware/errorHandler';
 import  {type Request, type Response, type NextFunction } from 'express';
+import { ApiResponse } from './utils/api-response';
 
 
 app.get('/',(req,res)=>{
@@ -43,52 +44,15 @@ app.get('/code',async (req, res) => {
 
 
 
-app.get('/staff/class',async (req, res) => {
-  const { staff ,day} = req.query;
-  const dateToMatch = new Date(day as string)
-  if(!staff||typeof staff !=='string'){
-    res.status(500).json({message:'invalid'})
-  }
-  console.log(dateToMatch)
-
-  
-  const subjects = await prisma.timetableOfDay.findFirst({
-    where:{
-      date: {
-        gte: startOfDay(dateToMatch),
-        lte: endOfDay(dateToMatch),
-      }
-    },
-    select:{
-      branchName:true,
-      semesterNumber:true,
-    Periods:{
-      where:{
-        staff:'raju'
-      },
-      select:{
-        id:true,
-        subject:true,
-        startTime:true,
-        endTime:true,
-        subjectCode:true,
-        isLab:true
-        
-      }
-    }
-    }
-  })
-   res.status(200).json({subjects});
-});
-
 // students
 app.get('/student/class',async (req, res) => {
   const { branch, semester ,periodId} = req.query;
   // const dateToMatch = new Date(day as string)
   // console.log(dateToMatch)
-
+console.log('requested period',periodId)
+console.log('requested query',req.query)
   
-  const subjects = await prisma.attendance.findMany({
+  const students = await prisma.attendance.findMany({
     where:{
       periodId:periodId as string,
       status:'NOT_TAKEN'
@@ -99,7 +63,8 @@ app.get('/student/class',async (req, res) => {
       usn:true
     }
   })
-   res.status(200).json({subjects});
+  console.log('students',students)  
+   res.status(200).json(new ApiResponse({data:students,message:'success',statusCode:200}));
 });
 app.put('/student/attendance',async (req, res) => {
   const { userId,periodId,status } = req.body

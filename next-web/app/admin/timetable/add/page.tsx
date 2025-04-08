@@ -40,6 +40,7 @@ export default function DaySchedule() {
   const semester = searchParams.get("sem") 
   const branch = searchParams.get("branch") 
   const day = searchParams.get("day") 
+  const section = searchParams.get("section")
 
   const form = useForm<DayScheduleFormData>({
     resolver: zodResolver(DayScheduleSchema),
@@ -58,9 +59,7 @@ export default function DaySchedule() {
   const { data: staffData } = useQuery({
     queryKey: ["staff", branch, semester],
     queryFn: async () => {
-      const response = await axiosInstance.get("/api/staff", {
-        params: { branch, semester },
-      });
+      const response = await axiosInstance.get("/staff", );
       return response.data.data;
     },
   });
@@ -69,13 +68,11 @@ export default function DaySchedule() {
   const { data: subjectData } = useQuery({
     queryKey: ["subjectData", branch, semester],
     queryFn: async () => {
-      const response = await axiosInstance.get("/subjects", {
-        params: { branch, semester },
-      });
-      return response.data.data;
+      const response = await axiosInstance.get("/subjects");
+      return response.data.data
     },
   });
-
+console.log(subjectData)
   const mutation = useMutation({
     mutationFn:async(data:any)=>{
         const response =     await axiosInstance.post("/api/schedule/create", data);
@@ -117,6 +114,7 @@ export default function DaySchedule() {
       branchName: branch,
       semesterNumber: semester,
       date: day,
+      section:section
     };
 
    mutation.mutate(payload)
@@ -125,8 +123,8 @@ export default function DaySchedule() {
   return (
     <div className="p-6 max-w-lg mx-auto rounded-lg shadow-md">
       <h1 className="text-2xl font-bold mb-4">
-        Schedule for {branch} - Semester {semester} - {day}
-      </h1>
+        Schedule for <span className="text-blue-500">{branch}</span>- Semester <span className="text-blue-500">{semester}</span> Section - <span className="text-blue-500">{section}</span> On - <span className="text-blue-500">{day}</span>
+        </h1>
       {/* {error && <div className="text-red-500 mb-4">{error}</div>} */}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">

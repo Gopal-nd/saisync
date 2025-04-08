@@ -33,15 +33,17 @@ import { redirect } from "next/navigation";
 
 const branches = ["AIML", "ECE", "CSE", "EEE", "ISE", "MECH"];
 const semesters = ["S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8"];
+const sections = ["A", "B", "C", "D", "E", "F", "G", "H"];
 
 const TimeTablePage = () => {
   const [date, setDate] = useState<Date>(new Date());
   const [branch, setBranch] = useState("AIML");
   const [semester, setSemester] = useState("S6");
+  const [section, setSection] = useState("A");
 
   // Fetch timetable data based on selections
   const { data, isLoading, refetch } = useQuery({
-    queryKey: ["timeTable", branch, semester, date],
+    queryKey: ["timeTable", branch, semester,section, date],
     queryFn: async () => {
       try {
         const formattedDate = format(date, "yyyy-MM-dd");
@@ -126,6 +128,18 @@ const mutate = useMutation({
             ))}
           </SelectContent>
         </Select>
+        <Select onValueChange={setSection} defaultValue="A">
+          <SelectTrigger className="w-40">
+            <SelectValue placeholder="Select Section" />
+          </SelectTrigger>
+          <SelectContent>
+            {sections.map((s) => (
+              <SelectItem key={s} value={s}>
+                {s}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
         <Popover>
           <PopoverTrigger asChild>
@@ -149,7 +163,7 @@ const mutate = useMutation({
 
      <hr />
      <div className="flex justify-between items-center mt-2">
-      <p className=" text-lg font font-bold ">Schedule for <span className="text-blue-500 ">{branch}</span>  <span className="text-blue-500 ">{semester}</span> on <span className="text-yellow-500">{date.toDateString()}</span>  </p>
+      <p className=" text-lg font font-bold ">Schedule for <span className="text-blue-500 ">{branch}</span>  <span className="text-blue-500 ">{semester}</span> <span className="text-green-500">{section}</span> on <span className="text-yellow-500">{date.toDateString()}</span>  </p>
       <Link
   href={{
     pathname: "/admin/timetable/add",
@@ -157,6 +171,7 @@ const mutate = useMutation({
       sem: semester,
       branch: branch,
       day: format(date, "yyyy-MM-dd"), 
+      section:section
     },
   }}>
     <Button variant={'outline'}><Plus/>Add</Button>

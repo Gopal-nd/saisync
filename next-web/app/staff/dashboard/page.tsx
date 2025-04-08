@@ -14,18 +14,18 @@ import PeriodCard from '@/components/staff/PeriodCard';
 
 const StaffSchedule = () => {
 
-  const {user} = useAuthStore()
+  const { user } = useAuthStore()
   const [presentStudents, setPresentStudents] = useState<string[]>([]);
   const [absentStudents, setAbsentStudents] = useState<string[]>([]);
-  const [day,setDay] = useState<Date>(new Date())
+  const [day, setDay] = useState<Date>(new Date())
   const { data: subjects, isLoading, isPending, isError } = useQuery({
     queryKey: ['staff', day],
     queryFn: async () => {
-      const response = await axiosInstance.get('/staff/class', { params: { day:dayjs(day).format("YYYY-M-D"), staff: user?.role } });
+      const response = await axiosInstance.get('/staff/class', { params: { day: dayjs(day).format("YYYY-M-D"), staff: user?.name } });
       return response.data;
     },
   });
-console.log(subjects)
+  console.log(subjects)
 
   if (isLoading || isPending) {
     return <p>Loading...</p>;
@@ -42,22 +42,27 @@ console.log(subjects)
 
       <p>{day.toDateString()}</p>
       <Calendar
-              mode="single"
-              selected={day}
-              onSelect={(date) => setDay(date as Date)}
-              onDayClick={(date) => setDay(date as Date)}
-              
-              initialFocus
-            />
-{subjects?.subjects?.Periods?.map((period: any, index: number) => (
+        mode="single"
+        selected={day}
+        onSelect={(date) => setDay(date as Date)}
+        onDayClick={(date) => setDay(date as Date)}
+
+        initialFocus
+      />
+
+      {subjects?.data?.map((subjects: any, index: number) => (
+        subjects.Periods?.map((period: any, index: number) => (
           <div key={index}>
 
-            <PeriodCard period={period} periodId={period.id} branchName={subjects.branchName} semesterNumber={subjects.semesterNumber} day={dayjs(day).format("YYYY-M-D")}  />
-        </div>
+            <PeriodCard period={period} periodId={period.id} branchName={subjects.branchName} semesterNumber={subjects.semesterName} section={subjects.sectionName} day={dayjs(day).format("YYYY-M-D")} />
+          </div>
+        ))
       ))}
 
     </div>
-  );
+
+  )
+
 };
 
 export default StaffSchedule;
