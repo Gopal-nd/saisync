@@ -10,6 +10,8 @@ import { get } from 'http';
 const router = express.Router();
 
 router.post('/create',adminMiddleware, createStudyMaterial);
+
+// todo
 router.post('/edit',adminMiddleware, editStudyMaterial);
 router.delete('/:id',adminMiddleware, deleteStudyMaterial);
 router.get("/search",authenticateToken, getStudyMaterials);

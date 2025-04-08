@@ -48,7 +48,7 @@ const TimeTablePage = () => {
       try {
         const formattedDate = format(date, "yyyy-MM-dd");
         const response = await axiosInstance.get("/api/schedule", {
-          params: { branch, semester, date: formattedDate },
+          params: { branch, semester, date: formattedDate,section },
         });
         return response.data.data;
       } catch (error) {

@@ -6,6 +6,8 @@ import authRoutes from './routes/auth'
 import studentsRoute from './routes/students'
 import subjectsRoute from './routes/subjects'
 import scheduleRoutes from './routes/schedule'
+import attendenceRoute from './routes/attendence'
+
 import staffRoute from './routes/staff'
 import errorHandler from './middleware/errorHandler';
 import { authenticateToken } from './middleware/auth';
@@ -44,11 +46,13 @@ app.use('/api/staff',staffRoute)
 app.use('/api/subjects',subjectsRoute)
 app.use('/api/study-materials',studyMaterialsRoute)
 app.use('/api/schedule',scheduleRoutes)
+app.use('/api/attendence',authenticateToken,attendenceRoute)
 
 
 app.get('/subjects',authenticateToken,getSubjectDetails)
 app.get('/staff',authenticateToken,getAllFaculty)
 app.use('/staff/class',staffMiddleware,getFacultyClasses)
+
 
 
 

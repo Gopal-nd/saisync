@@ -70,6 +70,7 @@ export const createSchedule = asyncHandler(async (req: Request, res: Response) =
       subjectCode,
       isLab,
       
+      
     },
   });
 
@@ -98,7 +99,13 @@ export const createSchedule = asyncHandler(async (req: Request, res: Response) =
         date: selectedDate,
         status: 'NOT_TAKEN',
         name: user.name,
-        usn: user.usn
+        usn: user.usn,
+        branch: branchName as BranchType,
+        section: section as SectionType,
+        semester: semesterNumber as SemesterType,
+        periodNumber:periodNumber,
+        staff:staff,
+        subjectCode:subjectCode
       },
     })
 
@@ -139,7 +146,7 @@ export const deleteSchedule = asyncHandler(async (req: Request, res: Response) =
 
 export const getSchedule = asyncHandler(async (req: Request, res: Response) => {
   
-    const { branch, semester, date } = req.query;
+    const { branch, semester, date ,section} = req.query;
 
     if (!branch || !semester || !date) {
       throw new APIError({ status:400,message: 'Branch, Semester, and Date are required' });
@@ -159,10 +166,11 @@ export const getSchedule = asyncHandler(async (req: Request, res: Response) => {
     // Find timetable using composite key
     const result = await prisma.timetableOfDay.findUnique({
       where: {
-        date_branchName_semesterNumber: {
+        date_branchName_semesterName_sectionName: {
           date: selectedDate,
           branchName: branch as BranchType,
-          semesterNumber: semester as SemesterType,
+          semesterName: semester as SemesterType,
+          sectionName: section as SectionType
         },
       },
       select: {

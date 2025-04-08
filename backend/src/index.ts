@@ -5,6 +5,7 @@ import app from './app';
 import errorHandler from './middleware/errorHandler';
 import  {type Request, type Response, type NextFunction } from 'express';
 import { ApiResponse } from './utils/api-response';
+import asyncHandler from './utils/async-handler';
 
 
 app.get('/',(req,res)=>{
@@ -14,33 +15,16 @@ app.get('/',(req,res)=>{
 
 
 
-app.get('/test',async (req, res) => {
-  const students = await prisma.user.findMany({
-    where: {
-      role: 'STUDENT',
-      AND: {branch:'AIML', semester: 'S6',section:'A'}
-    },          
-  });
-   res.status(200).json(students);
-});
+app.get('/attendence',asyncHandler(async (req, res) => {
 
-
-app.get('/code',async (req, res) => {
-  
-  const { branch, semester } = req.query;
-  const code = await prisma.subject.findMany({
-    where: {
-      branchName: branch as  BranchType,
-      semesterNumber: semester as SemesterType
-    },
-  });
-  console.log(code)
-   res.status(200).json(code);
-});
-
-// app.post('/api/subjects/create',async (req, res) => {
-
-// });
+  const attendence = await prisma.attendance.findMany({
+    where:{
+      date:{
+        
+      }
+    }
+  })
+}))
 
 
 

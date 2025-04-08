@@ -511,7 +511,7 @@ model TimetableOfDay {
 model Period {
   id           String         @id @default(uuid())
   timetableId  String
-  periodNumber Int @default(autoincrement()) @unique
+  periodNumber Int 
   timetable    TimetableOfDay @relation(fields: [timetableId], references: [id], onDelete: Cascade)
   startTime    DateTime
   endTime      DateTime
@@ -543,6 +543,12 @@ model Attendance {
   userId   String
   periodId String
   date     DateTime
+  branch   BranchType
+  semester SemesterType
+  section SectionType
+  periodNumber Int? @default(autoincrement())
+    staff        String
+  subjectCode  String
   name     String?
   usn      String?
   status   AttendanceStatus @default(NOT_TAKEN)
@@ -558,6 +564,7 @@ enum AttendanceStatus {
   ABSENT
   NOT_TAKEN
   OD
+  LEAVE
 }
 
 //  OtpVerification Model //
