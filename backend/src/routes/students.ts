@@ -5,35 +5,37 @@ import { adminMiddleware } from '../middleware/adminMiddleware';
 import {  deleteUsers,  getAllStudents, getUserById, editStudent, editAcadamicDetails, editBusDetails, editDocumentsDetails, editFamilyDetails,
     editHostelDetails, editPersonalDetails, editWorkDetails, getAcadamicDetails, getBusDetails, getDocumentsDetails, getFamilyDetails, getHostelDetails, getPersonalDetails, getWorkDetails
 } from '../controllers/students';
+import { staffMiddleware } from '../middleware/staffMiddleware';
+import { adminOrStaffMiddleware } from '../middleware/adminOrStaffMiddleware';
 
 
 const router = express.Router();
 
-router.put('/edit',adminMiddleware,editStudent);
+router.put('/edit',adminOrStaffMiddleware,editStudent);
 router.delete('/:id',adminMiddleware, deleteUsers);
 router.get("/search",authenticateToken, getAllStudents);
 router.get("/",authenticateToken, getUserById);
 
-router.get("/personal",adminMiddleware, getPersonalDetails);
-router.put("/personal",adminMiddleware, editPersonalDetails);
+router.get("/personal",adminOrStaffMiddleware, getPersonalDetails);
+router.put("/personal",adminOrStaffMiddleware, editPersonalDetails);
 
-router.get("/family",adminMiddleware, getFamilyDetails);
-router.put("/family",adminMiddleware, editFamilyDetails);
+router.get("/family",adminOrStaffMiddleware, getFamilyDetails);
+router.put("/family",adminOrStaffMiddleware, editFamilyDetails);
 
-router.get("/acadamic",adminMiddleware, getAcadamicDetails);
-router.put("/acadamic",adminMiddleware, editAcadamicDetails);
+router.get("/acadamic",adminOrStaffMiddleware, getAcadamicDetails);
+router.put("/acadamic",adminOrStaffMiddleware, editAcadamicDetails);
 
-router.get("/documents",adminMiddleware, getDocumentsDetails);
-router.put("/documents",adminMiddleware, editDocumentsDetails);
+router.get("/documents",adminOrStaffMiddleware, getDocumentsDetails);
+router.put("/documents",adminOrStaffMiddleware, editDocumentsDetails);
 
-router.get("/bus",adminMiddleware, getBusDetails);
-router.put("/bus",adminMiddleware, editBusDetails);
+router.get("/bus",adminOrStaffMiddleware, getBusDetails);
+router.put("/bus",adminOrStaffMiddleware, editBusDetails);
 
-router.get("/hostel",adminMiddleware, getHostelDetails);
-router.put("/hostel",adminMiddleware, editHostelDetails);
+router.get("/hostel",adminOrStaffMiddleware, getHostelDetails);
+router.put("/hostel",adminOrStaffMiddleware, editHostelDetails);
 
-router.get("/work",adminMiddleware, getWorkDetails);
-router.put("/work",adminMiddleware, editWorkDetails);
+router.get("/work",adminOrStaffMiddleware, getWorkDetails);
+router.put("/work",adminOrStaffMiddleware, editWorkDetails);
 
 
 

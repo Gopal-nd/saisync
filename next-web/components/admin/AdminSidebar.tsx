@@ -212,7 +212,16 @@ export function AdminSidebar() {
                   </CollapsibleContent>
                 </Collapsible>
               </SidebarMenuItem>
-
+              
+              {/* Mentor */}
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={pathname?.startsWith("/admin/mentor")}>
+                  <Link href="/admin/mentor">
+                    <ClipboardList className="size-4" />
+                    <span>Mentor</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
 
               {/* Reports */}
               <SidebarMenuItem>

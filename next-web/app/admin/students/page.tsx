@@ -60,7 +60,7 @@ const AllStudents = () => {
       },
   })
 
-  const handleEdit = async (id:string)=>{
+  const handleOnclick = async (id:string)=>{
     console.log(id)
     redirect(`/admin/students/${id}`)
 
@@ -140,13 +140,13 @@ const AllStudents = () => {
             )}
 
             {data?.data?.students?.map((student: any) => (
-                <TableRow key={student.id} className='cursor-pointer' onClick={()=>handleEdit(student.id)}>
+                <TableRow key={student.id} className='cursor-pointer' onClick={()=>handleOnclick(student.id)}>
                 <TableCell>{student.name}</TableCell>
                 <TableCell>{student.email}</TableCell>
                 <TableCell>{student.schema ?? "-"}</TableCell>
                 <TableCell>{student.usn ?? "-"}</TableCell>
                 <TableCell>{student.collageId ?? "-"}</TableCell>
-                {/* <TableCell onClick={()=>handleEdit(student.id)}><Edit className='text-blue-500 cursor-pointer'/></TableCell>
+                {/* <TableCell onClick={()=>handleOnclick(student.id)}><Edit className='text-blue-500 cursor-pointer'/></TableCell>
                 <TableCell onClick={()=>handleDelete(student.id)}><Trash2 className='text-red-500 cursor-pointer'/></TableCell> */}
               </TableRow>
             ))}

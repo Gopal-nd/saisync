@@ -7,7 +7,8 @@ import studentsRoute from './routes/students'
 import subjectsRoute from './routes/subjects'
 import scheduleRoutes from './routes/schedule'
 import attendenceRoute from './routes/attendence'
-
+import mentorRoutes from './routes/mentor'
+import iaExamRoutes from './routes/iaexam'
 import staffRoute from './routes/staff'
 import errorHandler from './middleware/errorHandler';
 import { authenticateToken } from './middleware/auth';
@@ -20,7 +21,6 @@ import { staffMiddleware } from './middleware/staffMiddleware';
 dotenv.config({
   path:'../src/.env'
 })
-
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -47,7 +47,8 @@ app.use('/api/subjects',subjectsRoute)
 app.use('/api/study-materials',studyMaterialsRoute)
 app.use('/api/schedule',scheduleRoutes)
 app.use('/api/attendence',authenticateToken,attendenceRoute)
-
+app.use('/api/mentor',authenticateToken,mentorRoutes)
+app.use('/api/iaexam',iaExamRoutes)
 
 app.get('/subjects',authenticateToken,getSubjectDetails)
 app.get('/staff',authenticateToken,getAllFaculty)

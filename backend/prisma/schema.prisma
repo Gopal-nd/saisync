@@ -237,14 +237,25 @@ model IATests {
   user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   semester      SemesterType
   branch        BranchType
-  testNo        Int
+  section       SectionType
+  testNo        IATestType
   name          String?
-  subjectName   String
-  subjectCode   String
-  obtainedMarks Int
-  totalMarks    Int
+  subjectId String
+  subject      Subject @relation(fields: [subjectId],references:[id])
+  subjectName   String?
+  subjectCode   String?
+  obtainedMarks Int?
+  totalMarks    Int?
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
+
+  @@unique([userId, subjectId,testNo])
+}
+
+enum IATestType{
+  IA_1
+  IA_2
+  IA_3
 }
 
 //  UniversityExams Model //
@@ -464,6 +475,8 @@ model Subject {
   syllabus     String?
   noOfHours    Int?
   isLab        Boolean        @default(false)
+
+  iatest      IATests[]
 
   studyMaterial StudyMaterial[]  // Corrected field name
 }
