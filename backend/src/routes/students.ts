@@ -3,7 +3,9 @@ import express from 'express';
 import {  authenticateToken } from '../middleware/auth';
 import { adminMiddleware } from '../middleware/adminMiddleware';
 import {  deleteUsers,  getAllStudents, getUserById, editStudent, editAcadamicDetails, editBusDetails, editDocumentsDetails, editFamilyDetails,
-    editHostelDetails, editPersonalDetails, editWorkDetails, getAcadamicDetails, getBusDetails, getDocumentsDetails, getFamilyDetails, getHostelDetails, getPersonalDetails, getWorkDetails
+    editHostelDetails, editPersonalDetails, editWorkDetails, getAcadamicDetails, getBusDetails, getDocumentsDetails, getFamilyDetails, getHostelDetails, getPersonalDetails, getWorkDetails,
+    getLabStudents,
+    assignLabBatches
 } from '../controllers/students';
 import { staffMiddleware } from '../middleware/staffMiddleware';
 import { adminOrStaffMiddleware } from '../middleware/adminOrStaffMiddleware';
@@ -15,6 +17,9 @@ router.put('/edit',adminOrStaffMiddleware,editStudent);
 router.delete('/:id',adminMiddleware, deleteUsers);
 router.get("/search",authenticateToken, getAllStudents);
 router.get("/",authenticateToken, getUserById);
+
+router.get("/lab",authenticateToken, getLabStudents);
+router.post("/lab/assign",authenticateToken, assignLabBatches);
 
 router.get("/personal",adminOrStaffMiddleware, getPersonalDetails);
 router.put("/personal",adminOrStaffMiddleware, editPersonalDetails);

@@ -8,7 +8,7 @@ import { APIError } from "../utils/api-error";
 
 export const getTheMentorAndMenties = asyncHandler(async(req:Request,res:Response)=>{
 const {branch, semester, section} = req.query
-console.log(req.query)
+// console.log(req.query)
 
     const students = await prisma.user.findMany({
         where:{
@@ -51,7 +51,7 @@ export const assignMentorToStudents = asyncHandler(async(req:Request,res:Respons
     console.log(req.body)
     if (!studentUsns || !mentorId) {
  throw new APIError({
-          message: "Missing studentUsns or mentorUsn",
+          message: "Missing studentUsns or Batch",
             status:400
         })
       }

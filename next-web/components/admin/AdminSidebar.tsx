@@ -103,13 +103,13 @@ export function AdminSidebar() {
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                       <SidebarMenuSubItem>
-                        <SidebarMenuSubButton asChild isActive={pathname === "/admin/students/add"}>
-                          <Link href="/admin/students/add">Add Student</Link>
+                        <SidebarMenuSubButton asChild isActive={pathname === "/admin/students/lab"}>
+                          <Link href="/admin/students/lab">Lab</Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                       <SidebarMenuSubItem>
-                        <SidebarMenuSubButton asChild isActive={pathname === "/admin/students/profile"}>
-                          <Link href="/admin/students/profile">Student Profile</Link>
+                        <SidebarMenuSubButton asChild isActive={pathname === "/admin/students/open-elective"}>
+                          <Link href="/admin/students/profile">Open Elective</Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                     </SidebarMenuSub>
@@ -134,11 +134,11 @@ export function AdminSidebar() {
                           <Link href="/admin/faculty">All Faculty</Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
-                      <SidebarMenuSubItem>
+                      {/* <SidebarMenuSubItem>
                         <SidebarMenuSubButton asChild isActive={pathname === "/admin/faculty/add"}>
                           <Link href="/admin/faculty/add">Add Faculty</Link>
                         </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
+                      </SidebarMenuSubItem> */}
                     </SidebarMenuSub>
                   </CollapsibleContent>
                 </Collapsible>
@@ -198,7 +198,7 @@ export function AdminSidebar() {
                           <Link href="/admin/timetable">TimeTable</Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
-                      <SidebarMenuSubItem>
+                      {/* <SidebarMenuSubItem>
                         <SidebarMenuSubButton asChild isActive={pathname === "/admin/timetable/define"}>
                           <Link href="/admin/timetable/define">Definition</Link>
                         </SidebarMenuSubButton>
@@ -207,7 +207,7 @@ export function AdminSidebar() {
                         <SidebarMenuSubButton asChild isActive={pathname === "/admin/timetable/add"}>
                           <Link href="/admin/timetable/add">Add Schedule</Link>
                         </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
+                      </SidebarMenuSubItem> */}
                     </SidebarMenuSub>
                   </CollapsibleContent>
                 </Collapsible>

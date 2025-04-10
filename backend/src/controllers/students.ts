@@ -4,7 +4,7 @@ import { prisma } from "../lib/db";
 import { ApiResponse } from "../utils/api-response";
 import { SubjectSchema } from "../types";
 import { APIError } from "../utils/api-error";
-import type { BranchType, SemesterType } from "@prisma/client";
+import type { BranchType, SectionType, SemesterType } from "@prisma/client";
 
 import { formatDate } from "date-fns";
 
@@ -362,6 +362,66 @@ export const editWorkDetails = asyncHandler(async (req: Request, res: Response) 
 });
 
 
+
+export const getLabStudents = asyncHandler(async (req: Request, res: Response) => {
+const {branch, semester, section} = req.query
+// console.log(req.query)
+
+    const students = await prisma.user.findMany({
+        where:{
+            role:'STUDENT',
+            branch:branch as BranchType,
+            semester: semester as SemesterType,
+            section:section as SectionType,
+        },
+        select:{
+            password:false,
+            name:true,
+            usn:true,
+            labBatch:true
+        } 
+    })
+
+
+  res.status(200).json(new ApiResponse({ statusCode: 200, data: students, message: "student success" }));
+});
+
+export const assignLabBatches = asyncHandler(async (req: Request, res: Response) => {
+  const {studentUsns, batchNo} = req.body
+
+    console.log(req.body)
+    if (!studentUsns || !batchNo) {
+ throw new APIError({
+          message: "Missing studentUsns or BatchNo",
+            status:400
+        })
+      }
+
+      const usnArray = typeof studentUsns === "string"
+      ? studentUsns.split(",").map(usn => usn.trim())
+      : Array.isArray(studentUsns)
+      ? studentUsns
+      : [];
+
+    if (usnArray.length === 0) {
+      throw new APIError({
+        message: "No valid USNs provided",
+        status: 400
+      })
+    }
+
+    const updateResult = await prisma.user.updateMany({
+      where: {
+        role: "STUDENT",
+        usn: { in: usnArray }
+      },
+      data: {
+        labBatch: batchNo
+      }
+    });
+    
+  res.status(200).json(new ApiResponse({ statusCode: 200, data: updateResult, message: "Lab Batch Assigned successfully" }));
+});
 
 
 
