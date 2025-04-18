@@ -6,6 +6,7 @@ import errorHandler from './middleware/errorHandler';
 import  {type Request, type Response, type NextFunction } from 'express';
 import { ApiResponse } from './utils/api-response';
 import asyncHandler from './utils/async-handler';
+import { adminOrStaffMiddleware } from './middleware/adminOrStaffMiddleware';
 
 
 app.get('/',(req,res)=>{
@@ -29,7 +30,7 @@ app.get('/attendence',asyncHandler(async (req, res) => {
 
 
 // students
-app.get('/student/class',async (req, res) => {
+app.get('/student/class' ,adminOrStaffMiddleware,async (req, res) => {
   const { branch, semester ,periodId} = req.query;
   // const dateToMatch = new Date(day as string)
   // console.log(dateToMatch)

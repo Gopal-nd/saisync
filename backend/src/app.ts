@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import authRoutes from './routes/auth'
 import studentsRoute from './routes/students'
 import subjectsRoute from './routes/subjects'
+
 import scheduleRoutes from './routes/schedule'
 import attendenceRoute from './routes/attendence'
 import mentorRoutes from './routes/mentor'
@@ -53,7 +54,6 @@ app.use('/api/iaexam',iaExamRoutes)
 app.get('/subjects',authenticateToken,getSubjectDetails)
 app.get('/staff',authenticateToken,getAllFaculty)
 app.use('/staff/class',staffMiddleware,getFacultyClasses)
-
 
 
 

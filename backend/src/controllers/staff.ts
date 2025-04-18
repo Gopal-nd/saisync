@@ -357,12 +357,13 @@ export const getAllFaculty = asyncHandler(async (req: Request, res: Response) =>
 
 export const getFacultyClasses = asyncHandler(async (req: Request, res: Response) => {
   const { day, staff} = req.query; 
-console.log(req.query)
+console.log('staff details :',staff,day)
 
 
   if (!staff || typeof staff !== "string") {
     throw new APIError({ message: "Invalid or missing staff", status: 400 });
   }
+
   if (!day || typeof day !== "string") {
     throw new APIError({ message: "Invalid or missing date", status: 400 });  
   }
@@ -372,23 +373,41 @@ console.log(req.query)
     where: {
       date: new Date(day),
       Periods: {
-        some: {
-          staff: {
-            equals: staff,
-          },
-        },
+        some:{
+          staff:{
+            equals:staff
+          }
+        }
       },
-    
+
     },
     select:{
-      Periods:true,
+      Periods:{
+        where:{
+          staff:{equals:staff}
+        },
+        select: {
+          id: true,
+          periodNumber: true,
+          subject: true,
+          startTime: true,
+          endTime: true,
+          subjectCode: true,
+          isLab: true,
+          whatlearned: true,
+          topics: true,
+          Attendance: true,
+          staff: true,
+        }
+      },
       branchName:true,
       sectionName:true,
       semesterName:true
+    
     }
   })
 
-  console.log(data)
+  console.log(data[0].Periods)
   res.status(200).json(new ApiResponse({ statusCode: 200, data:data, message: "Classes fetched successfully" }));
 
 });

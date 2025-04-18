@@ -8,12 +8,15 @@ import { Button } from "@/components/ui/button"
 import { BellIcon, PlusIcon } from "lucide-react"
 import NavbarProfile from "@/components/common/NavbarProfile"
 import { ModeToggle } from "@/components/ModeToggle"
+import useAuthStore from "@/store/useAuthStore"
+import Link from "next/link"
 
 interface DashboardShellProps {
   children: React.ReactNode
 }
 
 export default function DashboardShell({ children }: DashboardShellProps) {
+ const {user} = useAuthStore()
   return (
     <SidebarProvider>
       <div className="flex min-h-screen w-full">
@@ -23,7 +26,9 @@ export default function DashboardShell({ children }: DashboardShellProps) {
       <div className="flex items-start h-10 p-2 w-full justify-between">
         <div className="flex items-center gap-2">
           <SidebarTrigger className="h-9 w-9" />
-          <h1 className="text-2xl font-bold tracking-tight">Student</h1>
+          <Link href="/student">
+          <h1 className="text-2xl font-bold tracking-tight">{'Student'}</h1>
+          </Link>
         </div>
         <div className="flex items-center gap-2">
         <NavbarProfile/>

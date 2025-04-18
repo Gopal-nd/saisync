@@ -15,8 +15,6 @@ import PeriodCard from '@/components/staff/PeriodCard';
 const StaffSchedule = () => {
 
   const { user } = useAuthStore()
-  const [presentStudents, setPresentStudents] = useState<string[]>([]);
-  const [absentStudents, setAbsentStudents] = useState<string[]>([]);
   const [day, setDay] = useState<Date>(new Date())
   const { data: subjects, isLoading, isPending, isError } = useQuery({
     queryKey: ['staff', day],
@@ -53,7 +51,6 @@ const StaffSchedule = () => {
       {subjects?.data?.map((subjects: any, index: number) => (
         subjects.Periods?.map((period: any, index: number) => (
           <div key={index}>
-
             <PeriodCard period={period} periodId={period.id} branchName={subjects.branchName} semesterNumber={subjects.semesterName} section={subjects.sectionName} day={dayjs(day).format("YYYY-M-D")} />
           </div>
         ))

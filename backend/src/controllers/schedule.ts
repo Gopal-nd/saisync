@@ -69,8 +69,6 @@ export const createSchedule = asyncHandler(async (req: Request, res: Response) =
       staff,
       subjectCode,
       isLab,
-      
-      
     },
   });
 
@@ -223,6 +221,9 @@ export const getPeriodById = asyncHandler(async (req: Request, res: Response) =>
         staff: true,
         subjectCode: true,
         isLab: true,
+        Attendance:true,
+        topics:true,
+        whatlearned:true
       }
     });
   

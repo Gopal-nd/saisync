@@ -124,10 +124,10 @@ model User {
 model Notification {
   id         String     @id @default(uuid())
   senderId   String
-  sender     User       @relation(fields: [senderId], references: [id])
+  sender     User       @relation(fields: [senderId], references: [id],onDelete: Cascade)
 
   receiverId String?    // For specific user notifications
-  receiver   User?      @relation("NotificationReceiver", fields: [receiverId], references: [id])
+  receiver   User?      @relation("NotificationReceiver", fields: [receiverId], references: [id], onDelete: SetNull)
 
   branch     BranchType?
   semester   SemesterType?
@@ -154,7 +154,7 @@ model Assignment {
 
   // Creator of the assignment (only STAFF role)
   createdById String
-  createdBy   User          @relation(fields: [createdById], references: [id])
+  createdBy   User          @relation(fields: [createdById], references: [id],onUpdate: Cascade, onDelete: Cascade)
 
   branch     BranchType
   semester   SemesterType
@@ -179,8 +179,8 @@ model AssignmentSubmission {
   submissionUrl String
   submittedAt   DateTime     @default(now())
 
-  assignment    Assignment   @relation(fields: [assignmentId], references: [id])
-  submittedBy   User         @relation(fields: [submittedById], references: [id])
+  assignment    Assignment   @relation(fields: [assignmentId], references: [id], onDelete: Cascade,onUpdate: Cascade)
+  submittedBy   User         @relation(fields: [submittedById], references: [id],onUpdate: Cascade, onDelete: Cascade)
 }
 
 //  Achievements Model  //
@@ -188,7 +188,7 @@ model AssignmentSubmission {
 model Achievements {
   id          String        @id @default(uuid())
   userId      String        // Remove
-  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade,onUpdate: Cascade)
   semester    SemesterType
   branch      BranchType
   name        String?
@@ -202,7 +202,7 @@ model Achievements {
 model Projects {
   id          String        @id @default(uuid())
   userId      String        
-  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade,onUpdate: Cascade)
   semester    SemesterType
   branch      BranchType
   name        String?
@@ -216,7 +216,7 @@ model Projects {
 model Activities {
   id            String        @id @default(uuid())
   userId        String        // Remo
-  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade,onUpdate: Cascade)
   semester      SemesterType
   branch        BranchType
   name          String?
@@ -234,14 +234,14 @@ model Activities {
 model IATests {
   id            String        @id @default(uuid())
   userId        String        // Removed @unique
-  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade,onUpdate: Cascade)
   semester      SemesterType
   branch        BranchType
   section       SectionType
   testNo        IATestType
   name          String?
   subjectId String
-  subject      Subject @relation(fields: [subjectId],references:[id])
+  subject      Subject @relation(fields: [subjectId],references:[id],onDelete: Cascade, onUpdate: Cascade)
   subjectName   String?
   subjectCode   String?
   obtainedMarks Int?
@@ -263,7 +263,7 @@ enum IATestType{
 model UniversityExams {
   id            String        @id @default(uuid())
   userId        String        // Removed @unique
-  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade,onUpdate: Cascade)
   semester      SemesterType
   branch        BranchType
   name          String?
@@ -280,7 +280,7 @@ model UniversityExams {
 model UserBusDetails {
   id        String   @id @default(uuid())
   userId    String   @unique
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade,onUpdate: Cascade)
   route      String?
   busNumber  String?
   pickupPoint String?
@@ -294,7 +294,7 @@ model UserBusDetails {
 model UserHostelDetails {
   id        String   @id @default(uuid())
   userId    String   @unique
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade,onUpdate: Cascade)
    block       String?
   roomNumber  String?
   wardenName  String?
@@ -308,7 +308,7 @@ model UserHostelDetails {
 model UserPersonalDetails {
   id        String   @id @default(uuid())
   userId    String   @unique
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade,onUpdate: Cascade)
   // list all the personal details
    dob       DateTime?
    phone     String?
@@ -344,7 +344,7 @@ model UserPersonalDetails {
 model UserFamilyDetails {
   id        String   @id @default(uuid())
   userId    String   @unique
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade,onUpdate: Cascade)
 
     fatherName String?
   fatherPhone String?
@@ -367,7 +367,7 @@ model UserFamilyDetails {
 model UserAcademicDetails {
   id        String   @id @default(uuid())
   userId    String   @unique
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade,onUpdate: Cascade)
    tenthBoard        String?
   tenthSchoolName   String?
   tenthMarks        Float?
@@ -397,7 +397,7 @@ model UserAcademicDetails {
 model UserWorkDetails {
   id        String   @id @default(uuid())
   userId    String   @unique
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade,onUpdate: Cascade)
 
 
   companyName   String?
@@ -415,7 +415,7 @@ model UserWorkDetails {
 model UserDocuments {
   id        String   @id @default(uuid())
   userId    String   @unique
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade,onUpdate: Cascade)
     aadharCard     String? // file path or URL
   marksheet10    String?
   marksheet12    String?
@@ -443,7 +443,7 @@ model Semester {
   id              String        @id @default(uuid())
   branchName      BranchType
   semesterName  SemesterType
-  branch          Branch        @relation(fields: [branchName], references: [branchName], onDelete: Cascade)
+  branch          Branch        @relation(fields: [branchName], references: [branchName], onDelete: Cascade,onUpdate: Cascade)
   
   @@unique([branchName, semesterName]) 
   Sections      Section[]
@@ -456,7 +456,7 @@ model Section {
   sectionName    SectionType
   branchName     BranchType
   semesterName SemesterType
-  Semester       Semester      @relation(fields: [branchName, semesterName], references: [branchName, semesterName], onDelete: Cascade)
+  Semester       Semester      @relation(fields: [branchName, semesterName], references: [branchName, semesterName], onDelete: Cascade,onUpdate: Cascade)
   Timetables     TimetableOfDay[]
 
   @@unique([branchName, semesterName, sectionName])
@@ -496,13 +496,13 @@ enum WrittenType {
 model StudyMaterial {
   id          String       @id @default(uuid())
   subjectId   String
-  subject     Subject      @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  subject     Subject      @relation(fields: [subjectId], references: [id], onDelete: Cascade,onUpdate: Cascade)
   name        String
   description String?
   url         String
   // Uploaded by (the user's id)
   uploadedBy  String
-  user        User         @relation(fields: [uploadedBy], references: [id], onDelete: Cascade)
+  user        User         @relation(fields: [uploadedBy], references: [id], onDelete: Cascade,onUpdate: Cascade)
 }
 
 //  TimetableOfDay Model //
@@ -513,7 +513,7 @@ model TimetableOfDay {
   sectionName    SectionType
   branchName     BranchType
   semesterName SemesterType
-  section        Section        @relation(fields: [branchName, semesterName, sectionName], references: [branchName, semesterName, sectionName], onDelete: Cascade)
+  section        Section        @relation(fields: [branchName, semesterName, sectionName], references: [branchName, semesterName, sectionName], onDelete: Cascade,onUpdate: Cascade)
   Periods        Period[]
 
   @@unique([date, branchName, semesterName, sectionName]) 
@@ -525,7 +525,7 @@ model Period {
   id           String         @id @default(uuid())
   timetableId  String
   periodNumber Int 
-  timetable    TimetableOfDay @relation(fields: [timetableId], references: [id], onDelete: Cascade)
+  timetable    TimetableOfDay @relation(fields: [timetableId], references: [id], onDelete: Cascade,onUpdate: Cascade)
   startTime    DateTime
   endTime      DateTime
   subject      String
@@ -546,7 +546,7 @@ model TopicCovered {
   periodId          String 
   topicTitle        String
   topicDescription  String
-  period            Period    @relation(fields: [periodId], references: [id], onDelete: Cascade)
+  period            Period    @relation(fields: [periodId], references: [id], onDelete: Cascade,onUpdate: Cascade)
 }
 
 //   Attendance Model   //
@@ -566,8 +566,8 @@ model Attendance {
   usn      String?
   status   AttendanceStatus @default(NOT_TAKEN)
 
-  user     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  period   Period           @relation(fields: [periodId], references: [id], onDelete: Cascade)
+  user     User             @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  period   Period           @relation(fields: [periodId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@unique([userId, periodId])
 }
@@ -595,7 +595,7 @@ model OtpVerification {
 model Placements {
   id            String        @id @default(uuid())
   userId        String        
-  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   placementDate DateTime
   placementType PlacementType
   year          Int

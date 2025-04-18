@@ -9,6 +9,7 @@ import {  deleteUsers,  getAllStudents, getUserById, editStudent, editAcadamicDe
 } from '../controllers/students';
 import { staffMiddleware } from '../middleware/staffMiddleware';
 import { adminOrStaffMiddleware } from '../middleware/adminOrStaffMiddleware';
+import { studentClasses } from '../controllers/student-class';
 
 
 const router = express.Router();
@@ -41,6 +42,8 @@ router.put("/hostel",adminOrStaffMiddleware, editHostelDetails);
 
 router.get("/work",adminOrStaffMiddleware, getWorkDetails);
 router.put("/work",adminOrStaffMiddleware, editWorkDetails);
+
+router.get("/class",authenticateToken,studentClasses);
 
 
 
