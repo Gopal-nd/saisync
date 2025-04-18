@@ -4,6 +4,7 @@ import { prisma } from "../lib/db";
 import { ApiResponse } from "../utils/api-response";
 import { APIError } from "../utils/api-error";
 import type { AttendanceStatus } from "@prisma/client";
+
 export const staffPeriodDetails = asyncHandler(async(req:Request,res:Response)=>{
     const { periodId} = req.query;
   
@@ -59,6 +60,24 @@ const attendence = await prisma.attendance.update({
   },
   data:{
     status:status as AttendanceStatus
+  }
+})
+  console.log('students',attendence)  
+ res.status(200).json(new ApiResponse({data:attendence,message:'success',statusCode:200}));
+})  
+
+export const editAdditionalInfo = asyncHandler(async(req:Request,res:Response)=>{
+  const { info ,periodId} = req.body;
+
+  console.log(periodId)
+  console.log(req.body)
+
+const attendence = await prisma.period.update({
+  where:{
+    id:periodId as string
+  },
+  data:{
+   whatlearned:info
   }
 })
   console.log('students',attendence)  

@@ -20,14 +20,16 @@ import React, { useState } from 'react';
 import useAuthStore from '@/store/useAuthStore';
 import { Button } from '@/components/ui/button';
 import { string } from 'zod';
+import { Textarea } from '@/components/ui/textarea';
 
 const Schedule = () => {
     const { user } = useAuthStore()
     const params = useParams();
     const id = params.id as string;
-    const [showAttendance, setShowAttendance] = React.useState(false);
+    const [showAttendance, setShowAttendance] = useState(false);
     const [view, setView] = useState(1)
-
+    const [showAdditionalInfo, setShowAdditionalInfor] = useState(false)
+    const [textvalue, setTextvalue] = useState('')
     const {
         data: period,
         isLoading,
@@ -56,7 +58,22 @@ const Schedule = () => {
         }
     })
 
+    const additionInforMutation = useMutation({
+        mutationFn:async({info,periodId}:{info:string,periodId:string})=>{
+            const response = await axiosInstance.put('/students/attendance/info',{info,periodId})
+            console.log(response)
+            return response
+        },
+        onError:(error:any)=>{
+            console.log('staff attendence error',error)
+        },
+        onSuccess:()=>{
+            refetch()
+        }
+    })
+
     console.log(period)
+
     if (isLoading) {
         return (
             <div className="p-4 space-y-4">
@@ -72,6 +89,11 @@ const Schedule = () => {
     }
     const handleAbsent = (userId:string,periodId:string,status:string)=>{
         muttation.mutate({userId, periodId, status})
+    }
+
+    const handleAdditionlInfoSubmit = ()=>{
+        if(!textvalue) return
+        additionInforMutation.mutate({info:textvalue,periodId:period?.id})
     }
     if (error) return <div className="p-4">Error loading period details.</div>;
 
@@ -244,15 +266,29 @@ const Schedule = () => {
 
             <Card>
                 <CardHeader>
+                    <div className='flex items-center justify-between'>
                     <CardTitle className="flex items-center gap-2">
                         <      Info className="w-5 h-5" />
                         Additional Info
                     </CardTitle>
+                    <Button onClick={()=>setShowAdditionalInfor(!showAdditionalInfo)}>{!showAdditionalInfo?"Add":"Hide"}</Button>
+                    </div>
+                        
                 </CardHeader>
                 <CardContent className="text-sm space-y-2">
+                    {
+                        showAdditionalInfo && <>
+                        <div className='gap-2 space-y-2'>
+                            <Textarea placeholder='What you learned' defaultValue={period?.whatlearned}  value={textvalue} onChange={(e)=>setTextvalue(e.target.value)}/>
+                            <Button onClick={handleAdditionlInfoSubmit}>Add</Button>
+                        </div>
+                        </>
+                    }
                     <p>
                         <span className="font-medium">What was learned:</span>{' '}
+                        <pre>
                         {period.whatlearned ?? 'Not added yet'}
+                        </pre>
                     </p>
                     <p>
                         <span className="font-medium">Topics:</span>{' '}
