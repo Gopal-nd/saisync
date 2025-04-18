@@ -68,8 +68,8 @@ export function StaffSidebar() {
               {/* Dashboard */}
 
               <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={pathname === "/staff/dashboard"}>
-                  <Link href="/staff/dashboard">
+                <SidebarMenuButton asChild isActive={pathname === "/staff"}>
+                  <Link href="/staff">
                     <LayoutDashboard className="size-4" />
                     <span>Dashboard</span>
                   </Link>

@@ -11,6 +11,7 @@ import attendenceRoute from './routes/attendence'
 import mentorRoutes from './routes/mentor'
 import iaExamRoutes from './routes/iaexam'
 import staffRoute from './routes/staff'
+import staffPeriodRoute from './routes/staff-attendence'
 import errorHandler from './middleware/errorHandler';
 import { authenticateToken } from './middleware/auth';
 import { getSubjectDetails, getSubjectNames } from './controllers/subject';
@@ -51,9 +52,12 @@ app.use('/api/attendence',authenticateToken,attendenceRoute)
 app.use('/api/mentor',authenticateToken,mentorRoutes)
 app.use('/api/iaexam',iaExamRoutes)
 
+
 app.get('/subjects',authenticateToken,getSubjectDetails)
 app.get('/staff',authenticateToken,getAllFaculty)
 app.use('/staff/class',staffMiddleware,getFacultyClasses)
+
+app.use('/students',staffPeriodRoute)
 
 
 

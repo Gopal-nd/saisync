@@ -407,7 +407,7 @@ console.log('staff details :',staff,day)
     }
   })
 
-  console.log(data[0].Periods)
+  // console.log(data[0].Periods)
   res.status(200).json(new ApiResponse({ statusCode: 200, data:data, message: "Classes fetched successfully" }));
 
 });

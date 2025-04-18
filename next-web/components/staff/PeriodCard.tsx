@@ -1,24 +1,33 @@
-import { Button } from "@/components/ui/button";
-import axiosInstance from "@/lib/axiosInstance";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import { useState } from "react";
-import { toast } from "sonner";
+
+
+'use client'
+
+import { useState, useEffect } from 'react'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table'
+import { Separator } from '@/components/ui/separator'
+import { ChevronDownIcon, ChevronUpIcon, BookOpenIcon, ClockIcon, HashIcon, UsersIcon, UserIcon } from 'lucide-react'
+import axiosInstance from '@/lib/axiosInstance'
+import { useQuery } from '@tanstack/react-query'
+import { toast } from 'sonner'
 
 interface PeriodCardProps {
   period: {
-    id:string,
-    subject: string;
-    startTime: string;
-    endTime: string;
-    subjectCode: string;
-    isLab: boolean;
-  };
-  branchName: string;
-  semesterNumber: string;
-  periodId: string;
-  day: string;
-  section:string
+    id: string
+    subject: string
+    startTime: string
+    endTime: string
+    subjectCode: string
+    isLab: boolean
+  }
+  branchName: string
+  semesterNumber: string
+  periodId: string
+  day: string
+  section: string
 }
 
 const PeriodCard: React.FC<PeriodCardProps> = ({
@@ -27,123 +36,123 @@ const PeriodCard: React.FC<PeriodCardProps> = ({
   semesterNumber,
   periodId,
   section,
-  day,
 }) => {
-  const [showStudents, setShowStudents] = useState(false);
+  const [open, setOpen] = useState(false)
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ['students', periodId],
     queryFn: async () => {
-      const response = await axiosInstance.get('/student/class', {
-        params: { branch: branchName, semester: semesterNumber,periodId,section },
-      });
-      console.log(response.data)
-      return response.data.data;
+      const res = await axiosInstance.get('/students/attendance/absent', {
+        params: {  periodId, },
+      })
+      return res.data.data
     },
-    enabled: false, // Disable automatic fetching
-  });
-
-  const { data:Absenties, isLoading: AbsentiesLoading, isError: AbsentiesError, refetch: AbsentiesRefetch } = useQuery({
-    queryKey: ['students',"absenties" ,periodId],
-    queryFn: async () => {
-      const response = await axiosInstance.get('/student/attendance/absent', {
-        params: { branch: branchName, semester: semesterNumber,periodId, day },
-      });
-      return response.data;
-    },
-    enabled: false, // Disable automatic fetching
-  });
-// console.log(data.subjects.map((student: any) => student.name))
-  const handleFetchStudents = async () => {
-    if(showStudents){
-      setShowStudents(false)
-      return
-    }
-    refetch(); 
-    setShowStudents(true);
-  };
-
-  const handleAttendance = async (userId: string,periodId:string,status:string) => {
-    const response = await axiosInstance.put('/student/attendance', { userId,periodId,status });
-    if(response.status === 200){
-      toast.success('attendance updated')
-    }
-    if(status === 'ABSENT'){
-      await AbsentiesRefetch();
-    }
-    await refetch(); 
-  };
-  const handleAttendanceForAbsenties = async (userId: string,periodId:string,status:string) => {
-    const response = await axiosInstance.put('/student/attendance', { userId,periodId,status });
-    if(response.status === 200){
-      toast.success('attendance updated')
-    }
-    if(status === 'PRESENT'){
-      await AbsentiesRefetch();
-    }
-    // await refetch(); 
-  };
+    enabled: false,
+  })
 
 
-console.log(data)
+  useEffect(() => {
+    if (open) refetch()
+  }, [open, refetch])
+
+  const inProgress = Date.now() > new Date(period.startTime).getTime() && Date.now() < new Date(period.endTime).getTime()
+
   return (
-    <div className="mb-4 p-4 border rounded-lg shadow-sm ">
-      <p className="font-bold">Branch: {branchName}</p>
-      <p className="font-bold">Semester: {semesterNumber}</p>
-      <p className="font-bold">Section: {section}</p>
+    <Card className={`hover:shadow-lg transition-shadow ${inProgress ? 'border-green-500':''}`}>
+      <CardHeader className="flex items-center justify-between pb-2">
+        <div className="flex items-center gap-2">
+          <BookOpenIcon className="w-5 h-5" />
+          <CardTitle className="text-lg">{period.subject}</CardTitle>
+        </div>
+        <Badge variant={period.isLab ? 'destructive' : 'secondary'}>
+          {period.isLab ? 'Lab' : 'Theory'}
+        </Badge>
+      </CardHeader>
 
-
-      <h2 className="text-xl font-semibold">{period.subject}</h2>
-      <p>
-        <span className="font-bold">Start Time:</span>{" "}
-        {new Date(period.startTime).toLocaleTimeString()}
-      </p>
-      <p>
-        <span className="font-bold">End Time:</span>{" "}
-        {new Date(period.endTime).toLocaleTimeString()}
-      </p>
-      <p>
-        <span className="font-bold">Subject Code:</span> {period.subjectCode}
-      </p>
-      <p>
-        <span className="font-bold">Lab:</span> {period.isLab ? "Yes" : "No"}
-      </p>
-
-      <Button onClick={handleFetchStudents} disabled={isLoading}>
-        {isLoading ? "Loading..." : "Take Attendance"}
-      </Button>
-      {/* {JSON.stringify(data.subjects)} */}
-      {showStudents && (
+      <CardContent className="space-y-3">
+        <div className="flex items-center gap-1">
+            <UsersIcon className="w-4 h-4" /> {branchName} | {semesterNumber} | {section}
+          </div>
+        <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+          <div className="flex items-center gap-1">
+            <HashIcon className="w-4 h-4" /> {period.subjectCode}
+          </div>
+          <div className="flex items-center gap-1">
+            <ClockIcon className="w-4 h-4" />{' '}
+            {new Date(period.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            {' — '}
+            {new Date(period.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          </div>
         
-        <div>
-          <h3 className="font-bold mt-4">Students List:</h3>
-          {isError ? (
-            <p className="text-red-500">Error fetching students.</p>
-          ) : 
-          data?.map((student: any) => (
-            <div key={student.id} className="flex items-center justify-around">
-              <p >{student.name}</p>
-              <Button className="bg-green-500" onClick={() => handleAttendance(student.userId, period.id,"PRESENT")}>Present</Button>
-              <Button className="bg-red-500" onClick={() => handleAttendance(student.userId, period.id,"ABSENT")}>Absent</Button>
-            </div>
-            
+        </div>
 
-          ))}
-          {data?.students?.length === 0 && <p>You marked all  Student Attendece.</p>}
-          <div>
-            <p className="font-bold">Class Absenties</p>
-            {Absenties && Absenties.response.map((student: any) => (
-              <div key={student.id} className="flex items-center justify-around">
-                <p >{student.name}</p>
-                <Button className="bg-green-500" onClick={() => handleAttendanceForAbsenties(student.userId, period.id,"PRESENT")}>Present</Button>
-              </div>
-            ))}
-             {Absenties && Absenties.response.length === 0 && <p>No Absenties</p>}
-            </div>
-        </div>        
-      )}
-    </div>
-  );
-};
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setOpen((o) => !o)}
+          className="w-full flex justify-between"
+        >
+          {open ? 'Hide Absenties' : 'Show Absenties'}
+          {open ? <ChevronUpIcon className="w-4 h-4" /> : <ChevronDownIcon className="w-4 h-4" />}
+        </Button>
 
-export default PeriodCard;
+        {open && (
+          <>
+          {data && data.length === 0 ? <p className="text-center text-sm">No Absenties</p>:<>
+            <Separator className="my-2" />
+            {isLoading && <p className="text-center text-sm">Loading students…</p>}
+            {isError && <p className="text-center text-sm text-red-600">Error loading students</p>}
+            {data && (
+              <Table className="text-sm">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>USN</TableHead>
+                    <TableHead>Status</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {data && data.map((stu:any) => (
+                    <TableRow key={stu.id}>
+                      <TableCell className="flex items-center gap-1">
+                        <UserIcon className="w-4 h-4" />
+                        {stu.name}
+                      </TableCell>
+                      <TableCell>{stu.usn}</TableCell>
+                      <TableCell>
+                        <Badge variant={stu.status === 'PRESENT' ? 'secondary' : 'destructive'}>
+                          {stu.status}
+                        </Badge>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </>
+          }
+          </>
+        )}
+      </CardContent>
+
+        <Link href={`/staff/${periodId}`} passHref>
+      <CardFooter className="flex justify-between">
+          <Button variant="ghost" size="sm">
+            View Details
+          </Button>
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={() => {
+            toast.success('Attendance modal coming soon!')
+          }}
+          >
+          Take Attendance
+        </Button>
+      </CardFooter>
+          </Link>
+    </Card>
+  )
+}
+
+export default PeriodCard

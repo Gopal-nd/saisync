@@ -28,29 +28,6 @@ app.get('/attendence',asyncHandler(async (req, res) => {
 }))
 
 
-
-// students
-app.get('/student/class' ,adminOrStaffMiddleware,async (req, res) => {
-  const { branch, semester ,periodId} = req.query;
-  // const dateToMatch = new Date(day as string)
-  // console.log(dateToMatch)
-console.log('requested period',periodId)
-console.log('requested query',req.query)
-  
-  const students = await prisma.attendance.findMany({
-    where:{
-      periodId:periodId as string,
-      status:'NOT_TAKEN'
-    },select:{
-      userId:true,
-      id:true,
-      name:true,
-      usn:true
-    }
-  })
-  console.log('students',students)  
-   res.status(200).json(new ApiResponse({data:students,message:'success',statusCode:200}));
-});
 app.put('/student/attendance',async (req, res) => {
   const { userId,periodId,status } = req.body
 console.log(userId,periodId,status)
@@ -100,7 +77,7 @@ app.get('/student/attendance/absent',async (req, res) => {
 });
 
 
-// // create schedule
+
 
 // Health check route
 app.get('/health', (req, res) => {
