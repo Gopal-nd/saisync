@@ -104,7 +104,7 @@ const Schedule = () => {
                 <CardHeader>
                     <CardTitle className="flex items-center justify-center gap-2">
                         <CalendarIcon className="w-5 h-5" />
-                        <p>{new Date(period.startTime).toDateString()}</p>
+                        <p>{new Date(period?.startTime).toDateString()}</p>
                     </CardTitle>
                 </CardHeader>
             </Card>
@@ -112,26 +112,26 @@ const Schedule = () => {
                 <CardHeader>
                     <CardTitle className="text-md flex items-center gap-2 ">
                         <BookIcon className="w-5 h-5 overflow-hidden" />
-                        {period.subject}  ({period.subjectCode})
+                        {period?.subject}  ({period?.subjectCode})
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <div className="flex flex-wrap gap-6 text-sm">
                         <div className="flex items-center gap-2">
                             <HashIcon className="w-4 h-4" />
-                            Period No: {period.periodNumber}
+                            Period? No: {period?.periodNumber}
                         </div>
                         <div className="flex items-center gap-2">
                             <ClockIcon className="w-4 h-4" />
-                            Start: {new Date(period.startTime).toLocaleTimeString()}
+                            Start: {new Date(period?.startTime).toLocaleTimeString()}
                         </div>
                         <div className="flex items-center gap-2">
                             <ClockIcon className="w-4 h-4 rotate-180" />
-                            End: {new Date(period.endTime).toLocaleTimeString()}
+                            End: {new Date(period?.endTime).toLocaleTimeString()}
                         </div>
                        
                         {
-                            period.isLab &&
+                            period?.isLab &&
                             <div className="flex items-center gap-2">
                               <FlaskConicalIcon className="w-4 h-4" />
                               Lab
@@ -185,15 +185,15 @@ const Schedule = () => {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {period.Attendance.map((student: any) => {
+                                {period?.Attendance.map((student: any) => {
 
                                     if(student.status!=='NOT_TAKEN') return 
                                     return(
                                         <TableRow key={student.id} className={student.usn === user?.usn && student.status === "PRESENT" ? "text-green-500" : student.usn === user?.usn && student.status === "ABSENT" ? "text-red-500" : ""}>
                                         <TableCell>{student.name}</TableCell>
                                         <TableCell>{student.usn }</TableCell>
-                                        <TableCell><button onClick={()=>handlePresent(student.userId,period.id,'PRESENT')} className='bg-green-400 p-2 rounded-md font-semibold'>Present</button></TableCell>
-                                        <TableCell><button onClick={()=>handleAbsent(student.userId,period.id,'ABSENT')} className='bg-red-400 p-2 rounded-md font-semibold'>Absent</button></TableCell>
+                                        <TableCell><button onClick={()=>handlePresent(student.userId,period?.id,'PRESENT')} className='bg-green-400 p-2 rounded-md font-semibold'>Present</button></TableCell>
+                                        <TableCell><button onClick={()=>handleAbsent(student.userId,period?.id,'ABSENT')} className='bg-red-400 p-2 rounded-md font-semibold'>Absent</button></TableCell>
                                     </TableRow>
                                     )
                                 })}
@@ -214,14 +214,14 @@ const Schedule = () => {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {period.Attendance.map((student: any) => {
+                                {period?.Attendance.map((student: any) => {
                                     if(student.status!=='PRESENT') return 
                                     return(
 
                                         <TableRow key={student.id} className={student.usn === user?.usn && student.status === "PRESENT" ? "text-green-500" : student.usn === user?.usn && student.status === "ABSENT" ? "text-red-500" : ""}>
                                         <TableCell>{student.name}</TableCell>
                                         <TableCell>{student.usn }</TableCell>
-                                        <TableCell><button onClick={()=>handleAbsent(student.userId,period.id,'ABSENT')} className='bg-red-400 p-2 rounded-md font-semibold'>Absent</button></TableCell>
+                                        <TableCell><button onClick={()=>handleAbsent(student.userId,period?.id,'ABSENT')} className='bg-red-400 p-2 rounded-md font-semibold'>Absent</button></TableCell>
                                     </TableRow>
                                     )
                                 })}
@@ -242,14 +242,14 @@ const Schedule = () => {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {period.Attendance.map((student: any) => {
+                                {period?.Attendance.map((student: any) => {
                                     if(student.status!=='ABSENT') return 
 
                                     return(
                                         <TableRow key={student.id} className={student.usn === user?.usn && student.status === "PRESENT" ? "text-green-500" : student.usn === user?.usn && student.status === "ABSENT" ? "text-red-500" : ""}>
                                         <TableCell>{student.name}</TableCell>
                                         <TableCell>{student.usn }</TableCell>
-                                        <TableCell><button onClick={()=>handlePresent(student.userId,period.id,'PRESENT')} className='bg-green-400 p-2 rounded-md font-semibold'>Present</button></TableCell>
+                                        <TableCell><button onClick={()=>handlePresent(student.userId,period?.id,'PRESENT')} className='bg-green-400 p-2 rounded-md font-semibold'>Present</button></TableCell>
                                     </TableRow>
                                     )
                                 })}
@@ -287,12 +287,12 @@ const Schedule = () => {
                     <p>
                         <span className="font-medium">What was learned:</span>{' '}
                         <pre>
-                        {period.whatlearned ?? 'Not added yet'}
+                        {period?.whatlearned ?? 'Not added yet'}
                         </pre>
                     </p>
                     <p>
                         <span className="font-medium">Topics:</span>{' '}
-                        {period.topics.length > 0 ? period.topics.join(', ') : 'No topics'}
+                        {period?.topics.length > 0 ? period?.topics.join(', ') : 'No topics'}
                     </p>
                 </CardContent>
             </Card>

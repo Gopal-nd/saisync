@@ -18,7 +18,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import axiosInstance from '@/lib/axiosInstance'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   StudyMaterialFormType,
   studyMaterialSchema
@@ -31,20 +31,23 @@ import { axiosFrontend } from '@/lib/axios'
 interface Subject {
   id: string
   refetch: () => void
+  setOpen: (open: boolean) => void
+  initialData: any
 }
 
-export default function StudyMaterialForm({ id ,refetch}: Subject) {
+export default function EditStydyMaterialForm({ id,initialData ,setOpen,refetch}: Subject) {
   const { user } = useAuthStore()
   const [fileUrl, setFileUrl] = useState('')
   const [fileError, setFileError] = useState('')
-  const {data} = useQuery({
+  const {data,isLoading} = useQuery({
     queryKey:['material',id],
     queryFn:async()=>{
       const res = await axiosInstance.get('/api/study-materials/material',{params:{id}})
       return res.data
     }
   })
-  
+
+
   console.log(data)
   const form = useForm<StudyMaterialFormType>({
     resolver: zodResolver(studyMaterialSchema),
@@ -55,6 +58,16 @@ export default function StudyMaterialForm({ id ,refetch}: Subject) {
     }
   })
 
+  useEffect(() => {
+    if (initialData) {
+      form.reset({
+        name: initialData.name || '',
+        description: initialData.description || '',
+        url: initialData.url || '',
+      })
+      setFileUrl(initialData.url)
+    }
+  }, [initialData])
   const mutation = useMutation({
     mutationFn: async (values: StudyMaterialFormType) => {
       const payload = {
@@ -63,11 +76,13 @@ export default function StudyMaterialForm({ id ,refetch}: Subject) {
         uploadedBy: user?.id, // Make sure user.id is available
       }
 
-      return await axiosInstance.post('/api/study-materials/create', payload)
+      const res = await axiosInstance.put('/api/study-materials/update', payload)
+      return res.data
     },
     onSuccess: (data) => {
-      console.log(data.data?.message)
-
+      console.log(data?.message)
+      toast.success(data?.message)
+      setOpen(false)
       refetch()
       setFileUrl('')
       form.reset()
@@ -87,7 +102,6 @@ export default function StudyMaterialForm({ id ,refetch}: Subject) {
     setFileError('')
     console.log(values)
     mutation.mutate({
-   
       name: values.name,
       description: values.description,
       url: fileUrl,
@@ -101,9 +115,13 @@ export default function StudyMaterialForm({ id ,refetch}: Subject) {
    }
    return true
   }
+
+  if(isLoading){
+    return <div>Loading...</div>
+  }
   return (
     <div className="max-w-xl mx-auto mt-10 p-6 border rounded-xl shadow">
-      <h2 className="text-xl font-bold mb-6 text-center">Upload Study Material</h2>
+      <h2 className="text-xl font-bold mb-6 text-center">Edit Study Material</h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
 
@@ -140,7 +158,7 @@ export default function StudyMaterialForm({ id ,refetch}: Subject) {
                   src={fileUrl}
                   className="w-full h-64 border rounded-md"
                   />
-                <Button onClick={handleDeleteFile} className='bg-red-500 hover:bg-red-700'>Delete</Button>
+                <span onClick={handleDeleteFile} className='bg-red-500 p-2 text-center rounded-md'>Delete</span>
                   </>
               ) : (
                 <UploadDropzone

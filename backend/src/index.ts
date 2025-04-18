@@ -13,73 +13,21 @@ app.get('/',(req,res)=>{
   res.send("i am alive")
 })
 
-
-
-
-app.get('/attendence',asyncHandler(async (req, res) => {
-
-  const attendence = await prisma.attendance.findMany({
-    where:{
-      date:{
-        
-      }
+app.get('/user', asyncHandler(async (req, res) => {
+  const {id} = req.query
+  const user = await prisma.user.findUnique({
+    where:{id:id as string},
+    select:{
+      name:true,
+      email:true,
+      role:true,
+      createdAt:true,
+      updatedAt:true,
     }
   })
+  res.status(200).json(new ApiResponse({ data: user, message: 'success', statusCode: 200 }));
 }))
 
-
-app.put('/student/attendance',async (req, res) => {
-  const { userId,periodId,status } = req.body
-console.log(userId,periodId,status)
-
-const exist = await prisma.attendance.findUnique({
-  where: {
-    userId_periodId: {
-      userId:userId as string,
-      periodId: periodId as string
-    },
-  },
-})
-
-console.log(exist)
-  const response = await prisma.attendance.update({
-    where: {
-      userId_periodId: {
-      userId:userId as string,
-      periodId: periodId as string
-      },
-    },
-    data: { status: status as AttendanceStatus },
-
-  });
-
-  console.log(response, 'user attendance')
- 
-   res.status(200).json({response:'sucess'});
-});
-app.get('/student/attendance/absent',async (req, res) => {
-  const { userId,periodId} = req.body;
-
-
-
-  const response = await prisma.attendance.findMany({
-    where: {
-      periodId:periodId as string,
-      status:'ABSENT'
-    }
-  });
-
-  console.log(response, 'user attendance he is absent')
-
-  
- 
-   res.status(200).json({response});
-});
-
-
-
-
-// Health check route
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok' });
 });

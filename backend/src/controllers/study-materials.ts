@@ -14,7 +14,7 @@ export const createStudyMaterial = asyncHandler(async (req: Request, res: Respon
 
 
   const { id ,...rest} = req.body;
-
+// console.log(req.body)
 
   const material = await prisma.studyMaterial.create({
     data: {
@@ -32,6 +32,32 @@ export const createStudyMaterial = asyncHandler(async (req: Request, res: Respon
     })
   );
 });
+
+
+export const updateStudyMaterial = asyncHandler(async (req: Request, res: Response) => {
+  //  Validate request body using Zod (throws error if invalid)
+  // req.body = SubjectSchema.parse(req.body);
+
+
+  const { id ,...rest} = req.body;
+
+
+  const material = await prisma.studyMaterial.update({
+    where:{id},
+    data: {
+      ...rest
+    },
+  });
+
+  res.status(201).json(
+    new ApiResponse({
+      statusCode: 201,
+      data: material,
+      message: "Studay material Updated successfully",
+    })
+  );
+});
+
 
 
 export const editStudyMaterial = asyncHandler(async (req: Request, res: Response) => {
@@ -89,6 +115,27 @@ await prisma.subject.delete({where:{id}})
     })
   );
 });
+
+export const deleteSubjectStudyMaterial = asyncHandler(async (req: Request, res: Response) => {
+  //  Validate request body using Zod (throws error if invalid)
+  const {id} = req.params
+  if (!id || typeof id !== "string") {
+    throw new APIError({ message: "Invalid or no Id", status: 400 });
+  }
+  console.log(id)
+  
+await prisma.studyMaterial.delete({where:{id}})
+
+
+  res.status(201).json(
+    new ApiResponse({
+      statusCode: 201,
+      data: null,
+      message: "Subject Deleted Sucessfully",
+    })
+  );
+});
+
 
 
 
@@ -166,6 +213,29 @@ if (!id || typeof id !== "string") {
   );
 });
 
+
+export const getSubjectStudyMaterialbyId = asyncHandler(async (req: Request, res: Response) => {
+  const {id} = req.query
+  
+  
+  if (!id || typeof id !== "string") {
+    throw new APIError({ message: "Invalid or no Id", status: 400 });
+  }
+  
+    const studyMaterial = await prisma.studyMaterial.findUnique({
+      where:{
+        id:id
+      }
+    });
+  
+    res.status(201).json(
+      new ApiResponse({
+        statusCode: 201,
+        data: studyMaterial,
+        message: "Subject success",
+      })
+    );
+  });
 
 
 

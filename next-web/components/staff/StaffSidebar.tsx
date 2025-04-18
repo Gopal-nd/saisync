@@ -117,14 +117,10 @@ export function StaffSidebar() {
                     <SidebarMenuSub>
                       <SidebarMenuSubItem>
                         <SidebarMenuSubButton asChild isActive={pathname === "/staff/courses"}>
-                          <Link href="/staff/courses">All Courses</Link>
+                          <Link href="/staff/courses">Subjects</Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
-                      <SidebarMenuSubItem>
-                        <SidebarMenuSubButton asChild isActive={pathname === "/staff/courses/add"}>
-                          <Link href="/staff/courses/add">Add Course</Link>
-                        </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
+                      
                     </SidebarMenuSub>
                   </CollapsibleContent>
                 </Collapsible>

@@ -19,6 +19,7 @@ export async function DELETE(request: Request) {
   try {
     
     const data = await request.json();
+    console.log(data.url)
     const newUrl = data.url.substring(data.url.lastIndexOf("/") + 1);
     console.log(newUrl)
   
