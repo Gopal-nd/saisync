@@ -54,8 +54,8 @@ export default function LoginPage() {
     },
     onSuccess: (data) => {
       toast.success('Login successful');
-      router.push('/dashboard')
-      console.log(data.data.sendUser.email)
+      console.log(data.data.sendUser.role)
+      router.push(`/${data.data.sendUser.role.toLowerCase()}`)
       console.log(data)
 
       setUser({
