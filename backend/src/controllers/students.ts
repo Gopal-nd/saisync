@@ -21,6 +21,17 @@ export const getUserById = asyncHandler(async (req: Request, res: Response) => {
       const subject = await prisma.user.findUnique({
         where:{
           id:id
+        },
+        omit:{
+          password:true
+        },
+        include:{
+          mentor:{
+            select:{
+              name:true,
+              email:true
+            }
+          }
         }
       });
     

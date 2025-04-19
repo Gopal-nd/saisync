@@ -26,22 +26,16 @@ const StudentDetails = () => {
     })
 
     if(userDataLoadingById){
-        return <div>Loading..id</div>
+        return <div>Loading..</div>
     }
   return (
     <div>
-      <h1>Student Details - {id}</h1>
-      <Suspense fallback={<div>Loading...</div>}>
       <BasicUserDetails id={id as string}/>
-      </Suspense>
-      <Suspense fallback={<div>Loading...</div>}>
       <UserPersonalDetails id = {id as string}/>
-      </Suspense>
       <FamilyDetails id={id as string}/>
       <AcademicsDetails id={id as string}/>
       <UserBusDetails id={id as string}/>
       <UserHostelDetails id={id as string}/>
-      {/* <UserWorkDetails id={id as string}/> */}
       <UserDocuments id={id as string}/>
 
 

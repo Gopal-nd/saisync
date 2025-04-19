@@ -22,25 +22,25 @@ router.get("/",authenticateToken, getUserById);
 router.get("/lab",authenticateToken, getLabStudents);
 router.post("/lab/assign",authenticateToken, assignLabBatches);
 
-router.get("/personal",adminOrStaffMiddleware, getPersonalDetails);
+router.get("/personal",authenticateToken, getPersonalDetails);
 router.put("/personal",adminOrStaffMiddleware, editPersonalDetails);
 
-router.get("/family",adminOrStaffMiddleware, getFamilyDetails);
+router.get("/family",authenticateToken, getFamilyDetails);
 router.put("/family",adminOrStaffMiddleware, editFamilyDetails);
 
-router.get("/acadamic",adminOrStaffMiddleware, getAcadamicDetails);
+router.get("/acadamic",authenticateToken, getAcadamicDetails);
 router.put("/acadamic",adminOrStaffMiddleware, editAcadamicDetails);
 
-router.get("/documents",adminOrStaffMiddleware, getDocumentsDetails);
+router.get("/documents",authenticateToken, getDocumentsDetails);
 router.put("/documents",adminOrStaffMiddleware, editDocumentsDetails);
 
-router.get("/bus",adminOrStaffMiddleware, getBusDetails);
+router.get("/bus",authenticateToken, getBusDetails);
 router.put("/bus",adminOrStaffMiddleware, editBusDetails);
 
-router.get("/hostel",adminOrStaffMiddleware, getHostelDetails);
+router.get("/hostel",authenticateToken, getHostelDetails);
 router.put("/hostel",adminOrStaffMiddleware, editHostelDetails);
 
-router.get("/work",adminOrStaffMiddleware, getWorkDetails);
+router.get("/work",authenticateToken, getWorkDetails);
 router.put("/work",adminOrStaffMiddleware, editWorkDetails);
 
 router.get("/class",authenticateToken,studentClasses);

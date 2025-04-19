@@ -30,7 +30,7 @@ export default function DashboardShell({ children }: DashboardShellProps) {
         </div>
 
       </div>
-          <div className="container px-4 py-6 md:px-6 lg:px-8">{children}</div>
+          <div className="container mx-auto px-4 py-6 md:px-6 lg:px-8">{children}</div>
         </main>
       </div>
     </SidebarProvider>
