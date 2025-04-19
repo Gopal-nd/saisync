@@ -64,7 +64,7 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
    const { email, password } = req.body;
    console.log(email,password)
  
-   const user = await prisma.user.findUnique({ where: { email } ,select:{password:true,email:true,branch:true,semester:true,name:true,id:true,usn:true,role:true,schema:true,section:true}});
+   const user = await prisma.user.findUnique({ where: { email } ,select:{password:true,email:true,branch:true,semester:true,name:true,id:true,usn:true,role:true,schema:true,section:true,mentor:true}});
 
    if (!user){
     throw new APIError({status:401,message:"Invalid credentials"})
@@ -93,7 +93,8 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
     section:user.section,
     usn:user.usn,
     schema:user.schema,
-    email:user.email
+    email:user.email,
+    mentor:user.mentor?.email
    }
 
    res.status(200).json(new ApiResponse({data:{sendUser,token},statusCode:200,message:'Login Success'}));

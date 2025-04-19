@@ -67,7 +67,8 @@ export default function LoginPage() {
         semester:data.data.sendUser.semester,
         section:data.data.sendUser.section,
         usn:data.data.sendUser.usn,
-        schema:data.data.sendUser.schema
+        schema:data.data.sendUser.schema,
+        mentor:data.data.sendUser.mentor
       })
 
     },

@@ -349,7 +349,7 @@ export const editWorkDetails = asyncHandler(async (req: Request, res: Response) 
 
 
 export const getAllFaculty = asyncHandler(async (req: Request, res: Response) => {
-  const data = await prisma.user.findMany({where:{role:"STAFF"}});
+  const data = await prisma.user.findMany({where:{role:"STAFF"},select:{id:true,name:true,role:true,branch:true,semester:true,section:true,schema:true,email:true,usn:true}});
   res.status(200).json(new ApiResponse({ statusCode: 200, data, message: "Faculties fetched successfully" }));
 });
 

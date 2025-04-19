@@ -12,6 +12,7 @@ export type User = {
   section?: string;
   schema?:string;
   image?:string;
+  mentor?:string
 };
 
 export type AuthState = {
