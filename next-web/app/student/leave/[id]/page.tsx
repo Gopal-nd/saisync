@@ -15,7 +15,7 @@ const LeaveTemplete = () => {
   const { user } = useAuthStore()
 
   const leave = leaveTemplates.find((leave) => leave.id === id)
-console.log(user)
+  console.log(user)
   const [from, setFrom] = useState(user?.email || "")
   const [to, setTo] = useState(user?.mentor || "")
   const [subject, setSubject] = useState("")
@@ -33,7 +33,7 @@ console.log(user)
   }, [leave])
 
   const handleSend = () => {
-    if(!to) {
+    if (!to) {
       setError("To field cannot be empty.")
       return
     }
@@ -117,7 +117,7 @@ Respond in JSON format:
       console.error("AI error:", err)
       setError("Failed to generate email. Please try again.")
     } finally {
-        setAddMoreContext(false)
+      setAddMoreContext(false)
       setLoading(false)
     }
   }

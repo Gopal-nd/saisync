@@ -115,6 +115,73 @@ export function StudentSidebar() {
                 </Collapsible>
               </SidebarMenuItem>
 
+              {/* students activity */}
+              <SidebarMenuItem>
+                <Collapsible defaultOpen={pathname?.startsWith("/student/activities")}>
+                  <CollapsibleTrigger asChild>
+                    <SidebarMenuButton isActive={pathname?.startsWith("/student/activities")}>
+                      <GraduationCap  className="size-4" />
+                      <span>Activities</span>
+                      <ChevronDown className="ml-auto size-4 transition-transform group-data-[state=open]/collapsible:rotate-180" />
+                    </SidebarMenuButton>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <SidebarMenuSub>
+                      <SidebarMenuSubItem>
+                        <SidebarMenuSubButton asChild isActive={pathname === "/student/activities"}>
+                          <Link href="/student/activities">Certificates</Link>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                      <SidebarMenuSubItem>
+                        <SidebarMenuSubButton asChild isActive={pathname === "/student/activities/project"}>
+                          <Link href="/student/activities/project">Projects</Link>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                      <SidebarMenuSubItem>
+                        <SidebarMenuSubButton asChild isActive={pathname === "/student/activities/ecosystem"}>
+                          <Link href="/student/activities/ecosystem">Eco System</Link>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                      <SidebarMenuSubItem>
+                        <SidebarMenuSubButton asChild isActive={pathname === "/student/activities/exp-trip"}>
+                          <Link href="/student/activities/exp-trip">Exp-Trip</Link>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                      <SidebarMenuSubItem>
+                        <SidebarMenuSubButton asChild isActive={pathname === "/student/activities/internship"}>
+                          <Link href="/student/activities/internship">Internship</Link>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                      <SidebarMenuSubItem>
+                        <SidebarMenuSubButton asChild isActive={pathname === "/student/activities/nptel"}>
+                          <Link href="/student/activities/nptel">NPTEL</Link>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                      <SidebarMenuSubItem>
+                        <SidebarMenuSubButton asChild isActive={pathname === "/student/activities/participate"}>
+                          <Link href="/student/activities/participate">Participation</Link>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                      <SidebarMenuSubItem>
+                        <SidebarMenuSubButton asChild isActive={pathname === "/student/activities/achivements"}>
+                          <Link href="/student/activities/achivements">Achivements</Link>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                      <SidebarMenuSubItem>
+                        <SidebarMenuSubButton asChild isActive={pathname === "/student/activities/medical"}>
+                          <Link href="/student/activities/medical">Medical</Link>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                      <SidebarMenuSubItem>
+                        <SidebarMenuSubButton asChild isActive={pathname === "/student/activities/scholorships"}>
+                          <Link href="/student/activities/scholorships">Scholorships</Link>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                    </SidebarMenuSub>
+                  </CollapsibleContent>
+                </Collapsible>
+              </SidebarMenuItem>
+
               {/* cources */}
               <SidebarMenuItem>
                 <SidebarMenuButton asChild isActive={pathname?.startsWith("/student/courses")}>
