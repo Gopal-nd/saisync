@@ -3,6 +3,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import {
 
+  Asterisk,
   BookMarked,
 
   
@@ -13,6 +14,8 @@ import {
   LayoutDashboard,
 
   MailCheck,
+
+  ShieldCheck,
 
   User,
 
@@ -120,7 +123,7 @@ export function StudentSidebar() {
                 <Collapsible defaultOpen={pathname?.startsWith("/student/activities")}>
                   <CollapsibleTrigger asChild>
                     <SidebarMenuButton isActive={pathname?.startsWith("/student/activities")}>
-                      <GraduationCap  className="size-4" />
+                      <ShieldCheck    className="size-4" />
                       <span>Activities</span>
                       <ChevronDown className="ml-auto size-4 transition-transform group-data-[state=open]/collapsible:rotate-180" />
                     </SidebarMenuButton>
@@ -133,8 +136,8 @@ export function StudentSidebar() {
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                       <SidebarMenuSubItem>
-                        <SidebarMenuSubButton asChild isActive={pathname === "/student/activities/project"}>
-                          <Link href="/student/activities/project">Projects</Link>
+                        <SidebarMenuSubButton asChild isActive={pathname === "/student/activities/projects"}>
+                          <Link href="/student/activities/projects">Projects</Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                       <SidebarMenuSubItem>
@@ -173,8 +176,8 @@ export function StudentSidebar() {
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                       <SidebarMenuSubItem>
-                        <SidebarMenuSubButton asChild isActive={pathname === "/student/activities/scholorships"}>
-                          <Link href="/student/activities/scholorships">Scholorships</Link>
+                        <SidebarMenuSubButton asChild isActive={pathname === "/student/activities/scholoership"}>
+                          <Link href="/student/activities/scholoership">scholoership</Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                     </SidebarMenuSub>

@@ -9,9 +9,6 @@ import type { BranchType, SemesterType } from "@prisma/client";
 
 
 export const createStudyMaterial = asyncHandler(async (req: Request, res: Response) => {
-  //  Validate request body using Zod (throws error if invalid)
-  // req.body = SubjectSchema.parse(req.body);
-
 
   const { id ,...rest} = req.body;
 // console.log(req.body)

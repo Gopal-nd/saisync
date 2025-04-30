@@ -100,24 +100,141 @@ model User {
   mentor       User?      @relation("Mentorship", fields: [mentorId], references: [id])
   mentees      User[]     @relation("Mentorship")
 
-  Attendance           Attendance[]
+
+
+  attendance           Attendance[]
   universityExams      UniversityExams[]
   iaTests              IATests[]
   achievements         Achievements[]
-  projects             Projects[]
+
+  
+  nptel                Nptel[]
+  internships Internships[]
+  leadingProjects Projects[] @relation("LeaderOfProjects")
+  memberProjects  Projects[] @relation("MemberOfProjects")
+  scholerships    Scholarships[]
+  leadingEcosystems Ecosystem[] @relation("LeaderOfEecosystemProjects")
+  membersEcosystems Ecosystem[] @relation("MemberOfEecosystemProjects")
+  participations   Participation[]
+  experienceTrips           ExperienceTrips[]
+  medicalLeaves           MedicalLeaves[]
   activities           Activities[]
+
+  // studentActivities
+  certificates         Certificate[]
 
   StudyMaterial        StudyMaterial[]
 
   // Assignments
   assignments          Assignment[]
-  AssignmentSubmission AssignmentSubmission[]
+  assignmentSubmission AssignmentSubmission[]
+
 
   // Notifications
   sentNotifications     Notification[] // as sender
   receivedNotifications Notification[] @relation("NotificationReceiver") // as receiver
-  Placements Placements[]
+  placements Placements[]
 }
+model MedicalLeaves{
+  id          String     @id @default(cuid())
+  title         String?
+  user     User     @relation(fields: [userId], references: [id])
+  userId       String
+  description String?
+  startDate   DateTime?
+  endDate     DateTime?
+  proofUrl    String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+model Scholarships{
+  id          String     @id @default(cuid())
+  providerName String?
+  user     User     @relation(fields: [userId], references: [id])
+  userId       String
+  description String?
+  whenRecived DateTime?
+  whenApplied DateTime?
+  WhereApplied String?
+  proofUrl    String?
+  amount      Float?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model Participation{
+  id            String          @id @default(cuid())
+  title         String?
+  description   String?
+  typeOfParticipatedeEvent String?
+  date          DateTime?
+  location      String?
+  cretificateUrl String?
+  user          User            @relation(fields: [userId], references: [id])
+  userId        String
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+}
+
+model Internships{
+  id          String     @id @default(cuid())
+  companyName String
+  title       String?
+  user     User     @relation(fields: [userId], references: [id])
+  userId       String
+  description String?
+  startDate   DateTime?
+  endDate     DateTime?
+  proofUrl    String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model ExperienceTrips{
+  id          String     @id @default(cuid())
+  companyName String
+  title       String?
+  user     User     @relation(fields: [userId], references: [id])
+  userId       String
+  description String?
+  startDate   DateTime?
+  endDate     DateTime?
+  proofUrl    String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model Nptel{
+  id          String     @id @default(cuid())
+  title       String?
+  user     User     @relation(fields: [userId], references: [id])
+  userId       String
+  description String?
+  startDate   DateTime?
+  endDate     DateTime?
+  proofUrl    String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+
+//    Certificate Model    //
+model Certificate {
+  id           String   @id @default(cuid())
+  title        String
+  description  String?
+  duration     Int
+  user     User     @relation(fields: [userId], references: [id])
+  userId       String
+  issuedBy     String
+  issueDate    DateTime @default(now())
+  expiryDate   DateTime?
+  ImageUrl     String?
+  proofUrl     String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
 
 //   Notification Model //
 
@@ -189,10 +306,13 @@ model Achievements {
   id          String        @id @default(uuid())
   userId      String        // Remove
   user        User          @relation(fields: [userId], references: [id], onDelete: Cascade,onUpdate: Cascade)
-  semester    SemesterType
-  branch      BranchType
-  name        String?
-  description String?
+  title         String?
+  description   String?
+  typeOfParticipatedeEvent String?
+  date          DateTime?
+  location      String?
+  cretificateUrl String?
+  rewards       String?
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 }
@@ -201,12 +321,34 @@ model Achievements {
 
 model Projects {
   id          String        @id @default(uuid())
-  userId      String        
-  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade,onUpdate: Cascade)
-  semester    SemesterType
-  branch      BranchType
+  leadId      String        
+  leader        User          @relation("LeaderOfProjects",fields: [leadId], references: [id], onDelete: Cascade,onUpdate: Cascade)
   name        String?
+    members     User[]    @relation("MemberOfProjects")
+  title       String
   description String?
+  projectType String?
+  startDate   DateTime?
+  endDate     DateTime?
+  repoUrl     String?   // Optional GitHub or GitLab link
+  liveUrl     String?   // Optional deployed app link
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+model Ecosystem {
+  id          String        @id @default(uuid())
+  leadId      String        
+  leader        User          @relation("LeaderOfEecosystemProjects",fields: [leadId], references: [id], onDelete: Cascade,onUpdate: Cascade)
+  name        String?
+    members     User[]    @relation("MemberOfEecosystemProjects")
+  title       String
+  description String?
+  projectType String?
+  startDate   DateTime?
+  endDate     DateTime?
+  repoUrl     String?   // Optional GitHub or GitLab link
+  liveUrl     String?   // Optional deployed app link
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 }
