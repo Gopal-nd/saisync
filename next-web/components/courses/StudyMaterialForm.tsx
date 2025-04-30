@@ -25,7 +25,6 @@ import {
 } from '@/schema/subjects'
 import useAuthStore from '@/store/useAuthStore'
 import { UploadDropzone } from '@/utils/uploadthing'
-import { deleteFilesServerAction } from '@/actions'
 import { axiosFrontend } from '@/lib/axios'
 
 interface Subject {

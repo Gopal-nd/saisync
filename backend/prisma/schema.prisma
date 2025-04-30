@@ -229,7 +229,7 @@ model Certificate {
   issuedBy     String
   issueDate    DateTime @default(now())
   expiryDate   DateTime?
-  ImageUrl     String?
+  imageUrl     String?
   proofUrl     String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
