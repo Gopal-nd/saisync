@@ -12,7 +12,7 @@ import mentorRoutes from './routes/mentor'
 import iaExamRoutes from './routes/iaexam'
 import staffRoute from './routes/staff'
 import staffPeriodRoute from './routes/staff-attendence'
-import studentActivityRoute from './routes/activities';
+import studentActivityRoute from './routes/student-activities';
 import { authenticateToken } from './middleware/auth';
 import { getSubjectDetails, getSubjectNames } from './controllers/subject';
 import studyMaterialsRoute from './routes/study-materials'

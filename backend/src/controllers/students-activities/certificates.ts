@@ -1,18 +1,23 @@
 import type { Request, Response } from "express";
-import asyncHandler from "../utils/async-handler";
-import { prisma } from "../lib/db";
-import { ApiResponse } from "../utils/api-response";
-import { SubjectSchema } from "../types";
-import { APIError } from "../utils/api-error";
+import asyncHandler from "../../utils/async-handler";
+import { prisma } from "../../lib/db";
+import { ApiResponse } from "../../utils/api-response";
+import { SubjectSchema } from "../../types";
+import { APIError } from "../../utils/api-error";
 import type { BranchType, SemesterType } from "@prisma/client";
 
 
 
 export const getCertificate = asyncHandler(async (req: Request, res: Response) => {
 
+  if(!req.user?.userId){
+    throw new APIError({ message: "User not authenticated", status: 401 });
+  }
   const material = await prisma.certificate.findMany({
     where: {
     userId:req.user?.userId,
+    },orderBy: {
+      issueDate: 'desc',
     }
   });
 
@@ -22,7 +27,7 @@ export const getCertificate = asyncHandler(async (req: Request, res: Response) =
     new ApiResponse({
       statusCode: 201,
       data: material,
-      message: "Studay material created successfully",
+      message: "successfully",
     })
   );
 });
@@ -43,7 +48,7 @@ export const getCertificateById = asyncHandler(async (req: Request, res: Respons
     new ApiResponse({
       statusCode: 201,
       data: material,
-      message: "Studay material created successfully",
+      message: "sccessfull",
     })
   );
 });
@@ -78,7 +83,7 @@ export const createCertificate = asyncHandler(async (req: Request, res: Response
       new ApiResponse({
         statusCode: 201,
         data: certificate,
-        message: "Studay material created successfully",
+        message: "Certificate created successfully",
       })
     );
   });
@@ -116,7 +121,27 @@ export const updateCertificates = asyncHandler(async (req: Request, res: Respons
       new ApiResponse({
         statusCode: 201,
         data: material,
-        message: "Studay material created successfully",
+        message: "Certificate updated successfully",
       })
     );
   });
+
+
+export const deleteCertificates = asyncHandler(async (req: Request, res: Response) => {
+
+const {id} = req.params
+
+  const material = await prisma.certificate.delete({
+    where: {
+    id:id,    
+    }
+  });
+
+  res.status(201).json(
+    new ApiResponse({
+      statusCode: 201,
+      data: null,
+      message: "Certificate deleted successfully",
+    })
+  );
+});

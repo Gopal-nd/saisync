@@ -3,23 +3,19 @@
 import { useQuery, useMutation } from '@tanstack/react-query'
 import axiosInstance from '@/lib/axiosInstance'
 import { axiosFrontend } from '@/lib/axios'
-import { useParams, useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Plus, File, Pencil, Trash } from 'lucide-react'
 import { toast } from 'sonner'
 import Link from 'next/link'
 
 import { Button } from '@/components/ui/button'
-import StudyMaterialForm from '@/components/courses/StudyMaterialForm'
-import EditStydyMaterialForm from '@/components/courses/EditStudyMetrialForm'
 import NewCertificateForm from '@/components/student/activities/certificates/NewCertificate'
 import Image from 'next/image'
 import EditCertificateForm from '@/components/student/activities/certificates/EditCertificateForm'
+import useAuthStore from '@/store/useAuthStore'
 
-export default function SubjectForm() {
-  const params = useParams()
-  const id = params.id
-  const router = useRouter()
+export default function Certificates() {
+  const id = useAuthStore().user?.id
 
   const [open, setOpen] = useState(false)
   const [materialId, setMaterialId] = useState('')
@@ -35,7 +31,7 @@ export default function SubjectForm() {
 
   const deleteMaterialMutation = useMutation({
     mutationFn: async (id: string) => {
-      const res = await axiosInstance.delete(`/api/study-materials/material/${id}`)
+      const res = await axiosInstance.delete(`/api/students/activities/certificate/${id}`)
       return res.data.success
     },
     onSuccess: (success) => {

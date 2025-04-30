@@ -324,8 +324,9 @@ model Projects {
   leadId      String        
   leader        User          @relation("LeaderOfProjects",fields: [leadId], references: [id], onDelete: Cascade,onUpdate: Cascade)
   name        String?
-    members     User[]    @relation("MemberOfProjects")
+  members     User[]    @relation("MemberOfProjects")
   title       String
+  membersList String?
   description String?
   projectType String?
   startDate   DateTime?
