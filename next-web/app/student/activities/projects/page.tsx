@@ -1,15 +1,19 @@
 // app/(dashboard)/projects/page.tsx
 "use client";
 
-import { useProjects } from "@/hooks/useProjects";
+import { Button } from "@/components/ui/button";
+import { useDeleteProject, useProjects } from "@/hooks/useProjects";
 import Link from "next/link";
 
 export default function ProjectsPage() {
   const { data: projects, isLoading, isError } = useProjects();
 
+  const mutate = useDeleteProject()
   if (isLoading) return <p>Loading...</p>;
   if (isError) return <p>Something went wrong!</p>;
-
+  const handleDelete = (id: string) => {
+    mutate.mutate(id)
+  }
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <div className="flex justify-between items-center mb-4">
@@ -25,16 +29,27 @@ export default function ProjectsPage() {
         <ul className="space-y-4">
           {projects.map((project: any) => (
             <li key={project.id} className="border p-4 rounded shadow-sm">
-              <p>{JSON.stringify(project)}</p>
               <h2 className="text-lg font-semibold">{project.title}</h2>
               <p className="text-gray-600">{project.description}</p>
               <div className="flex gap-4 mt-2">
                 <Link
-                  href={`/student/activities/projects/edit/${project.id}`}
+                  href={`/student/activities/projects/${project.id}/edit`}
                   className="text-blue-600 hover:underline"
                 >
                   Edit
                 </Link>
+                <Link
+                  href={`/student/activities/projects/${project.id}`}
+                  className="text-blue-600 hover:underline"
+                >
+                  View
+                </Link>
+                <Button
+                  onClick={()=>handleDelete(project.id)}
+                  className="text-red-600 hover:underline"
+                >
+                 delete
+                </Button>
               </div>
             </li>
           ))}

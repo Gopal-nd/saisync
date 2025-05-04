@@ -100,14 +100,19 @@ export const updateProject = asyncHandler(async (req: Request, res: Response) =>
     endDate,
     repoUrl,
     liveUrl,
-    memberIds ,
+    memberIds=[] ,
+  
     name
   } = req.body;
+  console.log(req.body)
+  console.log(req.params)
+
 
   const updated = await prisma.projects.update({
     where: { id: req.params.id },
     data: {
       title,
+     leadId: req.user?.userId,
       description,
       projectType,
       startDate: startDate ? new Date(startDate) : undefined,
@@ -115,9 +120,6 @@ export const updateProject = asyncHandler(async (req: Request, res: Response) =>
       repoUrl,
       liveUrl,
       name,
-      members: {
-        set: memberIds.map((id: string) => ({ id })) // reset members
-      }
     }
   });
 
