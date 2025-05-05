@@ -7,6 +7,7 @@ import { getAllTrips,createExperianceTrip,deleteTrip,getTripById,updateTrip } fr
 import { getAllInternships,createInternship,deleteInternship,getInternshipById,updateInternship } from '../controllers/students-activities/internship.controller';
 import { getAllNptelCorses,createNptel,deleteNptel,getNptelId,updateNptel } from '../controllers/students-activities/nptel.controller';
 import { getAllParticipations,createParticipation,getPaticaipationById,updateParticipation,deleteParticipation } from '../controllers/students-activities/participate.controller';
+import { getAllAchivements,createAchivement,getAchivementById,updateAchivements,deleteAchivements } from '../controllers/students-activities/achivements.controller';
 
 
 const router = express.Router();
@@ -48,4 +49,11 @@ router.get("/participate/:id", authenticateToken, getPaticaipationById);
 router.post("/participate/new", authenticateToken, createParticipation);
 router.put("/participate/edit/:id", authenticateToken, updateParticipation);
 router.delete("/participate/:id", authenticateToken, deleteParticipation);
+
+router.get("/achivements", authenticateToken, getAllAchivements);
+router.get("/achivements/:id", authenticateToken, getAchivementById);
+router.post("/achivements/new", authenticateToken, createAchivement);
+router.put("/achivements/edit/:id", authenticateToken, updateAchivements);
+router.delete("/achivements/:id", authenticateToken, deleteAchivements);
+
 export default router;
