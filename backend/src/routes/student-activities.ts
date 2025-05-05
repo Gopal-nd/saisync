@@ -4,6 +4,10 @@ import { createCertificate, deleteCertificates, getCertificate, getCertificateBy
 import { authenticateToken } from '../middleware/auth';
 import { createProject, deleteProject, getAllProjects, getProjectById, updateProject } from '../controllers/students-activities/project.controller';
 import { getAllTrips,createExperianceTrip,deleteTrip,getTripById,updateTrip } from '../controllers/students-activities/exp-tip.controller';
+import { getAllInternships,createInternship,deleteInternship,getInternshipById,updateInternship } from '../controllers/students-activities/internship.controller';
+import { getAllNptelCorses,createNptel,deleteNptel,getNptelId,updateNptel } from '../controllers/students-activities/nptel.controller';
+import { getAllParticipations,createParticipation,getPaticaipationById,updateParticipation,deleteParticipation } from '../controllers/students-activities/participate.controller';
+
 
 const router = express.Router();
 
@@ -12,6 +16,8 @@ router.get("/certificate/:id",authenticateToken, getCertificateById);
 router.delete("/certificate/:id",authenticateToken, deleteCertificates);
 router.post("/certificate/new",authenticateToken, createCertificate);
 router.put("/certificate/edit",authenticateToken, updateCertificates);
+
+
 
 router.get("/project", authenticateToken, getAllProjects);
 router.get("/project/:id", authenticateToken, getProjectById);
@@ -25,4 +31,21 @@ router.post("/exp-trip/new", authenticateToken, createExperianceTrip);
 router.put("/exp-trip/edit/:id", authenticateToken, updateTrip);
 router.delete("/exp-trip/:id", authenticateToken, deleteTrip);
 
+router.get("/internship", authenticateToken, getAllInternships);
+router.get("/internship/:id", authenticateToken, getInternshipById);
+router.post("/internship/new", authenticateToken, createInternship);
+router.put("/internship/edit/:id", authenticateToken, updateInternship);
+router.delete("/internship/:id", authenticateToken, deleteInternship);
+
+router.get("/nptel", authenticateToken, getAllNptelCorses);
+router.get("/nptel/:id", authenticateToken, getNptelId);
+router.post("/nptel/new", authenticateToken, createNptel);
+router.put("/nptel/edit/:id", authenticateToken, updateNptel);
+router.delete("/nptel/:id", authenticateToken, deleteNptel);
+
+router.get("/participate", authenticateToken, getAllParticipations);
+router.get("/participate/:id", authenticateToken, getPaticaipationById);
+router.post("/participate/new", authenticateToken, createParticipation);
+router.put("/participate/edit/:id", authenticateToken, updateParticipation);
+router.delete("/participate/:id", authenticateToken, deleteParticipation);
 export default router;
