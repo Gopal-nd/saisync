@@ -9,6 +9,8 @@ import { getAllNptelCorses,createNptel,deleteNptel,getNptelId,updateNptel } from
 import { getAllParticipations,createParticipation,getPaticaipationById,updateParticipation,deleteParticipation } from '../controllers/students-activities/participate.controller';
 import { getAllAchivements,createAchivement,getAchivementById,updateAchivements,deleteAchivements } from '../controllers/students-activities/achivements.controller';
 import { getAllMedical ,createMedical,deleteMedical,getMedicalById,updateMedical} from '../controllers/students-activities/medical.controller';
+import { getAllScholerships,createScolership,getScholershipById,updateScholership,deleteScholership } from '../controllers/students-activities/scholership.controller';
+import { createSchedule } from '../controllers/schedule';
 
 
 const router = express.Router();
@@ -57,6 +59,12 @@ router.post("/medical/new", authenticateToken, createMedical);
 router.put("/medical/edit/:id", authenticateToken, updateMedical);
 router.delete("/medical/:id", authenticateToken, deleteMedical);
 
+router.get("/scholoership", authenticateToken, getAllScholerships);
+router.get("/scholoership/:id", authenticateToken, getScholershipById);
+router.post("/scholoership/new", authenticateToken, createSchedule);
+router.put("/scholoership/edit/:id", authenticateToken, updateScholership);
+router.delete("/scholoership/:id", authenticateToken, deleteScholership);
+// scholoership
 
 
 export default router;
