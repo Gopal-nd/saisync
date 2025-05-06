@@ -8,6 +8,7 @@ import { getAllInternships,createInternship,deleteInternship,getInternshipById,u
 import { getAllNptelCorses,createNptel,deleteNptel,getNptelId,updateNptel } from '../controllers/students-activities/nptel.controller';
 import { getAllParticipations,createParticipation,getPaticaipationById,updateParticipation,deleteParticipation } from '../controllers/students-activities/participate.controller';
 import { getAllAchivements,createAchivement,getAchivementById,updateAchivements,deleteAchivements } from '../controllers/students-activities/achivements.controller';
+import { getAllMedical ,createMedical,deleteMedical,getMedicalById,updateMedical} from '../controllers/students-activities/medical.controller';
 
 
 const router = express.Router();
@@ -50,10 +51,12 @@ router.post("/participate/new", authenticateToken, createParticipation);
 router.put("/participate/edit/:id", authenticateToken, updateParticipation);
 router.delete("/participate/:id", authenticateToken, deleteParticipation);
 
-router.get("/achivements", authenticateToken, getAllAchivements);
-router.get("/achivements/:id", authenticateToken, getAchivementById);
-router.post("/achivements/new", authenticateToken, createAchivement);
-router.put("/achivements/edit/:id", authenticateToken, updateAchivements);
-router.delete("/achivements/:id", authenticateToken, deleteAchivements);
+router.get("/medical", authenticateToken, getAllMedical);
+router.get("/medical/:id", authenticateToken, getMedicalById);
+router.post("/medical/new", authenticateToken, createMedical);
+router.put("/medical/edit/:id", authenticateToken, updateMedical);
+router.delete("/medical/:id", authenticateToken, deleteMedical);
+
+
 
 export default router;
