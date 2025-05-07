@@ -1,64 +1,59 @@
-
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { useDeleteExperience, useExperiences } from "@/hooks/useExperianceTrip";
-import { useDeleteInternship, useInternships } from "@/hooks/useInternshps";
-import { useProjects } from "@/hooks/useProjects";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
+import { useInternships, useDeleteInternship } from "@/hooks/useInternshps";
 
 export default function InternShipPage() {
-  const { data: projects, isLoading, isError } = useInternships();
-  console.log(projects)
-  const mutate = useDeleteInternship()
-  if (isLoading) return <p>Loading...</p>;
-  if (isError) return <p>Something went wrong!</p>;
+  const { data: internships, isLoading, isError } = useInternships();
+  const mutate = useDeleteInternship();
 
   const handleDelete = (id: string) => {
-    mutate.mutate(id)
-  }
+    mutate.mutate(id);
+  };
+
+  if (isLoading) return <p className="text-center py-10">Loading...</p>;
+  if (isError) return <p className="text-center py-10 text-red-500">Something went wrong!</p>;
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Your Internships</h1>
-        <Link href="/student/activities/internship/new" className="bg-blue-600 text-white px-4 py-2 rounded">
-          + New 
+    <div className="p-6 max-w-5xl mx-auto">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">Your Internships</h1>
+        <Link href="/student/activities/internship/new">
+          <Button className="text-white">+ New</Button>
         </Link>
       </div>
 
-      {projects.length === 0 ? (
-        <p>No projects found.</p>
+      {internships.length === 0 ? (
+        <p className="text-muted-foreground">No internships found.</p>
       ) : (
-        <ul className="space-y-4">
-          {projects.map((project: any) => (
-            <li key={project.id} className="border p-4 rounded shadow-sm">
-              <h2 className="text-lg font-semibold">{project.title}</h2>
-              <p className="text-gray-600">{project.description}</p>
-              <div className="flex gap-4 mt-2">
-                <Link
-                  href={`/student/activities/exp-trip/${project.id}/edit`}
-                  className="text-blue-600 hover:underline"
-                >
-                  Edit
-                </Link>
-                <Link
-                  href={`/student/activities/exp-trip/${project.id}`}
-                  className="text-blue-600 hover:underline"
-                >
-                  View
-                </Link>
-                <Button
-                  onClick={()=>handleDelete(project.id)}
-                  className="text-red-600 hover:underline"
-                >
-                 delete
-                </Button>
-              </div>
-            </li>
+        <div className="space-y-4">
+          {internships.map((internship: any) => (
+            <Card key={internship.id}>
+              <CardContent className="py-4">
+                <h2 className="text-xl font-semibold">{internship.title}</h2>
+                <p className="text-muted-foreground mt-1">{internship.description}</p>
+                <div className="flex gap-4 mt-4">
+                  <Link href={`/student/activities/internship/${internship.id}/edit`}>
+                    <Button variant="outline" size="sm">Edit</Button>
+                  </Link>
+                  <Link href={`/student/activities/internship/${internship.id}`}>
+                    <Button variant="secondary" size="sm">View</Button>
+                  </Link>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => handleDelete(internship.id)}
+                  >
+                    Delete
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );
