@@ -4,15 +4,18 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import { toast } from "sonner";
-
-import {
-  useInternship,
-  useCreateInternship,
-  useUpdateInternship
-} from "@/hooks/useInternshps";
 import { UploadDropzone } from "@/utils/uploadthing";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent } from "@/components/ui/card";
 import { axiosFrontend } from "@/lib/axios";
+import {
+  useCreateInternship,
+  useInternship,
+  useUpdateInternship
+} from "@/hooks/useInternshps";
 
 export default function InternshipForm({
   isEdit = false,
@@ -90,158 +93,136 @@ export default function InternshipForm({
     }
   };
 
+
   if (isView) {
     return (
-      <div className="max-w-2xl mx-auto rounded-lg shadow p-6 space-y-4">
-        <h2 className="text-2xl font-semibold">Internship Details</h2>
-        <div className="space-y-2">
-          <div><span className="font-medium">Company Name:</span> {form.companyName}</div>
-          <div><span className="font-medium">Title:</span> {form.title}</div>
-          <div>
-            <span className="font-medium">Description:</span>
-            <p className="mt-1 text-sm whitespace-pre-wrap">{form.description}</p>
+      <Card className="max-w-xl mx-auto mt-6">
+        <CardContent className="p-6 space-y-4">
+          <h2 className="text-2xl font-bold">Internship Details</h2>
+          <div><strong>Company Name:</strong> {form.companyName || "N/A"}</div>
+          <div><strong>Title:</strong> {form.title || "N/A"}</div>
+          <div><strong>Description:</strong>
+            <p className="whitespace-pre-wrap">{form.description || "N/A"}</p>
           </div>
-          <div><span className="font-medium">Start Date:</span> {form.startDate}</div>
-          <div><span className="font-medium">End Date:</span> {form.endDate}</div>
+          <div><strong>Start Date:</strong> {form.startDate || "N/A"}</div>
+          <div><strong>End Date:</strong> {form.endDate || "N/A"}</div>
           <div>
-            <span className="font-medium">Proof:</span>
+            <strong>Proof:</strong>{" "}
             {form.proofUrl ? (
-              <div className="mt-2">
-                <Image
-                  src={form.proofUrl}
-                  alt="Certificate"
-                  width={300}
-                  height={200}
-                  className="rounded shadow"
-                />
-              </div>
-            ) : (
-              " Not uploaded"
-            )}
+              <Image src={form.proofUrl} alt="Proof" width={200} height={200} className="rounded" />
+            ) : "N/A"}
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     );
   }
 
   return (
-    <div className="max-w-2xl mx-auto rounded-lg shadow-md p-6 mt-6">
-      <h2 className="text-2xl font-bold mb-6">
-        {isEdit ? "Edit Internship" : "Add New Internship"}
-      </h2>
-      <form onSubmit={handleSubmit} className="space-y-5">
-        <div>
-          <label className="block text-sm font-medium">Company Name*</label>
-          <input
-            name="companyName"
-            value={form.companyName}
-            onChange={handleChange}
-            placeholder="Ex: Google"
-            className="mt-1 block w-full rounded-md border shadow-sm px-3 py-2"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium">Title / Role*</label>
-          <input
-            name="title"
-            value={form.title}
-            onChange={handleChange}
-            placeholder="Ex: SDE Intern"
-            className="mt-1 block w-full rounded-md border shadow-sm px-3 py-2"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium">Description</label>
-          <textarea
-            name="description"
-            value={form.description}
-            onChange={handleChange}
-            placeholder="What did you do?"
-            rows={4}
-            className="mt-1 block w-full rounded-md border shadow-sm px-3 py-2"
-          />
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium">Start Date*</label>
-            <input
-              type="date"
-              name="startDate"
-              value={form.startDate}
+    <Card className="max-w-xl mx-auto mt-6">
+      <CardContent className="p-6 space-y-6">
+        <h2 className="text-xl font-bold">
+          {isEdit ? "Edit Internship" : "Create Internship"}
+        </h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="companyName">Company Name</Label>
+            <Input
+              id="companyName"
+              name="companyName"
+              value={form.companyName}
               onChange={handleChange}
-              required
-              className="mt-1 block w-full rounded-md border shadow-sm px-3 py-2"
+              placeholder="Company Name"
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium">End Date*</label>
-            <input
-              type="date"
-              name="endDate"
-              value={form.endDate}
+
+          <div className="space-y-2">
+            <Label htmlFor="title">Role / Title</Label>
+            <Input
+              id="title"
+              name="title"
+              value={form.title}
               onChange={handleChange}
-              required
-              className="mt-1 block w-full rounded-md border shadow-sm px-3 py-2"
+              placeholder="Internship Role"
             />
           </div>
-        </div>
 
-        <div>
-          <label className="block text-sm font-medium mb-2">Upload Proof</label>
-          {form.proofUrl ? (
-            <div className="space-y-2">
-              <Image
-                src={form.proofUrl}
-                alt="Certificate"
-                width={300}
-                height={200}
-                className="rounded shadow"
+          <div className="space-y-2">
+            <Label htmlFor="description">Description</Label>
+            <Textarea
+              id="description"
+              name="description"
+              value={form.description}
+              onChange={handleChange}
+              placeholder="What did you do in this internship?"
+            />
+          </div>
+
+          <div className="flex gap-4">
+            <div className="flex-1 space-y-2">
+              <Label htmlFor="startDate">Start Date</Label>
+              <Input
+                id="startDate"
+                type="date"
+                name="startDate"
+                value={form.startDate}
+                onChange={handleChange}
               />
-              <Button
-                variant="destructive"
-                type="button"
-                onClick={handleDeleteFile}
-              >
-                Delete Proof
-              </Button>
             </div>
-          ) : (
-            <UploadDropzone
-              endpoint="imageUploader"
-              className="border rounded-md p-4"
-              appearance={{
-                label: "",
-                allowedContent: "text-xs",
-              }}
-              onClientUploadComplete={(res) => {
-                const url = res?.[0]?.ufsUrl;
-                if (url) {
-                  setForm((prev) => ({ ...prev, proofUrl: url }));
-                  toast.success("Uploaded");
-                }
-              }}
-              onUploadError={(error: Error) => {
-                toast.error("Upload failed: " + error.message);
-              }}
-            />
-          )}
-        </div>
+            <div className="flex-1 space-y-2">
+              <Label htmlFor="endDate">End Date</Label>
+              <Input
+                id="endDate"
+                type="date"
+                name="endDate"
+                value={form.endDate}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
 
-        <Button
-          type="submit"
-          disabled={createMutation.isPending || updateMutation.isPending}
-          className="w-full"
-        >
-          {isEdit
-            ? updateMutation.isPending ? "Updating..." : "Update Internship"
-            : createMutation.isPending ? "Submitting..." : "Create Internship"}
-        </Button>
-      </form>
-    </div>
+          <div className="space-y-2">
+            <Label>Proof of Internship</Label>
+            {form.proofUrl ? (
+              <div className="space-y-2">
+                <Image
+                  src={form.proofUrl}
+                  alt="Proof"
+                  width={250}
+                  height={250}
+                  className="rounded border"
+                />
+                <Button
+                  type="button"
+                  variant="destructive"
+                  onClick={handleDeleteFile}
+                >
+                  Delete Proof
+                </Button>
+              </div>
+            ) : (
+              <UploadDropzone
+                endpoint="imageUploader"
+                className="border rounded-md p-4"
+                appearance={{
+                  label: "text-sm text-gray-500",
+                  allowedContent: "text-xs text-muted-foreground"
+                }}
+                onClientUploadComplete={(res) => {
+                  const url = res[0].ufsUrl;
+                  setForm((prev) => ({ ...prev, proofUrl: url }));
+                }}
+                onUploadError={(error: Error) => {
+                  toast.error(`Upload failed: ${error.message}`);
+                }}
+              />
+            )}
+          </div>
+
+          <Button type="submit" className="w-full">
+            {isEdit ? "Update Internship" : "Create Internship"}
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
   );
 }

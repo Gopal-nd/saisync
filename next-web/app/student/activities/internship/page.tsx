@@ -1,68 +1,59 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { useDeleteInternship, useInternships } from "@/hooks/useInternshps";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+
+import { useInternships, useDeleteInternship } from "@/hooks/useInternshps";
 
 export default function InternShipPage() {
   const { data: internships, isLoading, isError } = useInternships();
   const mutate = useDeleteInternship();
 
-  if (isLoading) return <p className="text-center py-6">Loading internships...</p>;
-  if (isError) return <p className="text-center text-red-500 py-6">Something went wrong!</p>;
-
   const handleDelete = (id: string) => {
     mutate.mutate(id);
   };
 
+  if (isLoading) return <p className="text-center py-10">Loading...</p>;
+  if (isError) return <p className="text-center py-10 text-red-500">Something went wrong!</p>;
+
   return (
-    <div className="p-6 max-w-4xl mx-auto">
+    <div className="p-6 max-w-5xl mx-auto">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold tracking-tight">Your Internships</h1>
+        <h1 className="text-3xl font-bold">Your Internships</h1>
         <Link href="/student/activities/internship/new">
-          <Button className="bg-blue-600 hover:bg-blue-700 text-white">+ New</Button>
+          <Button className="text-white">+ New</Button>
         </Link>
       </div>
 
       {internships.length === 0 ? (
-        <p className="text-gray-500 text-center">No internships found.</p>
+        <p className="text-muted-foreground">No internships found.</p>
       ) : (
-        <ul className="space-y-6">
+        <div className="space-y-4">
           {internships.map((internship: any) => (
-            <li
-              key={internship.id}
-              className="border rounded-xl p-6 shadow-sm hover:shadow-md transition"
-            >
-              <div className="flex justify-between items-start">
-                <div>
-                  <h2 className="text-xl font-semibold">{internship.title}</h2>
-                  <p className="text-gray-600 mt-1">{internship.description}</p>
-                </div>
-                <div className="flex flex-col gap-2 text-sm">
-                  <Link
-                    href={`/student/activities/exp-trip/${internship.id}/edit`}
-                    className="text-blue-600 hover:underline"
-                  >
-                    Edit
+            <Card key={internship.id}>
+              <CardContent className="py-4">
+                <h2 className="text-xl font-semibold">{internship.title}</h2>
+                <p className="text-muted-foreground mt-1">{internship.description}</p>
+                <div className="flex gap-4 mt-4">
+                  <Link href={`/student/activities/internship/${internship.id}/edit`}>
+                    <Button variant="outline" size="sm">Edit</Button>
                   </Link>
-                  <Link
-                    href={`/student/activities/exp-trip/${internship.id}`}
-                    className="text-blue-600 hover:underline"
-                  >
-                    View
+                  <Link href={`/student/activities/internship/${internship.id}`}>
+                    <Button variant="secondary" size="sm">View</Button>
                   </Link>
                   <Button
                     variant="destructive"
+                    size="sm"
                     onClick={() => handleDelete(internship.id)}
-                    className="text-red-600 hover:text-red-700 px-0"
                   >
                     Delete
                   </Button>
                 </div>
-              </div>
-            </li>
+              </CardContent>
+            </Card>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );
