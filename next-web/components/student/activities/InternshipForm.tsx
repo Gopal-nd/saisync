@@ -1,17 +1,18 @@
 'use client';
+
 import React, { useEffect, useState } from "react";
-import {
-  useExperience,
-  useCreateExperience,
-  useUpdateExperience
-} from "@/hooks/useExperianceTrip";
 import { useParams } from "next/navigation";
-import { toast } from 'sonner'
-import { UploadDropzone } from '@/utils/uploadthing'
-import Image from 'next/image'
+import Image from "next/image";
+import { toast } from "sonner";
+
+import {
+  useInternship,
+  useCreateInternship,
+  useUpdateInternship
+} from "@/hooks/useInternshps";
+import { UploadDropzone } from "@/utils/uploadthing";
 import { Button } from "@/components/ui/button";
 import { axiosFrontend } from "@/lib/axios";
-import { useCreateInternship, useInternship, useUpdateInternship } from "@/hooks/useInternshps";
 
 export default function InternshipForm({
   isEdit = false,
@@ -21,7 +22,7 @@ export default function InternshipForm({
   isView?: boolean;
 }) {
   const { id } = useParams();
-  const { data: existingExperience } = useInternship(id as string);
+  const { data: existingExperience, isLoading } = useInternship(id as string);
 
   const [form, setForm] = useState({
     companyName: "",
@@ -36,7 +37,7 @@ export default function InternshipForm({
   const updateMutation = useUpdateInternship(id as string);
 
   useEffect(() => {
-    if ((isEdit || isView) && existingExperience) {
+    if (!isLoading && (isEdit || isView) && existingExperience) {
       setForm({
         companyName: existingExperience.companyName || "",
         title: existingExperience.title || "",
@@ -46,7 +47,7 @@ export default function InternshipForm({
         proofUrl: existingExperience.proofUrl || ""
       });
     }
-  }, [existingExperience, isEdit, isView]);
+  }, [existingExperience, isEdit, isView, isLoading]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -57,51 +58,65 @@ export default function InternshipForm({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (isEdit) {
-      updateMutation.mutate(form);
-    } else {
-      createMutation.mutate(form);
+
+    if (!form.companyName || !form.title || !form.startDate || !form.endDate) {
+      toast.error("Please fill in all required fields.");
+      return;
+    }
+
+    isEdit
+      ? updateMutation.mutate(form)
+      : createMutation.mutate(form);
+  };
+
+  const handleDeleteFile = async () => {
+    const confirm = window.confirm("Are you sure you want to delete the uploaded proof?");
+    if (!confirm) return;
+
+    toast.loading("Deleting image...");
+    try {
+      const res = await axiosFrontend.delete("/api/uploadthing", {
+        data: { url: form.proofUrl }
+      });
+
+      if (res.data?.message === "ok") {
+        toast.success("Image deleted");
+        setForm((prev) => ({ ...prev, proofUrl: "" }));
+      } else {
+        toast.error("Failed to delete image.");
+      }
+    } catch {
+      toast.error("Error while deleting image.");
     }
   };
 
-    const handleDeleteFile = async () => {
-      const res = await axiosFrontend.delete('/api/uploadthing', { data: { url: form.proofUrl } })
-      console.log(res.data)
-      if (res.data?.message === 'ok') {
-        toast.success('Image deleted successfully')
-        setForm((prev) => ({ ...prev, proofUrl: '' }))
-      }
-      return true
-    }
-
   if (isView) {
     return (
-      <div className="max-w-xl mx-auto p-6 rounded shadow ">
-        <h2 className="text-2xl font-semibold mb-4">Internship Details</h2>
-        <div className="space-y-3 text-gray-800">
+      <div className="max-w-2xl mx-auto rounded-lg shadow p-6 space-y-4">
+        <h2 className="text-2xl font-semibold">Internship Details</h2>
+        <div className="space-y-2">
+          <div><span className="font-medium">Company Name:</span> {form.companyName}</div>
+          <div><span className="font-medium">Title:</span> {form.title}</div>
           <div>
-            <strong>Company Name:</strong> {form.companyName || "N/A"}
+            <span className="font-medium">Description:</span>
+            <p className="mt-1 text-sm whitespace-pre-wrap">{form.description}</p>
           </div>
+          <div><span className="font-medium">Start Date:</span> {form.startDate}</div>
+          <div><span className="font-medium">End Date:</span> {form.endDate}</div>
           <div>
-            <strong>Title:</strong> {form.title || "N/A"}
-          </div>
-          <div>
-            <strong>Description:</strong>
-            <p className="whitespace-pre-wrap">{form.description || "N/A"}</p>
-          </div>
-          <div>
-            <strong>Start Date:</strong> {form.startDate || "N/A"}
-          </div>
-          <div>
-            <strong>End Date:</strong> {form.endDate || "N/A"}
-          </div>
-          <div>
-            <strong>Proof URL:</strong>{" "}
+            <span className="font-medium">Proof:</span>
             {form.proofUrl ? (
-                <Image src={form.proofUrl} alt="Uploaded Certificate" width={200} height={200} className='object-cover' />
-
+              <div className="mt-2">
+                <Image
+                  src={form.proofUrl}
+                  alt="Certificate"
+                  width={300}
+                  height={200}
+                  className="rounded shadow"
+                />
+              </div>
             ) : (
-              "N/A"
+              " Not uploaded"
             )}
           </div>
         </div>
@@ -110,79 +125,122 @@ export default function InternshipForm({
   }
 
   return (
-    <div className="max-w-xl mx-auto p-4 rounded shadow ">
-      <h2 className="text-xl font-bold mb-4">
-        {isEdit ? "Edit" : "Create"} Internship
+    <div className="max-w-2xl mx-auto rounded-lg shadow-md p-6 mt-6">
+      <h2 className="text-2xl font-bold mb-6">
+        {isEdit ? "Edit Internship" : "Add New Internship"}
       </h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          type="text"
-          name="companyName"
-          placeholder="Company Name"
-          value={form.companyName}
-          onChange={handleChange}
-          className="w-full border px-3 py-2 rounded"
-        />
-        <input
-          type="text"
-          name="title"
-          placeholder="Role/Title"
-          value={form.title}
-          onChange={handleChange}
-          className="w-full border px-3 py-2 rounded"
-        />
-        <textarea
-          name="description"
-          placeholder="Description"
-          value={form.description}
-          onChange={handleChange}
-          className="w-full border px-3 py-2 rounded"
-        />
-        <input
-        
-          type="date"
-          name="startDate"
-          value={form.startDate}
-          onChange={handleChange}
-          className="w-full border px-3 py-2 rounded"
-        />
-        <input
-          type="date"
-          name="endDate"
-          value={form.endDate}
-          onChange={handleChange}
-          className="w-full border px-3 py-2 rounded"
-        />
-            <div className="flex flex-col">
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div>
+          <label className="block text-sm font-medium">Company Name*</label>
+          <input
+            name="companyName"
+            value={form.companyName}
+            onChange={handleChange}
+            placeholder="Ex: Google"
+            className="mt-1 block w-full rounded-md border shadow-sm px-3 py-2"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium">Title / Role*</label>
+          <input
+            name="title"
+            value={form.title}
+            onChange={handleChange}
+            placeholder="Ex: SDE Intern"
+            className="mt-1 block w-full rounded-md border shadow-sm px-3 py-2"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium">Description</label>
+          <textarea
+            name="description"
+            value={form.description}
+            onChange={handleChange}
+            placeholder="What did you do?"
+            rows={4}
+            className="mt-1 block w-full rounded-md border shadow-sm px-3 py-2"
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium">Start Date*</label>
+            <input
+              type="date"
+              name="startDate"
+              value={form.startDate}
+              onChange={handleChange}
+              required
+              className="mt-1 block w-full rounded-md border shadow-sm px-3 py-2"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">End Date*</label>
+            <input
+              type="date"
+              name="endDate"
+              value={form.endDate}
+              onChange={handleChange}
+              required
+              className="mt-1 block w-full rounded-md border shadow-sm px-3 py-2"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-2">Upload Proof</label>
           {form.proofUrl ? (
-            <>
-              <Image src={form.proofUrl} alt="Uploaded Certificate" width={200} height={200} className='object-cover' />
-              <Button onClick={handleDeleteFile} className='bg-red-500 hover:bg-red-700'>Delete</Button>
-            </>
+            <div className="space-y-2">
+              <Image
+                src={form.proofUrl}
+                alt="Certificate"
+                width={300}
+                height={200}
+                className="rounded shadow"
+              />
+              <Button
+                variant="destructive"
+                type="button"
+                onClick={handleDeleteFile}
+              >
+                Delete Proof
+              </Button>
+            </div>
           ) : (
             <UploadDropzone
               endpoint="imageUploader"
+              className="border rounded-md p-4"
               appearance={{
-                label: "text-sm text-gray-500",
-                allowedContent: "text-xs text-muted-foreground",
+                label: "",
+                allowedContent: "text-xs",
               }}
-              className="w-full"
               onClientUploadComplete={(res) => {
-                const url = res[0].ufsUrl
-                setForm((prev) => ({ ...prev, proofUrl: url }));
+                const url = res?.[0]?.ufsUrl;
+                if (url) {
+                  setForm((prev) => ({ ...prev, proofUrl: url }));
+                  toast.success("Uploaded");
+                }
               }}
               onUploadError={(error: Error) => {
-                console.error(`Upload failed: ${error.message}`)
+                toast.error("Upload failed: " + error.message);
               }}
             />
           )}
         </div>
-        <button
+
+        <Button
           type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          disabled={createMutation.isPending || updateMutation.isPending}
+          className="w-full"
         >
-          {isEdit ? "Update" : "Create"}
-        </button>
+          {isEdit
+            ? updateMutation.isPending ? "Updating..." : "Update Internship"
+            : createMutation.isPending ? "Submitting..." : "Create Internship"}
+        </Button>
       </form>
     </div>
   );
