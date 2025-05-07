@@ -104,6 +104,7 @@ const IATests = () => {
         const marks = marksMap[studentId] || 0;
         console.log('Saving', studentId, marks);
         const data ={id:studentId, marks}
+        if(data.marks >=51) return
         mutate.mutate(data)
 
     };

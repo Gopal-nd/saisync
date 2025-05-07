@@ -11,6 +11,7 @@ import { getAllAchivements,createAchivement,getAchivementById,updateAchivements,
 import { getAllMedical ,createMedical,deleteMedical,getMedicalById,updateMedical} from '../controllers/students-activities/medical.controller';
 import { getAllScholerships,createScolership,getScholershipById,updateScholership,deleteScholership } from '../controllers/students-activities/scholership.controller';
 import { createSchedule } from '../controllers/schedule';
+import { createEcosystem, deleteEcosystem, getAllEcosystem, getEcosystemById, updateEcosystem } from '../controllers/students-activities/ecosystem.controller';
 
 
 const router = express.Router();
@@ -53,6 +54,13 @@ router.post("/participate/new", authenticateToken, createParticipation);
 router.put("/participate/edit/:id", authenticateToken, updateParticipation);
 router.delete("/participate/:id", authenticateToken, deleteParticipation);
 
+
+router.get("/achivements", authenticateToken, getAllAchivements);
+router.get("/achivements/:id", authenticateToken, getAchivementById);
+router.post("/achivements/new", authenticateToken, createAchivement);
+router.put("/achivements/edit/:id", authenticateToken, updateAchivements);
+router.delete("/achivements/:id", authenticateToken, deleteAchivements);
+
 router.get("/medical", authenticateToken, getAllMedical);
 router.get("/medical/:id", authenticateToken, getMedicalById);
 router.post("/medical/new", authenticateToken, createMedical);
@@ -61,9 +69,15 @@ router.delete("/medical/:id", authenticateToken, deleteMedical);
 
 router.get("/scholoership", authenticateToken, getAllScholerships);
 router.get("/scholoership/:id", authenticateToken, getScholershipById);
-router.post("/scholoership/new", authenticateToken, createSchedule);
+router.post("/scholoership/new", authenticateToken, createScolership);
 router.put("/scholoership/edit/:id", authenticateToken, updateScholership);
 router.delete("/scholoership/:id", authenticateToken, deleteScholership);
+
+router.get("/ecosystem", authenticateToken, getAllEcosystem);
+router.get("/ecosystem/:id", authenticateToken, getEcosystemById);
+router.post("/ecosystem/new", authenticateToken, createEcosystem);
+router.put("/ecosystem/edit/:id", authenticateToken, updateEcosystem);
+router.delete("/ecosystem/:id", authenticateToken, deleteEcosystem);
 // scholoership
 
 
