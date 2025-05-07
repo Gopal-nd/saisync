@@ -7,11 +7,10 @@
     "build": "tsc",
     "start": "index.ts",
     "seed": "bun run  prisma/seed.ts",
-    "clean":"bun run prisma/dataCleanUp.ts",
+    "clean": "bun run prisma/dataCleanUp.ts",
     "generate": "prisma generate",
     "push": "bunx prisma db push",
     "migrate": "bunx prisma migrate dev"
-    
   },
   "devDependencies": {
     "@tanstack/eslint-plugin-query": "^5.68.0",
@@ -21,13 +20,14 @@
     "@types/express": "^5.0.1",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^22.13.14",
+    "prisma": "^6.7.0",
     "ts-node": "^10.9.2"
   },
   "peerDependencies": {
     "typescript": "^5.8.2"
   },
   "dependencies": {
-    "@prisma/client": "^6.5.0",
+    "@prisma/client": "^6.7.0",
     "@types/cookie-parser": "^1.4.8",
     "@types/nodemailer": "^6.4.17",
     "bcryptjs": "^3.0.2",
@@ -41,7 +41,6 @@
     "jsonwebtoken": "^9.0.2",
     "multer": "^1.4.5-lts.2",
     "nodemailer": "^6.10.0",
-    "prisma": "^6.5.0",
     "uploadthing": "^7.6.0",
     "zod": "^3.24.2"
   }

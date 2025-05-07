@@ -1,5 +1,6 @@
 import { PrismaClient, BranchType, SemesterType, SectionType } from '@prisma/client';
 import { prisma } from '../src/lib/db';
+import bcrypt from 'bcryptjs';
 
 
 
@@ -18,6 +19,16 @@ async function main() {
       });
     })
   )
+ const hashedPassword = await bcrypt.hash('123123', 10);
+  const createUser = await prisma.user.create({
+    data:{
+      email:"admin@localhost",
+      password:hashedPassword,
+      name:"admin",
+      role:"ADMIN",
+    }
+  })
+  console.log('✅ User created:', createUser);
   console.log('✅ Branches created:', branches.map((b) => b.branchName));
 
   // Create semesters and sections
