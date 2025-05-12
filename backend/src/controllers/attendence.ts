@@ -54,3 +54,64 @@ export const getAttendence = asyncHandler(async(req:Request,res:Response)=>{
     // console.log(attendence)
     res.status(200).json(new ApiResponse({data:attendence, message:"success", statusCode:200}))
 })
+
+
+
+
+
+export const getStudentsAttendenceTabel = asyncHandler(async(req:Request,res:Response)=>{
+
+    const {startDate,endDate} = req.body  
+    const userId = req.user?.userId;
+    const userDetails = await prisma.user.findUnique({
+        where:{
+            id:userId
+        }
+    })
+
+    console.log(req.query)
+
+    let whereClause: any = {
+        AND: []
+    };
+    
+    if (userDetails) {
+        whereClause.AND.push({ branch:userDetails?.branch  });
+
+        whereClause.AND.push({ semester: userDetails?.semester });
+  
+        whereClause.AND.push({ section: userDetails?.section });
+    }
+    
+    if (startDate) {
+        const start = new Date(startDate as string);
+        const end = new Date(endDate as string)
+        whereClause.AND.push({
+            date: {
+                gte: new Date(start.setHours(0, 0, 0, 0)),
+                lte: new Date(end.setHours(23, 59, 59, 999)),
+            }
+        });
+    }
+    // if (period) {
+    //     whereClause.AND.push({ periodNumber: Number(period) });
+    // }
+    
+
+    const attendence = await prisma.attendance.findMany({
+        where: whereClause,
+        select:{
+            user:{
+                select:{
+                    name:true,
+                    usn:true,
+                }
+            },
+            periodNumber:true,
+            status:true,
+        }
+    })
+    console.log(attendence)
+    res.status(200).json(new ApiResponse({data:attendence, message:"success", statusCode:200}))
+})
+
