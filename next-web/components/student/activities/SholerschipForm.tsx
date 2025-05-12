@@ -1,16 +1,22 @@
-'use client';
+"use client";
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { toast } from 'sonner';
-import Image from 'next/image';
+import { toast } from "sonner";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { UploadDropzone } from '@/utils/uploadthing';
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { UploadDropzone } from "@/utils/uploadthing";
 import { axiosFrontend } from "@/lib/axios";
-import { useCreateScholoership, useScholoership, useUpdateScholoership } from "@/hooks/useScholoership";
+import {
+  useCreateScholoership,
+  useScholoership,
+  useUpdateScholoership,
+} from "@/hooks/useScholoership";
 
 export default function ScholarshipForm({
   isEdit = false,
-  isView = false
+  isView = false,
 }: {
   isEdit?: boolean;
   isView?: boolean;
@@ -25,7 +31,7 @@ export default function ScholarshipForm({
     endDate: "",
     whereApplied: "",
     proofUrl: "",
-    amount: ""
+    amount: "",
   });
 
   const createMutation = useCreateScholoership();
@@ -61,7 +67,7 @@ export default function ScholarshipForm({
       whenApplied: form.endDate,
       WhereApplied: form.whereApplied,
       proofUrl: form.proofUrl,
-      amount: parseFloat(form.amount || "0")
+      amount: parseFloat(form.amount || "0"),
     };
     if (isEdit) {
       updateMutation.mutate(payload);
@@ -71,29 +77,39 @@ export default function ScholarshipForm({
   };
 
   const handleDeleteFile = async () => {
-    const res = await axiosFrontend.delete('/api/uploadthing', { data: { url: form.proofUrl } });
-    if (res.data?.message === 'ok') {
-      toast.success('Image deleted successfully');
-      setForm((prev) => ({ ...prev, proofUrl: '' }));
+    const res = await axiosFrontend.delete("/api/uploadthing", {
+      data: { url: form.proofUrl },
+    });
+    if (res.data?.message === "ok") {
+      toast.success("Image deleted successfully");
+      setForm((prev) => ({ ...prev, proofUrl: "" }));
     }
   };
 
   if (isView) {
     return (
-      <div className="max-w-xl mx-auto p-6 rounded shadow">
-        <h2 className="text-2xl font-semibold mb-4">Scholarship Details</h2>
-        <div className="space-y-3 text-gray-800">
-          <div><strong>Title:</strong> {form.title || "N/A"}</div>
-          <div><strong>Description:</strong> <p className="whitespace-pre-wrap">{form.description || "N/A"}</p></div>
-          <div><strong>Received Date:</strong> {form.startDate || "N/A"}</div>
-          <div><strong>Applied Date:</strong> {form.endDate || "N/A"}</div>
-          <div><strong>Where Applied:</strong> {form.whereApplied || "N/A"}</div>
-          <div><strong>Amount:</strong> {form.amount || "N/A"}</div>
+      <div className="max-w-xl mx-auto p-6 rounded shadow space-y-4">
+        <h2 className="text-2xl font-semibold">Scholarship Details</h2>
+        <div className="space-y-2 text-sm text-gray-800">
+          <p><strong>Title:</strong> {form.title || "N/A"}</p>
+          <p><strong>Description:</strong> <span className="whitespace-pre-wrap">{form.description || "N/A"}</span></p>
+          <p><strong>Received Date:</strong> {form.startDate || "N/A"}</p>
+          <p><strong>Applied Date:</strong> {form.endDate || "N/A"}</p>
+          <p><strong>Where Applied:</strong> {form.whereApplied || "N/A"}</p>
+          <p><strong>Amount:</strong> ₹{form.amount || "N/A"}</p>
           <div>
             <strong>Proof:</strong>{" "}
             {form.proofUrl ? (
-              <Image src={form.proofUrl} alt="Uploaded Certificate" width={200} height={200} className="object-cover" />
-            ) : "N/A"}
+              <Image
+                src={form.proofUrl}
+                alt="Uploaded Certificate"
+                width={200}
+                height={200}
+                className="rounded object-cover mt-2"
+              />
+            ) : (
+              "N/A"
+            )}
           </div>
         </div>
       </div>
@@ -101,62 +117,68 @@ export default function ScholarshipForm({
   }
 
   return (
-    <div className="max-w-xl mx-auto p-4 rounded shadow">
-      <h2 className="text-xl font-bold mb-4">
+    <div className="max-w-xl mx-auto p-6 rounded shadow space-y-4">
+      <h2 className="text-2xl font-semibold">
         {isEdit ? "Edit" : "Create"} Scholarship
       </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
-        <input
+        <Input
           type="text"
           name="title"
           placeholder="Scholarship Provider Name"
           value={form.title}
           onChange={handleChange}
-          className="w-full border px-3 py-2 rounded"
         />
-        <textarea
+        <Textarea
           name="description"
           placeholder="Description"
           value={form.description}
           onChange={handleChange}
-          className="w-full border px-3 py-2 rounded"
         />
-        <input
+        <Input
           type="date"
           name="startDate"
           value={form.startDate}
           onChange={handleChange}
-          className="w-full border px-3 py-2 rounded"
         />
-        <input
+        <Input
           type="date"
           name="endDate"
           value={form.endDate}
           onChange={handleChange}
-          className="w-full border px-3 py-2 rounded"
         />
-        <input
+        <Input
           type="text"
           name="whereApplied"
           placeholder="Where Applied"
           value={form.whereApplied}
           onChange={handleChange}
-          className="w-full border px-3 py-2 rounded"
         />
-        <input
+        <Input
           type="number"
           name="amount"
           placeholder="Amount (INR)"
           value={form.amount}
           onChange={handleChange}
-          className="w-full border px-3 py-2 rounded"
         />
 
-        <div className="flex flex-col">
+        <div className="space-y-2">
           {form.proofUrl ? (
             <>
-              <Image src={form.proofUrl} alt="Uploaded Certificate" width={200} height={200} className='object-cover' />
-              <Button onClick={handleDeleteFile} type="button" className='bg-red-500 hover:bg-red-700 mt-2'>Delete</Button>
+              <Image
+                src={form.proofUrl}
+                alt="Uploaded Certificate"
+                width={200}
+                height={200}
+                className="rounded object-cover"
+              />
+              <Button
+                onClick={handleDeleteFile}
+                type="button"
+                variant="destructive"
+              >
+                Delete Image
+              </Button>
             </>
           ) : (
             <UploadDropzone
@@ -178,12 +200,9 @@ export default function ScholarshipForm({
           )}
         </div>
 
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
+        <Button type="submit" className="w-full">
           {isEdit ? "Update" : "Create"}
-        </button>
+        </Button>
       </form>
     </div>
   );

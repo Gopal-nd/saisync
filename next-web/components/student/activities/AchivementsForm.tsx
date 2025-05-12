@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { axiosFrontend } from "@/lib/axios";
 
 export default function AchivementsForm({
@@ -60,11 +60,7 @@ export default function AchivementsForm({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (isEdit) {
-      updateMutation.mutate(form);
-    } else {
-      createMutation.mutate(form);
-    }
+    isEdit ? updateMutation.mutate(form) : createMutation.mutate(form);
   };
 
   const handleDeleteFile = async () => {
@@ -73,21 +69,22 @@ export default function AchivementsForm({
       toast.success('Image deleted successfully');
       setForm((prev) => ({ ...prev, proofUrl: '' }));
     }
-    return true;
   };
 
   if (isView) {
     return (
       <Card className="max-w-xl mx-auto mt-6">
-        <CardHeader className="text-2xl font-semibold">Achievement Details</CardHeader>
-        <CardContent className="space-y-4 text-sm ">
-          <div><strong>Type of Event:</strong> {form.typeOfParticipatedeEvent || "N/A"}</div>
-          <div><strong>Title:</strong> {form.title || "N/A"}</div>
-          <div><strong>Description:</strong><p className="whitespace-pre-wrap">{form.description || "N/A"}</p></div>
-          <div><strong>Date:</strong> {form.startDate || "N/A"}</div>
-          <div><strong>Location:</strong> {form.location || "N/A"}</div>
+        <CardHeader>
+          <CardTitle className="text-2xl font-semibold">Achievement Details</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4 text-sm">
+          <div><span className="font-medium">Type of Event:</span> {form.typeOfParticipatedeEvent || "N/A"}</div>
+          <div><span className="font-medium">Title:</span> {form.title || "N/A"}</div>
+          <div><span className="font-medium">Description:</span><p className="whitespace-pre-wrap">{form.description || "N/A"}</p></div>
+          <div><span className="font-medium">Date:</span> {form.startDate || "N/A"}</div>
+          <div><span className="font-medium">Location:</span> {form.location || "N/A"}</div>
           <div>
-            <strong>Proof:</strong>{" "}
+            <span className="font-medium">Proof:</span>{" "}
             {form.proofUrl ? (
               <Image src={form.proofUrl} alt="Certificate" width={200} height={200} className="rounded-lg border" />
             ) : "N/A"}
@@ -99,12 +96,12 @@ export default function AchivementsForm({
 
   return (
     <Card className="max-w-xl mx-auto mt-6">
-      <CardHeader className="text-xl font-bold">
-        {isEdit ? "Edit" : "Create"} Achievement
+      <CardHeader>
+        <CardTitle className="text-xl font-bold">{isEdit ? "Edit" : "Create"} Achievement</CardTitle>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-2">
             <Label htmlFor="title">Title</Label>
             <Input
               id="title"
@@ -114,7 +111,8 @@ export default function AchivementsForm({
               placeholder="e.g., 1st place in Hackathon"
             />
           </div>
-          <div>
+
+          <div className="space-y-2">
             <Label htmlFor="description">Description</Label>
             <Textarea
               id="description"
@@ -122,29 +120,35 @@ export default function AchivementsForm({
               value={form.description}
               onChange={handleChange}
               placeholder="Describe your achievement..."
+              className="min-h-[100px]"
             />
           </div>
-          <div>
-            <Label htmlFor="startDate">Date</Label>
-            <Input
-              id="startDate"
-              type="date"
-              name="startDate"
-              value={form.startDate}
-              onChange={handleChange}
-            />
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="startDate">Date</Label>
+              <Input
+                id="startDate"
+                type="date"
+                name="startDate"
+                value={form.startDate}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="location">Location</Label>
+              <Input
+                id="location"
+                name="location"
+                value={form.location}
+                onChange={handleChange}
+                placeholder="e.g., IIT Bombay"
+              />
+            </div>
           </div>
-          <div>
-            <Label htmlFor="location">Location</Label>
-            <Input
-              id="location"
-              name="location"
-              value={form.location}
-              onChange={handleChange}
-              placeholder="e.g., IIT Bombay"
-            />
-          </div>
-          <div>
+
+          <div className="space-y-2">
             <Label htmlFor="typeOfParticipatedeEvent">Type of Event</Label>
             <Input
               id="typeOfParticipatedeEvent"
@@ -156,9 +160,9 @@ export default function AchivementsForm({
           </div>
 
           <div className="space-y-2">
-            <Label>Certificate/Proof</Label>
+            <Label>Certificate / Proof</Label>
             {form.proofUrl ? (
-              <div className="flex flex-col items-start gap-2">
+              <div className="flex items-start gap-4">
                 <Image
                   src={form.proofUrl}
                   alt="Uploaded Certificate"

@@ -1,23 +1,24 @@
 'use client';
+
 import React, { useEffect, useState } from "react";
-import {
-  useExperience,
-  useCreateExperience,
-  useUpdateExperience
-} from "@/hooks/useExperianceTrip";
 import { useParams } from "next/navigation";
-import { toast } from 'sonner'
-import { UploadDropzone } from '@/utils/uploadthing'
-import Image from 'next/image'
-import { Button } from "@/components/ui/button";
+import Image from 'next/image';
+import { toast } from 'sonner';
+
+import { UploadDropzone } from '@/utils/uploadthing';
 import { axiosFrontend } from "@/lib/axios";
-import { useCreateInternship, useInternship, useUpdateInternship } from "@/hooks/useInternshps";
-import { useCreateNptel, useNptel, useUpdateNptel } from "@/hooks/useNptel";
-import { useCreateParticipate, useParticipate, useUpdateParticipate } from "@/hooks/useparticipate";
+
+import { useParticipate, useCreateParticipate, useUpdateParticipate } from "@/hooks/useparticipate";
+
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 export default function ParticipateFormPage({
   isEdit = false,
-  isView = false
+  isView = false,
 }: {
   isEdit?: boolean;
   isView?: boolean;
@@ -29,10 +30,9 @@ export default function ParticipateFormPage({
     title: "",
     description: "",
     startDate: "",
-    location:'',
+    location: "",
     proofUrl: "",
-    typeOfParticipatedeEvent:"",
-
+    typeOfParticipatedeEvent: "",
   });
 
   const createMutation = useCreateParticipate();
@@ -44,150 +44,120 @@ export default function ParticipateFormPage({
         title: existingExperience.title || "",
         description: existingExperience.description || "",
         startDate: existingExperience.date?.slice(0, 10) || "",
-        location:existingExperience.location || "",
+        location: existingExperience.location || "",
         proofUrl: existingExperience.cretificateUrl || "",
-        typeOfParticipatedeEvent:existingExperience.typeOfParticipatedeEvent||''
+        typeOfParticipatedeEvent: existingExperience.typeOfParticipatedeEvent || "",
       });
     }
   }, [existingExperience, isEdit, isView]);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (isEdit) {
-      updateMutation.mutate(form);
-    } else {
-      createMutation.mutate(form);
-    }
+    isEdit ? updateMutation.mutate(form) : createMutation.mutate(form);
   };
 
-    const handleDeleteFile = async () => {
-      const res = await axiosFrontend.delete('/api/uploadthing', { data: { url: form.proofUrl } })
-      console.log(res.data)
-      if (res.data?.message === 'ok') {
-        toast.success('Image deleted successfully')
-        setForm((prev) => ({ ...prev, proofUrl: '' }))
-      }
-      return true
+  const handleDeleteFile = async () => {
+    const res = await axiosFrontend.delete('/api/uploadthing', { data: { url: form.proofUrl } });
+    if (res.data?.message === 'ok') {
+      toast.success('Image deleted successfully');
+      setForm((prev) => ({ ...prev, proofUrl: '' }));
     }
+    return true;
+  };
 
   if (isView) {
     return (
-      <div className="max-w-xl mx-auto p-6 rounded shadow ">
-        <h2 className="text-2xl font-semibold mb-4">Participation  Details</h2>
-        <div className="space-y-3 text-gray-800">
-        <div>
-            <strong>TypeOfEvent:</strong> {form.typeOfParticipatedeEvent || "N/A"}
-          </div>
+      <Card className="max-w-xl mx-auto p-6 shadow">
+        <CardHeader>
+          <CardTitle className="text-2xl">Participation Details</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4 text-sm text-gray-800">
+          <p><strong>Type of Event:</strong> {form.typeOfParticipatedeEvent || "N/A"}</p>
+          <p><strong>Title:</strong> {form.title || "N/A"}</p>
+          <p><strong>Description:</strong><br />{form.description || "N/A"}</p>
+          <p><strong>Date:</strong> {form.startDate || "N/A"}</p>
+          <p><strong>Location:</strong> {form.location || "N/A"}</p>
           <div>
-            <strong>Title:</strong> {form.title || "N/A"}
-          </div>
-          <div>
-            <strong>Description:</strong>
-            <p className="whitespace-pre-wrap">{form.description || "N/A"}</p>
-          </div>
-          <div>
-            <strong>Date:</strong> {form.startDate || "N/A"}
-          </div>
-          <div>
-            <strong>Location:</strong> {form.location || "N/A"}
-          </div>
-          <div>
-            <strong>Proof URL:</strong>{" "}
+            <strong>Proof:</strong><br />
             {form.proofUrl ? (
-                <Image src={form.proofUrl} alt="Uploaded Certificate" width={200} height={200} className='object-cover' />
-
-            ) : (
-              "N/A"
-            )}
+              <Image src={form.proofUrl} alt="Certificate" width={200} height={200} className="rounded" />
+            ) : "N/A"}
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     );
   }
 
   return (
-    <div className="max-w-xl mx-auto p-4 rounded shadow ">
-      <h2 className="text-xl font-bold mb-4">
-        {isEdit ? "Edit" : "Create"} Particapate
-      </h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          type="text"
-          name="title"
-          placeholder="Title"
-          value={form.title}
-          onChange={handleChange}
-          className="w-full border px-3 py-2 rounded"
-        />
-        <textarea
-          name="description"
-          placeholder="Description"
-          value={form.description}
-          onChange={handleChange}
-          className="w-full border px-3 py-2 rounded"
-        />
-        <input
-        
-          type="date"
-          name="startDate"
-          value={form.startDate}
-          onChange={handleChange}
-          className="w-full border px-3 py-2 rounded"
-        />
-        <input
-          type="text"
-          name="location"
-          placeholder="Location"
-          value={form.location}
-          onChange={handleChange}
-          className="w-full border px-3 py-2 rounded"
-        />
-         <input
-          type="text"
-          name="typeOfParticipatedeEvent"
-          placeholder="Hackaton, Workshop, sports, etc"
-          value={form.typeOfParticipatedeEvent}
-          onChange={handleChange}
-          className="w-full border px-3 py-2 rounded"
-        />
-            <div className="flex flex-col">
-          {form.proofUrl ? (
-            <>
-              <Image src={form.proofUrl} alt="Uploaded Certificate" width={200} height={200} className='object-cover' />
-              <Button onClick={handleDeleteFile} className='bg-red-500 hover:bg-red-700'>Delete</Button>
-            </>
-          ) : (
-            <UploadDropzone
-              endpoint="imageUploader"
-              appearance={{
-                label: "text-sm text-gray-500",
-                allowedContent: "text-xs text-muted-foreground",
-              }}
-              className="w-full"
-              onClientUploadComplete={(res) => {
-                const url = res[0].ufsUrl
-                setForm((prev) => ({ ...prev, proofUrl: url }));
-              }}
-              onUploadError={(error: Error) => {
-                console.error(`Upload failed: ${error.message}`)
-              }}
+    <Card className="max-w-xl mx-auto p-6 shadow">
+      <CardHeader>
+        <CardTitle className="text-xl">{isEdit ? "Edit" : "Create"} Participation</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <Label htmlFor="title">Title</Label>
+            <Input id="title" name="title" value={form.title} onChange={handleChange} />
+          </div>
+
+          <div>
+            <Label htmlFor="description">Description</Label>
+            <Textarea id="description" name="description" value={form.description} onChange={handleChange} />
+          </div>
+
+          <div>
+            <Label htmlFor="startDate">Date</Label>
+            <Input id="startDate" type="date" name="startDate" value={form.startDate} onChange={handleChange} />
+          </div>
+
+          <div>
+            <Label htmlFor="location">Location</Label>
+            <Input id="location" name="location" value={form.location} onChange={handleChange} />
+          </div>
+
+          <div>
+            <Label htmlFor="typeOfParticipatedeEvent">Type of Event</Label>
+            <Input
+              id="typeOfParticipatedeEvent"
+              name="typeOfParticipatedeEvent"
+              placeholder="Hackathon, Workshop, Sports, etc"
+              value={form.typeOfParticipatedeEvent}
+              onChange={handleChange}
             />
-          )}
-        </div>
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-          {isEdit ? "Update" : "Create"}
-        </button>
-      </form>
-    </div>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <Label>Proof (Certificate)</Label>
+            {form.proofUrl ? (
+              <>
+                <Image src={form.proofUrl} alt="Uploaded Certificate" width={200} height={200} className="rounded" />
+                <Button variant="destructive" onClick={handleDeleteFile}>Delete</Button>
+              </>
+            ) : (
+              <UploadDropzone
+                endpoint="imageUploader"
+                className="w-full"
+                onClientUploadComplete={(res) => {
+                  const url = res[0].ufsUrl;
+                  setForm((prev) => ({ ...prev, proofUrl: url }));
+                }}
+                onUploadError={(error: Error) => {
+                  console.error(`Upload failed: ${error.message}`);
+                }}
+              />
+            )}
+          </div>
+
+          <Button type="submit" className="w-full">
+            {isEdit ? "Update" : "Create"}
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
   );
 }
