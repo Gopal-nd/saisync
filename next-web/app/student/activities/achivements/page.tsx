@@ -27,10 +27,10 @@ export default function Achivements() {
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
         <h1 className="text-3xl font-bold tracking-tight">Your Achievements</h1>
         <Link href="/student/activities/achivements/new">
-          <Button variant="default">+ New</Button>
+          <Button size="sm">+ New</Button>
         </Link>
       </div>
 
@@ -39,25 +39,32 @@ export default function Achivements() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {achievements.map((achievement: any) => (
-            <Card key={achievement.id} className="hover:shadow-lg transition-shadow">
+            <Card
+              key={achievement.id}
+              className="transition-shadow hover:shadow-md border border-muted"
+            >
               <CardHeader>
-                <CardTitle className="text-lg font-semibold">{achievement.title}</CardTitle>
+                <CardTitle className="text-lg font-semibold line-clamp-1">
+                  {achievement.title}
+                </CardTitle>
               </CardHeader>
 
               <CardContent>
-                <p className="text-sm text-muted-foreground">{achievement.description}</p>
+                <p className="text-sm text-muted-foreground line-clamp-3">
+                  {achievement.description || "No description provided."}
+                </p>
               </CardContent>
 
               <CardFooter className="flex justify-end gap-3">
                 <Link
                   href={`/student/activities/achivements/${achievement.id}`}
-                  className="text-sm text-blue-600 hover:underline"
+                  className="text-sm font-medium text-blue-600 hover:underline"
                 >
                   View
                 </Link>
                 <Link
                   href={`/student/activities/achivements/${achievement.id}/edit`}
-                  className="text-sm text-blue-600 hover:underline"
+                  className="text-sm font-medium text-blue-600 hover:underline"
                 >
                   Edit
                 </Link>

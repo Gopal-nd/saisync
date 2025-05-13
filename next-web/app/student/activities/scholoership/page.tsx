@@ -1,41 +1,51 @@
-
-"use client";
+'use client';
 
 import { Button } from "@/components/ui/button";
-import { useAchivements, useDeleteAchivement } from "@/hooks/useAchivements";
-import { useDeleteScholoership, useScholoerships } from "@/hooks/useScholoership";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useScholoerships, useDeleteScholoership } from "@/hooks/useScholoership";
 import Link from "next/link";
-
 
 export default function Scholerships() {
   const { data: projects, isLoading, isError } = useScholoerships();
-  console.log(projects)
-  const mutate = useDeleteScholoership()
-  if (isLoading) return <p>Loading...</p>;
-  if (isError) return <p>Something went wrong!</p>;
+  const mutate = useDeleteScholoership();
 
   const handleDelete = (id: string) => {
-    mutate.mutate(id)
-  }
+    mutate.mutate(id);
+  };
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Your Scholership</h1>
-        <Link href="/student/activities/scholoership/new" className="bg-blue-600 text-white px-4 py-2 rounded">
-          + New 
+    <div className="p-6 max-w-4xl mx-auto space-y-6">
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-semibold tracking-tight">Your Scholarships</h1>
+        <Link href="/student/activities/scholoership/new">
+          <Button className="px-4 py-2 text-sm">+ New</Button>
         </Link>
       </div>
 
-      {projects.length === 0 ? (
-        <p>No participations found.</p>
-      ) : (
-        <ul className="space-y-4">
-          {projects.map((project: any) => (
-            <li key={project.id} className="border p-4 rounded shadow-sm">
-              <h2 className="text-lg font-semibold">{project.title}</h2>
-              <p className="text-gray-600">{project.description}</p>
-              <div className="flex gap-4 mt-2">
+      {isLoading && (
+        <div className="space-y-4">
+          {[...Array(3)].map((_, i) => (
+            <Skeleton key={i} className="h-24 w-full rounded-md" />
+          ))}
+        </div>
+      )}
+
+      {isError && <p className="text-red-600">Something went wrong!</p>}
+
+      {!isLoading && projects?.length === 0 && (
+        <p className="text-muted-foreground">No scholarships found.</p>
+      )}
+
+      <div className="grid gap-4">
+        {projects?.map((project: any) => (
+          <Card key={project.id} className="transition-shadow hover:shadow-md">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg">{project.title}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-gray-600 line-clamp-3">{project.description}</p>
+              <div className="flex items-center gap-4 mt-4 text-sm">
                 <Link
                   href={`/student/activities/scholoership/${project.id}/edit`}
                   className="text-blue-600 hover:underline"
@@ -49,16 +59,17 @@ export default function Scholerships() {
                   View
                 </Link>
                 <Button
-                  onClick={()=>handleDelete(project.id)}
-                  className="text-red-600 hover:underline"
+                  variant="ghost"
+                  className="text-red-600 hover:underline px-0"
+                  onClick={() => handleDelete(project.id)}
                 >
-                 delete
+                  Delete
                 </Button>
               </div>
-            </li>
-          ))}
-        </ul>
-      )}
+            </CardContent>
+          </Card>
+        ))}
+      </div>
     </div>
   );
 }

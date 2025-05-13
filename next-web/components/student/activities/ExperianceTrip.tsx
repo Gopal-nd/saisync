@@ -1,20 +1,25 @@
 'use client';
+
 import React, { useEffect, useState } from "react";
 import {
   useExperience,
   useCreateExperience,
-  useUpdateExperience
+  useUpdateExperience,
 } from "@/hooks/useExperianceTrip";
 import { useParams } from "next/navigation";
-import { toast } from 'sonner'
-import { UploadDropzone } from '@/utils/uploadthing'
-import Image from 'next/image'
+import { toast } from "sonner";
+import { UploadDropzone } from "@/utils/uploadthing";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { axiosFrontend } from "@/lib/axios";
 
 export default function ExperienceForm({
   isEdit = false,
-  isView = false
+  isView = false,
 }: {
   isEdit?: boolean;
   isView?: boolean;
@@ -28,7 +33,7 @@ export default function ExperienceForm({
     description: "",
     startDate: "",
     endDate: "",
-    proofUrl: ""
+    proofUrl: "",
   });
 
   const createMutation = useCreateExperience();
@@ -42,7 +47,7 @@ export default function ExperienceForm({
         description: existingExperience.description || "",
         startDate: existingExperience.startDate?.slice(0, 10) || "",
         endDate: existingExperience.endDate?.slice(0, 10) || "",
-        proofUrl: existingExperience.proofUrl || ""
+        proofUrl: existingExperience.proofUrl || "",
       });
     }
   }, [existingExperience, isEdit, isView]);
@@ -63,21 +68,21 @@ export default function ExperienceForm({
     }
   };
 
-    const handleDeleteFile = async () => {
-      const res = await axiosFrontend.delete('/api/uploadthing', { data: { url: form.proofUrl } })
-      console.log(res.data)
-      if (res.data?.message === 'ok') {
-        toast.success('Image deleted successfully')
-        setForm((prev) => ({ ...prev, proofUrl: '' }))
-      }
-      return true
+  const handleDeleteFile = async () => {
+    const res = await axiosFrontend.delete("/api/uploadthing", {
+      data: { url: form.proofUrl },
+    });
+    if (res.data?.message === "ok") {
+      toast.success("Image deleted successfully");
+      setForm((prev) => ({ ...prev, proofUrl: "" }));
     }
+  };
 
   if (isView) {
     return (
-      <div className="max-w-xl mx-auto p-6 rounded shadow ">
-        <h2 className="text-2xl font-semibold mb-4">Experience Details</h2>
-        <div className="space-y-3 text-gray-800">
+      <Card className="max-w-xl mx-auto p-6">
+        <CardHeader className="text-2xl font-semibold">Experience Details</CardHeader>
+        <CardContent className="space-y-3 text-muted-foreground">
           <div>
             <strong>Company Name:</strong> {form.companyName || "N/A"}
           </div>
@@ -95,93 +100,127 @@ export default function ExperienceForm({
             <strong>End Date:</strong> {form.endDate || "N/A"}
           </div>
           <div>
-            <strong>Proof URL:</strong>{" "}
+            <strong>Proof:</strong>
             {form.proofUrl ? (
-                <Image src={form.proofUrl} alt="Uploaded Certificate" width={200} height={200} className='object-cover' />
-
+              <Image
+                src={form.proofUrl}
+                alt="Uploaded Certificate"
+                width={200}
+                height={200}
+                className="object-cover mt-2"
+              />
             ) : (
-              "N/A"
+              " N/A"
             )}
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     );
   }
 
   return (
-    <div className="max-w-xl mx-auto p-4 rounded shadow ">
-      <h2 className="text-xl font-bold mb-4">
+    <Card className="max-w-xl mx-auto p-6">
+      <CardHeader className="text-xl font-bold">
         {isEdit ? "Edit" : "Create"} Experience
-      </h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          type="text"
-          name="companyName"
-          placeholder="Company Name"
-          value={form.companyName}
-          onChange={handleChange}
-          className="w-full border px-3 py-2 rounded"
-        />
-        <input
-          type="text"
-          name="title"
-          placeholder="Role/Title"
-          value={form.title}
-          onChange={handleChange}
-          className="w-full border px-3 py-2 rounded"
-        />
-        <textarea
-          name="description"
-          placeholder="Description"
-          value={form.description}
-          onChange={handleChange}
-          className="w-full border px-3 py-2 rounded"
-        />
-        <input
-          type="date"
-          name="startDate"
-          value={form.startDate}
-          onChange={handleChange}
-          className="w-full border px-3 py-2 rounded"
-        />
-        <input
-          type="date"
-          name="endDate"
-          value={form.endDate}
-          onChange={handleChange}
-          className="w-full border px-3 py-2 rounded"
-        />
-            <div className="flex flex-col">
-          {form.proofUrl ? (
-            <>
-              <Image src={form.proofUrl} alt="Uploaded Certificate" width={200} height={200} className='object-cover' />
-              <Button onClick={handleDeleteFile} className='bg-red-500 hover:bg-red-700'>Delete</Button>
-            </>
-          ) : (
-            <UploadDropzone
-              endpoint="imageUploader"
-              appearance={{
-                label: "text-sm text-gray-500",
-                allowedContent: "text-xs text-muted-foreground",
-              }}
-              className="w-full"
-              onClientUploadComplete={(res) => {
-                const url = res[0].ufsUrl
-                setForm((prev) => ({ ...prev, proofUrl: url }));
-              }}
-              onUploadError={(error: Error) => {
-                console.error(`Upload failed: ${error.message}`)
-              }}
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-1">
+            <Label htmlFor="companyName">Company Name</Label>
+            <Input
+              id="companyName"
+              name="companyName"
+              value={form.companyName}
+              onChange={handleChange}
+              placeholder="Enter company name"
             />
-          )}
-        </div>
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-          {isEdit ? "Update" : "Create"}
-        </button>
-      </form>
-    </div>
+          </div>
+          <div className="space-y-1">
+            <Label htmlFor="title">Title/Role</Label>
+            <Input
+              id="title"
+              name="title"
+              value={form.title}
+              onChange={handleChange}
+              placeholder="Enter your role"
+            />
+          </div>
+          <div className="space-y-1">
+            <Label htmlFor="description">Description</Label>
+            <Textarea
+              id="description"
+              name="description"
+              value={form.description}
+              onChange={handleChange}
+              placeholder="Describe your experience"
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <Label htmlFor="startDate">Start Date</Label>
+              <Input
+                id="startDate"
+                name="startDate"
+                type="date"
+                value={form.startDate}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="endDate">End Date</Label>
+              <Input
+                id="endDate"
+                name="endDate"
+                type="date"
+                value={form.endDate}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Proof Upload</Label>
+            {form.proofUrl ? (
+              <div className="space-y-2">
+                <Image
+                  src={form.proofUrl}
+                  alt="Uploaded Proof"
+                  width={200}
+                  height={200}
+                  className="rounded-md object-cover"
+                />
+                <Button
+                  type="button"
+                  variant="destructive"
+                  onClick={handleDeleteFile}
+                >
+                  Delete
+                </Button>
+              </div>
+            ) : (
+              <UploadDropzone
+                endpoint="imageUploader"
+                appearance={{
+                  label: "text-sm text-gray-500",
+                  allowedContent: "text-xs text-muted-foreground",
+                }}
+                className="w-full"
+                onClientUploadComplete={(res) => {
+                  const url = res[0].ufsUrl;
+                  setForm((prev) => ({ ...prev, proofUrl: url }));
+                }}
+                onUploadError={(error: Error) => {
+                  console.error(`Upload failed: ${error.message}`);
+                }}
+              />
+            )}
+          </div>
+
+          <Button type="submit" className="w-full">
+            {isEdit ? "Update" : "Create"}
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
   );
 }
