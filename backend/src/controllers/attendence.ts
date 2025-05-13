@@ -62,6 +62,7 @@ export const getAttendence = asyncHandler(async(req:Request,res:Response)=>{
 export const getStudentsAttendenceTabel = asyncHandler(async(req:Request,res:Response)=>{
 
     const {startDate,endDate} = req.body  
+    console.log(req.body)
     const userId = req.user?.userId;
     const userDetails = await prisma.user.findUnique({
         where:{
@@ -69,13 +70,15 @@ export const getStudentsAttendenceTabel = asyncHandler(async(req:Request,res:Res
         }
     })
 
-    console.log(req.query)
+    console.log(userDetails)
 
     let whereClause: any = {
         AND: []
     };
     
     if (userDetails) {
+        whereClause.AND.push({ userId: userId });
+
         whereClause.AND.push({ branch:userDetails?.branch  });
 
         whereClause.AND.push({ semester: userDetails?.semester });
@@ -83,7 +86,7 @@ export const getStudentsAttendenceTabel = asyncHandler(async(req:Request,res:Res
         whereClause.AND.push({ section: userDetails?.section });
     }
     
-    if (startDate) {
+    if (startDate && endDate) {
         const start = new Date(startDate as string);
         const end = new Date(endDate as string)
         whereClause.AND.push({
@@ -109,6 +112,9 @@ export const getStudentsAttendenceTabel = asyncHandler(async(req:Request,res:Res
             },
             periodNumber:true,
             status:true,
+            date:true,
+            period:true
+            
         }
     })
     console.log(attendence)
