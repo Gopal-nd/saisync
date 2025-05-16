@@ -7,7 +7,7 @@ import { useScholoerships, useDeleteScholoership } from "@/hooks/useScholoership
 import Link from "next/link";
 
 export default function Scholerships() {
-  const { data: projects, isLoading, isError } = useScholoerships();
+  const { data: projects, isLoading, isError,isSuccess } = useScholoerships();
   const mutate = useDeleteScholoership();
 
   const handleDelete = (id: string) => {

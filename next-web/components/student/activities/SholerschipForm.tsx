@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { redirect, useParams } from "next/navigation";
 import { toast } from "sonner";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ import {
   useScholoership,
   useUpdateScholoership,
 } from "@/hooks/useScholoership";
+import { Loader2 } from "lucide-react";
 
 export default function ScholarshipForm({
   isEdit = false,
@@ -32,10 +33,12 @@ export default function ScholarshipForm({
     whereApplied: "",
     proofUrl: "",
     amount: "",
+    name: "",
+    others: "",
   });
 
-  const createMutation = useCreateScholoership();
-  const updateMutation = useUpdateScholoership(id as string);
+  const {mutate:createMutation,isSuccess:createSuccess,isPending:createPending} = useCreateScholoership();
+  const {mutate:updateMutation,isSuccess:updateSuccess,isPending:updatePending} = useUpdateScholoership(id as string);
 
   useEffect(() => {
     if ((isEdit || isView) && existingData) {
@@ -47,12 +50,14 @@ export default function ScholarshipForm({
         whereApplied: existingData.WhereApplied || "",
         proofUrl: existingData.proofUrl || "",
         amount: existingData.amount?.toString() || "",
+        name: existingData.name || "",
+        others: existingData.others || "",
       });
     }
   }, [existingData, isEdit, isView]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -68,11 +73,13 @@ export default function ScholarshipForm({
       WhereApplied: form.whereApplied,
       proofUrl: form.proofUrl,
       amount: parseFloat(form.amount || "0"),
+      name: form.name,
+      others: form.others,
     };
     if (isEdit) {
-      updateMutation.mutate(payload);
+      updateMutation(payload);
     } else {
-      createMutation.mutate(payload);
+      createMutation(payload);
     }
   };
 
@@ -86,6 +93,15 @@ export default function ScholarshipForm({
     }
   };
 
+  if(createSuccess || updateSuccess){
+     if (isEdit) {
+      toast.success("Scholarship Eddited successfully");
+    } else {
+      toast.success("Scholarship Created successfully");
+    }
+    redirect("/student/activities/scholoership");
+  }
+
   if (isView) {
     return (
       <div className="max-w-xl mx-auto p-6 rounded shadow space-y-4">
@@ -97,6 +113,8 @@ export default function ScholarshipForm({
           <p><strong>Applied Date:</strong> {form.endDate || "N/A"}</p>
           <p><strong>Where Applied:</strong> {form.whereApplied || "N/A"}</p>
           <p><strong>Amount:</strong> ₹{form.amount || "N/A"}</p>
+           <p><strong>Name:</strong> {form.name || "N/A"}</p>
+          <p><strong>Othrers:</strong> ₹{form.others || "N/A"}</p>
           <div>
             <strong>Proof:</strong>{" "}
             {form.proofUrl ? (
@@ -161,6 +179,25 @@ export default function ScholarshipForm({
           value={form.amount}
           onChange={handleChange}
         />
+          <select
+          name="name"
+          value={form.name}
+          onChange={handleChange}
+          className="w-full p-2 rounded border bg-primary-foreground"
+        >
+          <option value="">Select Name</option>
+          <option value="ssp">SSP</option>
+          <option value="lms">LMS</option>
+          <option value="lpf">LPF</option>
+          <option value="Other">Other</option>
+        </select>
+        <Textarea
+          name="others"
+          placeholder="Others"
+          value={form.others}
+          onChange={handleChange}
+        />
+        
 
         <div className="space-y-2">
           {form.proofUrl ? (
@@ -201,7 +238,7 @@ export default function ScholarshipForm({
         </div>
 
         <Button type="submit" className="w-full">
-          {isEdit ? "Update" : "Create"}
+         {createPending || updatePending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} {isEdit ? "Update" : "Create"} 
         </Button>
       </form>
     </div>
