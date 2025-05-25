@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { redirect, useParams } from "next/navigation";
 import Image from 'next/image';
 import { toast } from 'sonner';
 import {
@@ -40,8 +40,8 @@ export default function MedicalForm({
     proofUrl: ""
   });
 
-  const createMutation = useCreateMedical();
-  const updateMutation = useUpdateMedical(id as string);
+   const { mutate: createMutation , isPending: createPending,isSuccess: createSuccess}= useCreateMedical();
+  const { mutate: updateMutation , isPending: updatePending,isSuccess: updateSuccess} = useUpdateMedical(id as string);
 
   useEffect(() => {
     if ((isEdit || isView) && existingExperience) {
@@ -65,9 +65,9 @@ export default function MedicalForm({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (isEdit) {
-      updateMutation.mutate(form);
+      updateMutation(form);
     } else {
-      createMutation.mutate(form);
+      createMutation(form);
     }
   };
 
@@ -79,13 +79,22 @@ export default function MedicalForm({
     }
   };
 
+         if(createSuccess || updateSuccess){
+             if (isEdit) {
+              toast.success("Achivement updated successfully");
+            } else {
+              toast.success("Achivement Created successfully");
+            }
+            redirect("/student/activities/medical/");
+          }
+        
   if (isView) {
     return (
       <Card className="max-w-xl mx-auto p-6 shadow">
         <CardHeader>
           <CardTitle className="text-2xl">Medical Details</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4 text-gray-800">
+        <CardContent className="space-y-4 ">
           <div><strong>Title:</strong> {form.title || "N/A"}</div>
           <div>
             <strong>Description:</strong>

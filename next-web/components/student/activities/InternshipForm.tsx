@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { redirect, useParams } from "next/navigation";
 import Image from "next/image";
 import { toast } from "sonner";
 import { UploadDropzone } from "@/utils/uploadthing";
@@ -36,8 +36,8 @@ export default function InternshipForm({
     proofUrl: ""
   });
 
-  const createMutation = useCreateInternship();
-  const updateMutation = useUpdateInternship(id as string);
+  const { mutate: createMutation , isPending: createPending,isSuccess: createSuccess} = useCreateInternship();
+  const { mutate: updateMutation , isPending: updatePending,isSuccess: updateSuccess} = useUpdateInternship(id as string);
 
   useEffect(() => {
     if (!isLoading && (isEdit || isView) && existingExperience) {
@@ -68,8 +68,8 @@ export default function InternshipForm({
     }
 
     isEdit
-      ? updateMutation.mutate(form)
-      : createMutation.mutate(form);
+      ? updateMutation(form)
+      : createMutation(form);
   };
 
   const handleDeleteFile = async () => {
@@ -92,6 +92,16 @@ export default function InternshipForm({
       toast.error("Error while deleting image.");
     }
   };
+
+     if(createSuccess || updateSuccess){
+         if (isEdit) {
+          toast.success("Internship updated successfully");
+        } else {
+          toast.success("Internship Created successfully");
+        }
+        redirect("/student/activities/internship/");
+      }
+    
 
 
   if (isView) {

@@ -14,6 +14,7 @@ import {
   useUpdateScholoership,
 } from "@/hooks/useScholoership";
 import { Loader2 } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function ScholarshipForm({
   isEdit = false,
@@ -104,9 +105,11 @@ export default function ScholarshipForm({
 
   if (isView) {
     return (
-      <div className="max-w-xl mx-auto p-6 rounded shadow space-y-4">
-        <h2 className="text-2xl font-semibold">Scholarship Details</h2>
-        <div className="space-y-2 text-sm text-gray-800">
+           <Card className="max-w-xl mx-auto p-6 shadow">
+        <CardHeader>
+          <CardTitle className="text-2xl">Medical Details</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4 ">
           <p><strong>Title:</strong> {form.title || "N/A"}</p>
           <p><strong>Description:</strong> <span className="whitespace-pre-wrap">{form.description || "N/A"}</span></p>
           <p><strong>Received Date:</strong> {form.startDate || "N/A"}</p>
@@ -129,8 +132,8 @@ export default function ScholarshipForm({
               "N/A"
             )}
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     );
   }
 

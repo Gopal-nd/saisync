@@ -20,7 +20,7 @@ router.get("/certificate",authenticateToken, getCertificate);
 router.get("/certificate/:id",authenticateToken, getCertificateById);
 router.delete("/certificate/:id",authenticateToken, deleteCertificates);
 router.post("/certificate/new",authenticateToken, createCertificate);
-router.put("/certificate/edit",authenticateToken, updateCertificates);
+router.put("/certificate/edit/:id",authenticateToken, updateCertificates);
 
 
 

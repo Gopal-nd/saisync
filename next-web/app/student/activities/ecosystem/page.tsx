@@ -15,11 +15,11 @@ export default function ProjectsPage() {
   };
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
+    <div className="p-6 max-w-6xl mx-auto">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold tracking-tight">Your Ecosystems</h1>
         <Link href="/student/activities/ecosystem/new">
-          <Button variant="default">+ New Project</Button>
+          <Button variant="default">+ New</Button>
         </Link>
       </div>
 
@@ -34,9 +34,11 @@ export default function ProjectsPage() {
       ) : projects.length === 0 ? (
         <p className="text-muted-foreground text-center">No projects found.</p>
       ) : (
-        <div className="grid gap-4">
+        <div className="sapce-y-4">
           {projects.map((project: any) => (
-            <Card key={project.id} className="transition-shadow hover:shadow-md">
+            <div className=" space-y-4 mt-4">
+
+            <Card key={project.id} className="transition-shadow hover:shadow-md ">
               <CardHeader className="pb-2">
                 <CardTitle className="text-xl">{project.title}</CardTitle>
               </CardHeader>
@@ -44,29 +46,37 @@ export default function ProjectsPage() {
                 <p className="text-sm text-muted-foreground mb-4">
                   {project.description || "No description provided."}
                 </p>
-                <div className="flex gap-4 text-sm">
+                <div className="flex gap-3 flex-end">
+                  <Button variant={"outline"}>
+
                   <Link
                     href={`/student/activities/ecosystem/${project.id}`}
-                    className="text-blue-600 hover:underline"
-                  >
+                    className=" hover:underline"
+                    >
                     View
                   </Link>
+                    </Button>
+                    <Button variant={"secondary"}>
+
                   <Link
                     href={`/student/activities/ecosystem/${project.id}/edit`}
-                    className="text-blue-600 hover:underline"
-                  >
+                    className=" hover:underline"
+                    >
                     Edit
                   </Link>
+                    </Button>
+
                   <Button
                     variant="destructive"
                     size="sm"
                     onClick={() => handleDelete(project.id)}
-                  >
+                    >
                     Delete
                   </Button>
                 </div>
               </CardContent>
             </Card>
+                    </div>
           ))}
         </div>
       )}

@@ -39,8 +39,11 @@ export const createScolership = asyncHandler(async (req: Request, res: Response)
     whenApplied,
     proofUrl,
     WhereApplied,
-    amount
+    amount,
+    others,
+    name
   } = req.body;
+  console.log(req.body)
 
   const scholarship = await prisma.scholarships.create({
     data: {
@@ -52,6 +55,8 @@ export const createScolership = asyncHandler(async (req: Request, res: Response)
       WhereApplied,
       amount: parseFloat(amount),
       userId,
+      name,
+      others
     }
   });
 
@@ -72,8 +77,11 @@ export const updateScholership = asyncHandler(async (req: Request, res: Response
     whenApplied,
     proofUrl,
     WhereApplied,
-    amount
+    amount,
+    others,
+    name
   } = req.body;
+  console.log(req.body)
 
   const updated = await prisma.scholarships.update({
     where: { id: req.params.id },
@@ -85,6 +93,8 @@ export const updateScholership = asyncHandler(async (req: Request, res: Response
       proofUrl,
       WhereApplied,
       amount: parseFloat(amount),
+      others,
+      name
     }
   });
 

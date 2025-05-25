@@ -43,6 +43,13 @@ export const createNptel = asyncHandler(async (req: Request, res: Response) => {
       startDate,
       endDate,
       proofUrl,
+      score,
+      medals,
+      dateOfRegistration,
+      dateOfExam,
+      resultReport,
+      noOfWeeks
+
     } = req.body;
   
 
@@ -54,6 +61,13 @@ export const createNptel = asyncHandler(async (req: Request, res: Response) => {
         userId,
         startDate: startDate ? new Date(startDate) : undefined,
         endDate: endDate ? new Date(endDate) : undefined,
+        score,
+        medals,
+        dateOfRegistration: dateOfRegistration ? new Date(dateOfRegistration) : undefined,
+        dateOfExam : dateOfExam ? new Date(dateOfExam) : undefined,
+        resultReport,
+        noOfWeeks,
+
         proofUrl,
       }
     });
@@ -69,6 +83,13 @@ export const updateNptel = asyncHandler(async (req: Request, res: Response) => {
       startDate,
       endDate,
       proofUrl,
+       score,
+      medals,
+      dateOfRegistration,
+      dateOfExam,
+      resultReport,
+      noOfWeeks
+
     } = req.body;
     console.log(req.body)
     console.log(req.params)
@@ -81,7 +102,15 @@ export const updateNptel = asyncHandler(async (req: Request, res: Response) => {
         description,
         startDate: startDate ? new Date(startDate) : undefined,
         endDate: endDate ? new Date(endDate) : undefined,
+        score,
+        medals,
+        dateOfRegistration: dateOfRegistration ? new Date(dateOfRegistration) : undefined,
+        dateOfExam : dateOfExam ? new Date(dateOfExam) : undefined,
+        resultReport,
+        noOfWeeks,
+
         proofUrl,
+
       }
     });
   

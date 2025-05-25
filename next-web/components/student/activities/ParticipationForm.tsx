@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { redirect, useParams } from "next/navigation";
 import Image from 'next/image';
 import { toast } from 'sonner';
 
@@ -35,8 +35,8 @@ export default function ParticipateFormPage({
     typeOfParticipatedeEvent: "",
   });
 
-  const createMutation = useCreateParticipate();
-  const updateMutation = useUpdateParticipate(id as string);
+  const { mutate: createMutation , isPending: createPending,isSuccess: createSuccess} = useCreateParticipate();
+  const { mutate: updateMutation , isPending: updatePending,isSuccess: updateSuccess} = useUpdateParticipate(id as string);
 
   useEffect(() => {
     if ((isEdit || isView) && existingExperience) {
@@ -58,7 +58,7 @@ export default function ParticipateFormPage({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    isEdit ? updateMutation.mutate(form) : createMutation.mutate(form);
+    isEdit ? updateMutation(form) : createMutation(form);
   };
 
   const handleDeleteFile = async () => {
@@ -70,13 +70,23 @@ export default function ParticipateFormPage({
     return true;
   };
 
+       if(createSuccess || updateSuccess){
+           if (isEdit) {
+            toast.success("Participation updated successfully");
+          } else {
+            toast.success("Participation Created successfully");
+          }
+          redirect("/student/activities/participate/");
+        }
+      
+
   if (isView) {
     return (
       <Card className="max-w-xl mx-auto p-6 shadow">
         <CardHeader>
           <CardTitle className="text-2xl">Participation Details</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4 text-sm text-gray-800">
+        <CardContent className="space-y-4 ">
           <p><strong>Type of Event:</strong> {form.typeOfParticipatedeEvent || "N/A"}</p>
           <p><strong>Title:</strong> {form.title || "N/A"}</p>
           <p><strong>Description:</strong><br />{form.description || "N/A"}</p>

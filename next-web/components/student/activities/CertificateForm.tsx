@@ -1,10 +1,5 @@
 'use client';
 import React, { useEffect, useState } from "react";
-import {
-  useAchivement,
-  useCreateAchivement,
-  useUpdateAchivement
-} from "@/hooks/useAchivements";
 import { redirect, useParams } from "next/navigation";
 import { toast } from 'sonner';
 import { UploadDropzone } from '@/utils/uploadthing';
@@ -15,8 +10,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { axiosFrontend } from "@/lib/axios";
+import { useCertificate, useCreateCertificate, useUpdateCertificate } from "@/hooks/useCertificates";
 
-export default function AchivementsForm({
+export default function CertificateForm({
   isEdit = false,
   isView = false
 }: {
@@ -24,29 +20,33 @@ export default function AchivementsForm({
   isView?: boolean;
 }) {
   const { id } = useParams();
-  const { data: existingExperience } = useAchivement(id as string);
+  const { data: existingExperience } = useCertificate(id as string);
 
   const [form, setForm] = useState({
     title: "",
     description: "",
-    startDate: "",
-    location: "",
+    duration: 1,
+    issuedBy: '',
+    issueDate: '',
+    expiryDate: '',
+    imageUrl: "",
     proofUrl: "",
-    typeOfParticipatedeEvent: "",
   });
 
-  const { mutate: createMutation , isPending: createPending,isSuccess: createSuccess}= useCreateAchivement();
-  const { mutate: updateMutation , isPending: updatePending,isSuccess: updateSuccess} = useUpdateAchivement(id as string);
+  const {mutate:createMutation,isSuccess:createSuccess,isPending:createPending} = useCreateCertificate();
+  const {mutate:updateMutation,isSuccess:updateSuccess,isPending:updatePending} = useUpdateCertificate(id as string);
 
   useEffect(() => {
     if ((isEdit || isView) && existingExperience) {
       setForm({
         title: existingExperience.title || "",
         description: existingExperience.description || "",
-        startDate: existingExperience.date?.slice(0, 10) || "",
-        location: existingExperience.location || "",
-        proofUrl: existingExperience.cretificateUrl || "",
-        typeOfParticipatedeEvent: existingExperience.typeOfParticipatedeEvent || ""
+        duration: existingExperience.duration || 1,
+        issuedBy: existingExperience.issuedBy || "",
+        issueDate: existingExperience.issueDate?.slice(0, 10) || "",
+        expiryDate: existingExperience.expiryDate?.slice(0, 10) || "",
+        imageUrl: existingExperience.imageUrl || "",
+        proofUrl: existingExperience.proofUrl || "",
       });
     }
   }, [existingExperience, isEdit, isView]);
@@ -64,51 +64,79 @@ export default function AchivementsForm({
   };
 
   const handleDeleteFile = async () => {
-    const res = await axiosFrontend.delete('/api/uploadthing', { data: { url: form.proofUrl } });
+    const res = await axiosFrontend.delete('/api/uploadthing', { data: { url: form.imageUrl } });
     if (res.data?.message === 'ok') {
       toast.success('Image deleted successfully');
-      setForm((prev) => ({ ...prev, proofUrl: '' }));
+      setForm((prev) => ({ ...prev, imageUrl: '' }));
     }
   };
 
-
-         if(createSuccess || updateSuccess){
-             if (isEdit) {
-              toast.success("Achivement updated successfully");
-            } else {
-              toast.success("Achivement Created successfully");
-            }
-            redirect("/student/activities/achivements/");
-          }
-        
+   if(createSuccess || updateSuccess){
+       if (isEdit) {
+        toast.success("Scholarship Eddited successfully");
+      } else {
+        toast.success("Scholarship Created successfully");
+      }
+      redirect("/student/activities/");
+    }
+  
 
   if (isView) {
     return (
-      <Card className="max-w-xl mx-auto mt-6">
+      <Card className="max-w-xl mx-auto mt-6 shadow-lg border">
         <CardHeader>
-          <CardTitle className="text-2xl font-semibold">Achievement Details</CardTitle>
+          <CardTitle className="text-2xl font-semibold">Certificates Details</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4 text-sm">
-          <div><span className="font-medium">Type of Event:</span> {form.typeOfParticipatedeEvent || "N/A"}</div>
+        <CardContent className="space-y-4 text-sm ">
           <div><span className="font-medium">Title:</span> {form.title || "N/A"}</div>
-          <div><span className="font-medium">Description:</span><p className="whitespace-pre-wrap">{form.description || "N/A"}</p></div>
-          <div><span className="font-medium">Date:</span> {form.startDate || "N/A"}</div>
-          <div><span className="font-medium">Location:</span> {form.location || "N/A"}</div>
           <div>
-            <span className="font-medium">Proof:</span>{" "}
+            <span className="font-medium">Description:</span>
+            <p className="whitespace-pre-wrap mt-1 ">{form.description || "N/A"}</p>
+          </div>
+          <div><span className="font-medium">Issued By:</span> {form.issuedBy || "N/A"}</div>
+          <div><span className="font-medium">Issue Date:</span> {form.issueDate || "N/A"}</div>
+          <div><span className="font-medium">Expiry Date:</span> {form.expiryDate || "N/A"}</div>
+          
+          <div>
+            <span className="font-medium">Certificate Image:</span><br />
+            {form.imageUrl ? (
+              <Image
+                src={form.imageUrl}
+                alt="Certificate"
+                width={300}
+                height={200}
+                className="rounded-md border mt-2"
+              />
+            ) : (
+              <p className="text-muted-foreground mt-1">N/A</p>
+            )}
+          </div>
+
+          <div>
+            <span className="font-medium">Proof URL:</span><br />
             {form.proofUrl ? (
-              <Image src={form.proofUrl} alt="Certificate" width={200} height={200} className="rounded-lg border" />
-            ) : "N/A"}
+              <a
+                href={form.proofUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 underline mt-1 inline-block break-all"
+              >
+                {form.proofUrl}
+              </a>
+            ) : (
+              <p className="text-muted-foreground mt-1">N/A</p>
+            )}
           </div>
         </CardContent>
       </Card>
     );
   }
 
+
   return (
     <Card className="max-w-xl mx-auto mt-6">
       <CardHeader>
-        <CardTitle className="text-xl font-bold">{isEdit ? "Edit" : "Create"} Achievement</CardTitle>
+        <CardTitle className="text-xl font-bold">{isEdit ? "Edit" : "Create"} Certificates</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -117,9 +145,10 @@ export default function AchivementsForm({
             <Input
               id="title"
               name="title"
+              required
               value={form.title}
               onChange={handleChange}
-              placeholder="e.g., 1st place in Hackathon"
+              placeholder="Devops, Cloud Computing, etc."
             />
           </div>
 
@@ -130,52 +159,63 @@ export default function AchivementsForm({
               name="description"
               value={form.description}
               onChange={handleChange}
-              placeholder="Describe your achievement..."
+              placeholder="Describe your Certificates..."
               className="min-h-[100px]"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="startDate">Date</Label>
+              <Label htmlFor="issueDate">Issue Date</Label>
               <Input
-                id="startDate"
+                id="issueDate"
                 type="date"
-                name="startDate"
-                value={form.startDate}
+                name="issueDate"
+                value={form.issueDate}
                 onChange={handleChange}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="location">Location</Label>
+              <Label htmlFor="expiryDate">Expiry Date</Label>
               <Input
-                id="location"
-                name="location"
-                value={form.location}
+                id="expiryDate"
+                type="date"
+                name="expiryDate"
+                value={form.expiryDate}
                 onChange={handleChange}
-                placeholder="e.g., IIT Bombay"
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="typeOfParticipatedeEvent">Type of Event</Label>
+            <Label htmlFor="issuedBy">Issued By</Label>
             <Input
-              id="typeOfParticipatedeEvent"
-              name="typeOfParticipatedeEvent"
-              value={form.typeOfParticipatedeEvent}
+              id="issuedBy"
+              name="issuedBy"
+              value={form.issuedBy}
               onChange={handleChange}
-              placeholder="Hackathon, Workshop, Sports, etc."
+              placeholder="e.g., Google"
             />
           </div>
 
           <div className="space-y-2">
-            <Label>Certificate / Proof</Label>
-            {form.proofUrl ? (
+            <Label htmlFor="proofUrl">Proof URL</Label>
+            <Input
+              id="proofUrl"
+              name="proofUrl"
+              value={form.proofUrl}
+              onChange={handleChange}
+              placeholder="https://link-to-proof.com"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Certificate / Proof Image</Label>
+            {form.imageUrl ? (
               <div className="flex items-start gap-4">
                 <Image
-                  src={form.proofUrl}
+                  src={form.imageUrl}
                   alt="Uploaded Certificate"
                   width={200}
                   height={200}
@@ -199,7 +239,7 @@ export default function AchivementsForm({
                 className="w-full"
                 onClientUploadComplete={(res) => {
                   const url = res[0].ufsUrl;
-                  setForm((prev) => ({ ...prev, proofUrl: url }));
+                  setForm((prev) => ({ ...prev, imageUrl: url }));
                 }}
                 onUploadError={(error: Error) => {
                   console.error(`Upload failed: ${error.message}`);

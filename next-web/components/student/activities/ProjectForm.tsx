@@ -6,12 +6,13 @@ import {
   useUpdateProject,
   useProject,
 } from "@/hooks/useProjects";
-import { useParams } from "next/navigation";
+import { useParams, redirect } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 
 export default function ProjectForm({
   isEdit = false,
@@ -34,8 +35,8 @@ export default function ProjectForm({
     name: "",
   });
 
-  const createMutation = useCreateProject();
-  const updateMutation = useUpdateProject(id as string);
+  const { mutate: createMutation, isSuccess: createSuccess, isPending: createPending } = useCreateProject();
+  const { mutate: updateMutation, isSuccess: updateSuccess, isPending: updatePending } = useUpdateProject(id as string);
 
   useEffect(() => {
     if ((isEdit || isView) && existingProject) {
@@ -62,77 +63,157 @@ export default function ProjectForm({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const payload = {
-      ...form,
-      memberIds: form.memberIds
-        .split(",")
-        .map((id) => id.trim())
-        .filter((id) => id !== ""),
-    };
+    isEdit ? updateMutation(form) : createMutation(form);
+  };
 
+  if (createSuccess || updateSuccess) {
     if (isEdit) {
-      updateMutation.mutate(payload);
+      toast.success("Project updated successfully");
     } else {
-      createMutation.mutate(payload);
+      toast.success("Project created successfully");
     }
-  };
+    redirect("/student/activities/projects");
+  }
 
-  const renderField = (
-    label: string,
-    value: string,
-    name: string,
-    isTextarea = false
-  ) => {
+  if (isView) {
     return (
-      <div className="space-y-1">
-        <Label htmlFor={name}>{label}</Label>
-        {isView ? (
-          <div className="border px-3 py-2 rounded text-sm text-muted-foreground bg-muted">{value || "-"}</div>
-        ) : isTextarea ? (
-          <Textarea
-            id={name}
-            name={name}
-            value={value}
-            onChange={handleChange}
-            className="resize-none"
-          />
-        ) : (
-          <Input
-            type={name.includes("Date") ? "date" : "text"}
-            id={name}
-            name={name}
-            value={value}
-            onChange={handleChange}
-          />
-        )}
-      </div>
+      <Card className="max-w-xl mx-auto mt-6 shadow-lg border">
+        <CardHeader>
+          <CardTitle className="text-2xl font-semibold">Project Details</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4 text-sm">
+          <div><span className="font-medium">Title:</span> {form.title || "N/A"}</div>
+          <div>
+            <span className="font-medium">Description:</span>
+            <p className="whitespace-pre-wrap mt-1">{form.description || "N/A"}</p>
+          </div>
+          <div><span className="font-medium">Project Type:</span> {form.projectType || "N/A"}</div>
+          <div><span className="font-medium">Start Date:</span> {form.startDate || "N/A"}</div>
+          <div><span className="font-medium">End Date:</span> {form.endDate || "N/A"}</div>
+          <div><span className="font-medium">Repository URL:</span> <a href={form.repoUrl} className="text-blue-600 underline">{form.repoUrl}</a></div>
+          <div><span className="font-medium">Live URL:</span> <a href={form.liveUrl} className="text-blue-600 underline">{form.liveUrl}</a></div>
+          <div><span className="font-medium">Team Members (IDs):</span> {form.memberIds || "N/A"}</div>
+          <div><span className="font-medium">Project Name:</span> {form.name || "N/A"}</div>
+        </CardContent>
+      </Card>
     );
-  };
+  }
 
   return (
-    <Card className="max-w-2xl mx-auto">
+    <Card className="max-w-xl mx-auto mt-6">
       <CardHeader>
-        <CardTitle className="text-2xl">
-          {isView ? "View" : isEdit ? "Edit" : "Create"} Project
+        <CardTitle className="text-xl font-bold">
+          {isEdit ? "Edit" : "Create"} Project
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {renderField("Title", form.title, "title")}
-          {renderField("Description", form.description, "description", true)}
-          {renderField("Project Type", form.projectType, "projectType")}
-          {renderField("Start Date", form.startDate, "startDate")}
-          {renderField("End Date", form.endDate, "endDate")}
-          {renderField("Repo URL", form.repoUrl, "repoUrl")}
-          {renderField("Live URL", form.liveUrl, "liveUrl")}
-          {renderField("Member IDs", form.memberIds, "memberIds")}
-          {renderField("Internal Project Name", form.name, "name")}
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-2">
+            <Label htmlFor="title">Title</Label>
+            <Input
+              id="title"
+              name="title"
+              required
+              value={form.title}
+              onChange={handleChange}
+              placeholder="e.g., Portfolio Website"
+            />
+          </div>
 
-          {!isView && (
-            <Button type="submit" className="w-full">
-              {isEdit ? "Update Project" : "Create Project"}
-            </Button>
-          )}
+          <div className="space-y-2">
+            <Label htmlFor="description">Description</Label>
+            <Textarea
+              id="description"
+              name="description"
+              value={form.description}
+              onChange={handleChange}
+              placeholder="Describe your project..."
+              className="min-h-[100px]"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="projectType">Project Type</Label>
+            <Input
+              id="projectType"
+              name="projectType"
+              value={form.projectType}
+              onChange={handleChange}
+              placeholder="e.g., Web, AI, Research"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="startDate">Start Date</Label>
+              <Input
+                id="startDate"
+                type="date"
+                name="startDate"
+                value={form.startDate}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="endDate">End Date</Label>
+              <Input
+                id="endDate"
+                type="date"
+                name="endDate"
+                value={form.endDate}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="repoUrl">Repository URL</Label>
+            <Input
+              id="repoUrl"
+              name="repoUrl"
+              value={form.repoUrl}
+              onChange={handleChange}
+              placeholder="https://github.com/user/project"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="liveUrl">Live URL</Label>
+            <Input
+              id="liveUrl"
+              name="liveUrl"
+              value={form.liveUrl}
+              onChange={handleChange}
+              placeholder="https://project-demo.vercel.app"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="memberIds">Member IDs</Label>
+            <Input
+              id="memberIds"
+              name="memberIds"
+              value={form.memberIds}
+              onChange={handleChange}
+              placeholder="Comma-separated IDs"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="name">Name</Label>
+            <Input
+              id="name"
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              placeholder="Display name for the project"
+            />
+          </div>
+
+          <Button type="submit" className="w-full" disabled={createPending || updatePending}>
+            {isEdit ? (updatePending ? "Updating..." : "Update") : (createPending ? "Creating..." : "Create")}
+          </Button>
         </form>
       </CardContent>
     </Card>

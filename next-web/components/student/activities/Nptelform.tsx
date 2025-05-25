@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { redirect, useParams } from "next/navigation";
 import Image from 'next/image';
 import { toast } from 'sonner';
 
@@ -29,11 +29,17 @@ export default function NptelForm({
     description: "",
     startDate: "",
     endDate: "",
-    proofUrl: ""
+    proofUrl: "",
+    score: "",
+    medals: "",
+    dateOfRegistration: "",
+    dateOfExam: "",
+    resultReport: "",
+    noOfWeeks: ""
   });
 
-  const createMutation = useCreateNptel();
-  const updateMutation = useUpdateNptel(id as string);
+  const { mutate:createMutation , isPending: createPending, isSuccess: createSuccess} = useCreateNptel();
+  const { mutate:updateMutation , isPending: updatePending, isSuccess: updateSuccess} = useUpdateNptel(id as string);
 
   useEffect(() => {
     if ((isEdit || isView) && existingExperience) {
@@ -42,7 +48,13 @@ export default function NptelForm({
         description: existingExperience.description || "",
         startDate: existingExperience.startDate?.slice(0, 10) || "",
         endDate: existingExperience.endDate?.slice(0, 10) || "",
-        proofUrl: existingExperience.proofUrl || ""
+        proofUrl: existingExperience.proofUrl || "",
+        score: existingExperience.score || "",
+        medals: existingExperience.medals || "",
+        dateOfRegistration: existingExperience.dateOfRegistration?.slice(0, 10) || "",
+        dateOfExam: existingExperience.dateOfExam?.slice(0, 10) || "",
+        resultReport: existingExperience.resultReport || "",
+        noOfWeeks: existingExperience.noOfWeeks || ""
       });
     }
   }, [existingExperience, isEdit, isView]);
@@ -56,7 +68,7 @@ export default function NptelForm({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    isEdit ? updateMutation.mutate(form) : createMutation.mutate(form);
+    isEdit ? updateMutation(form) : createMutation(form);
   };
 
   const handleDeleteFile = async () => {
@@ -68,13 +80,23 @@ export default function NptelForm({
     return true;
   };
 
+     if(createSuccess || updateSuccess){
+         if (isEdit) {
+          toast.success("Nptel Updated successfully");
+        } else {
+          toast.success("Nptel Created successfully");
+        }
+        redirect("/student/activities/nptel/");
+      }
+    
+
   if (isView) {
     return (
       <Card className="max-w-xl mx-auto p-6 shadow">
         <CardHeader>
           <CardTitle>NPTEL Details</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3 text-gray-800">
+        <CardContent className="space-y-3 ">
           <div><strong>Title:</strong> {form.title || "N/A"}</div>
           <div>
             <strong>Description:</strong>
@@ -82,6 +104,12 @@ export default function NptelForm({
           </div>
           <div><strong>Start Date:</strong> {form.startDate || "N/A"}</div>
           <div><strong>End Date:</strong> {form.endDate || "N/A"}</div>
+          <div><strong>Score:</strong> {form.score || "N/A"}</div>
+          <div><strong>Medals:</strong> {form.medals || "N/A"}</div>
+          <div><strong>Date of Registration:</strong> {form.dateOfRegistration || "N/A"}</div>
+          <div><strong>Date of Exam:</strong> {form.dateOfExam || "N/A"}</div>
+          <div><strong>Result Report:</strong> {form.resultReport || "N/A"}</div>
+          <div><strong>Number of Weeks:</strong> {form.noOfWeeks || "N/A"}</div>
           <div>
             <strong>Proof:</strong>
             {form.proofUrl ? (
@@ -107,7 +135,7 @@ export default function NptelForm({
             <Input
               id="title"
               name="title"
-              placeholder="Role/Title"
+              placeholder="course title"
               value={form.title}
               onChange={handleChange}
             />
@@ -183,6 +211,79 @@ export default function NptelForm({
               />
             )}
           </div>
+          <div>
+            <Label htmlFor="score">Score</Label>
+            <Input
+              id="score"
+              name="score"
+              placeholder="Score"
+              value={form.score}
+              onChange={handleChange}
+            />
+          </div>
+          <div>
+            <Label htmlFor="medals">Medals</Label>
+            <Input
+              id="medals"
+              name="medals"
+              placeholder="Medals"
+              list="medal-type-options"
+              value={form.medals}
+              onChange={handleChange}
+            />
+                <datalist id="medal-type-options">
+                <option value="Bronze" />
+                <option value="Silver" />
+                <option value="Gold" />
+                <option value="Platinum" />
+                <option value="Diamond" />
+              </datalist>
+          </div>
+          <div>
+            <Label htmlFor="dateOfRegistration">Date of Registration</Label>
+            <Input
+              type="date"
+              id="dateOfRegistration"
+              name="dateOfRegistration"
+              value={form.dateOfRegistration}
+              onChange={handleChange}
+            />
+          </div>
+          <div>
+            <Label htmlFor="dateOfExam">Date of Exam</Label>
+            <Input
+              type="date"
+              id="dateOfExam"
+              name="dateOfExam"
+              value={form.dateOfExam}
+              onChange={handleChange}
+            />
+          </div>
+          <div>
+            <Label htmlFor="resultReport">Result Report</Label>
+            <Input
+              id="resultReport"
+              name="resultReport"
+              placeholder="Result Report"
+              list="result-type-options"
+              value={form.resultReport}
+              onChange={handleChange}
+            />
+              <datalist id="result-type-options">
+                <option value="Pass" />
+                <option value="Failed" />
+              </datalist>
+          </div>
+          <div>
+            <Label htmlFor="noOfWeeks">Number of Weeks</Label>
+            <Input
+              id="noOfWeeks"
+              name="noOfWeeks"
+              placeholder="Number of Weeks"
+              value={form.noOfWeeks}
+              onChange={handleChange}
+            />
+          </div>
           <Button type="submit" className="w-full">
             {isEdit ? "Update" : "Create"}
           </Button>
@@ -191,3 +292,4 @@ export default function NptelForm({
     </Card>
   );
 }
+

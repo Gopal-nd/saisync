@@ -14,8 +14,10 @@ export default function Scholerships() {
     mutate.mutate(id);
   };
 
+  console.log(projects) ;
+
   return (
-    <div className="p-6 max-w-4xl mx-auto space-y-6">
+    <div className="p-6 max-w-6xl mx-auto space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-semibold tracking-tight">Your Scholarships</h1>
         <Link href="/student/activities/scholoership/new">
@@ -41,26 +43,31 @@ export default function Scholerships() {
         {projects?.map((project: any) => (
           <Card key={project.id} className="transition-shadow hover:shadow-md">
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg">{project.title}</CardTitle>
+              <CardTitle className="text-lg">{project.title} || {project.name}</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-gray-600 line-clamp-3">{project.description}</p>
-              <div className="flex items-center gap-4 mt-4 text-sm">
+              <p className="text-sm  line-clamp-3">{project.description}</p>
+              <div className="flex justify-end gap-3">
+                <Button variant={"outline"}>
+
                 <Link
                   href={`/student/activities/scholoership/${project.id}/edit`}
-                  className="text-blue-600 hover:underline"
-                >
+                  className=" hover:underline"
+                  >
                   Edit
                 </Link>
+                  </Button>
+                  <Button variant={'secondary'}>
+                  
                 <Link
                   href={`/student/activities/scholoership/${project.id}`}
-                  className="text-blue-600 hover:underline"
-                >
+                  className=" hover:underline"
+                  >
                   View
                 </Link>
+                    </Button>
                 <Button
-                  variant="ghost"
-                  className="text-red-600 hover:underline px-0"
+                  variant="destructive"
                   onClick={() => handleDelete(project.id)}
                 >
                   Delete

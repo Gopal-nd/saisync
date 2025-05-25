@@ -18,11 +18,11 @@ export default function InternShipPage() {
   if (isError) return <p className="text-center py-8 text-red-500">Something went wrong!</p>;
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
+    <div className="p-6 max-w-6xl mx-auto">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Your NPTEL Courses</h1>
         <Link href="/student/activities/nptel/new">
-          <Button className="text-white">+ New</Button>
+          <Button className="">+ New</Button>
         </Link>
       </div>
 
@@ -37,22 +37,28 @@ export default function InternShipPage() {
               </CardHeader>
               <CardContent className="space-y-2">
                 <p className="text-sm text-gray-600">{project.description}</p>
-                <div className="flex gap-4">
+                <div className="flex gap-3 justify-end">
+                  <Button variant={'outline'}>
+
                   <Link
                     href={`/student/activities/nptel/${project.id}/edit`}
-                    className="text-blue-600 hover:underline text-sm"
-                  >
+                    className="hover:underline text-sm"
+                    >
                     Edit
                   </Link>
+                    </Button>
+                    <Button variant={'secondary'}>
+
                   <Link
                     href={`/student/activities/nptel/${project.id}`}
-                    className="text-blue-600 hover:underline text-sm"
-                  >
+                    className=" hover:underline text-sm"
+                    >
                     View
                   </Link>
+                    </Button>
                   <Button
-                    variant="ghost"
-                    className="text-red-600 hover:underline p-0 h-auto text-sm"
+                    variant="destructive"
+                    
                     onClick={() => handleDelete(project.id)}
                   >
                     Delete

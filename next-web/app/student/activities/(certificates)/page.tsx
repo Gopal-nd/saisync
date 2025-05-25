@@ -1,7 +1,6 @@
 'use client';
 
 import { Button } from "@/components/ui/button";
-import { useAchivements, useDeleteAchivement } from "@/hooks/useAchivements";
 import Link from "next/link";
 import {
   Card,
@@ -10,35 +9,49 @@ import {
   CardHeader,
   CardTitle
 } from "@/components/ui/card";
+import { useCertificates, useDeleteCertificate } from "@/hooks/useCertificates";
+import { toast } from "sonner";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Achivements() {
-  const { data: achievements, isLoading, isError } = useAchivements();
-  const deleteMutation = useDeleteAchivement();
+  const { data: Certificates, isLoading, isError } = useCertificates();
+  const deleteMutation = useDeleteCertificate();
 
   const handleDelete = (id: string) => {
-    deleteMutation.mutate(id);
+      deleteMutation.mutate(id);
+      toast.success('Certificate deleted successfully');
   };
 
-  if (isLoading)
-    return <p className="text-center mt-10 text-sm text-muted-foreground">Loading achievements...</p>;
+ if (isLoading) {
+    return (
+      <div className="max-w-4xl mx-auto p-6 space-y-4">
+        {[...Array(3)].map((_, i) => (
+          <Skeleton key={i} className="h-24 w-full rounded-xl" />
+        ))}
+      </div>
+    );
+  }
 
   if (isError)
-    return <p className="text-center mt-10 text-sm text-red-500">Something went wrong!</p>;
-
+    return (
+      <p className="text-center text-red-500 mt-10 text-sm">
+        Something went wrong!
+      </p>
+    );
   return (
     <div className="p-6 max-w-6xl mx-auto">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
-        <h1 className="text-3xl font-bold tracking-tight">Your Achievements</h1>
-        <Link href="/student/activities/achivements/new">
-          <Button size="sm">+ New</Button>
+        <h1 className="text-3xl font-bold tracking-tight">Your Certificates</h1>
+        <Link href="/student/activities/new">
+          <Button>+ New</Button>
         </Link>
       </div>
 
-      {achievements.length === 0 ? (
-        <p className="text-center text-muted-foreground">No achievements found.</p>
+      {Certificates.length === 0 ? (
+        <p className="text-center text-muted-foreground">No Certificates found.</p>
       ) : (
-        <div className=" gap-6">
-          {achievements.map((achievement: any) => (
+        <div className="gap-6">
+          {Certificates.map((achievement: any) => (
             <Card
               key={achievement.id}
               className="transition-shadow hover:shadow-md border border-muted"
@@ -56,25 +69,24 @@ export default function Achivements() {
               </CardContent>
 
               <CardFooter className="flex justify-end gap-3">
-                <Button variant={"outline"}>
+                <Button variant={'outline'}>
 
                 <Link
-                  href={`/student/activities/achivements/${achievement.id}`}
+                  href={`/student/activities/${achievement.id}`}
                   className="text-sm font-medium  hover:underline"
                   >
                   View
                 </Link>
-                  </Button>
-                  <Button variant={"secondary"}>
+                    </Button>
+                <Button variant={'secondary'}>
 
                 <Link
-                  href={`/student/activities/achivements/${achievement.id}/edit`}
+                  href={`/student/activities/${achievement.id}/edit`}
                   className="text-sm font-medium  hover:underline"
                   >
                   Edit
                 </Link>
-                  </Button>
-            
+                    </Button>
                 <Button
                   variant="destructive"
                   size="sm"

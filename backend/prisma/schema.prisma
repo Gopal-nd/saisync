@@ -152,6 +152,8 @@ model Scholarships{
   providerName String?
   user     User     @relation(fields: [userId], references: [id])
   userId       String
+  name        String?
+  others      String?
   description String?
   whenRecived DateTime?
   whenApplied DateTime?
@@ -213,6 +215,12 @@ model Nptel{
   startDate   DateTime?
   endDate     DateTime?
   proofUrl    String?
+  score       String?
+  medals      String?
+  dateOfRegistration DateTime?
+  dateOfExam  DateTime?
+  resultReport String?
+  noOfWeeks   String?
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 }

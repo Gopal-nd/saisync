@@ -18,11 +18,11 @@ export default function InternShipPage() {
   if (isError) return <p className="text-center py-10 text-red-500">Something went wrong!</p>;
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
+    <div className="p-6 max-w-6xl mx-auto">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Your Internships</h1>
         <Link href="/student/activities/internship/new">
-          <Button className="text-white">+ New</Button>
+          <Button className="">+ New</Button>
         </Link>
       </div>
 
@@ -31,16 +31,16 @@ export default function InternShipPage() {
       ) : (
         <div className="space-y-4">
           {internships.map((internship: any) => (
-            <Card key={internship.id}>
+            <Card key={internship.id} className="mt-2">
               <CardContent className="py-4">
                 <h2 className="text-xl font-semibold">{internship.title}</h2>
                 <p className="text-muted-foreground mt-1">{internship.description}</p>
-                <div className="flex gap-4 mt-4">
+                <div className="flex gap-3 justify-end">
                   <Link href={`/student/activities/internship/${internship.id}/edit`}>
-                    <Button variant="outline" size="sm">Edit</Button>
+                    <Button variant="outline" >Edit</Button>
                   </Link>
                   <Link href={`/student/activities/internship/${internship.id}`}>
-                    <Button variant="secondary" size="sm">View</Button>
+                    <Button variant="secondary" >View</Button>
                   </Link>
                   <Button
                     variant="destructive"

@@ -6,7 +6,7 @@ import {
   useCreateExperience,
   useUpdateExperience,
 } from "@/hooks/useExperianceTrip";
-import { useParams } from "next/navigation";
+import { redirect, useParams } from "next/navigation";
 import { toast } from "sonner";
 import { UploadDropzone } from "@/utils/uploadthing";
 import Image from "next/image";
@@ -36,8 +36,8 @@ export default function ExperienceForm({
     proofUrl: "",
   });
 
-  const createMutation = useCreateExperience();
-  const updateMutation = useUpdateExperience(id as string);
+  const {mutate:createMutation , isPending: createPending,isSuccess: createSuccess} = useCreateExperience();
+  const {mutate:updateMutation , isPending: updatePending,isSuccess: updateSuccess} = useUpdateExperience(id as string);
 
   useEffect(() => {
     if ((isEdit || isView) && existingExperience) {
@@ -62,11 +62,21 @@ export default function ExperienceForm({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (isEdit) {
-      updateMutation.mutate(form);
+      updateMutation(form);
     } else {
-      createMutation.mutate(form);
+      createMutation(form);
     }
   };
+
+     if(createSuccess || updateSuccess){
+         if (isEdit) {
+          toast.success("Experience updated successfully");
+        } else {
+          toast.success("Experience Created successfully");
+        }
+        redirect("/student/activities/exp-trip");
+      }
+    
 
   const handleDeleteFile = async () => {
     const res = await axiosFrontend.delete("/api/uploadthing", {
@@ -82,7 +92,7 @@ export default function ExperienceForm({
     return (
       <Card className="max-w-xl mx-auto p-6">
         <CardHeader className="text-2xl font-semibold">Experience Details</CardHeader>
-        <CardContent className="space-y-3 text-muted-foreground">
+        <CardContent className="space-y-3 ">
           <div>
             <strong>Company Name:</strong> {form.companyName || "N/A"}
           </div>

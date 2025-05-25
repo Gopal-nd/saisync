@@ -30,11 +30,11 @@ export default function InternShipPage() {
   }
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
+    <div className="p-6 max-w-6xl mx-auto">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Your Medicals</h1>
         <Link href="/student/activities/medical/new">
-          <Button className="bg-blue-600 text-white hover:bg-blue-700">
+          <Button className="">
             + New
           </Button>
         </Link>
@@ -53,7 +53,7 @@ export default function InternShipPage() {
               </CardHeader>
               <CardContent>
                 <p className="text-gray-700 mb-4">{project.description}</p>
-                <div className="flex flex-wrap gap-3">
+                <div className="flex justify-end gap-3">
                   <Link href={`/student/activities/medical/${project.id}/edit`}>
                     <Button variant="outline" size="sm">Edit</Button>
                   </Link>

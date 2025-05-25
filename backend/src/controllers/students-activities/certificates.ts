@@ -68,8 +68,8 @@ export const createCertificate = asyncHandler(async (req: Request, res: Response
   const certificate = await prisma.certificate.create({
     data: {
       userId:req.user?.userId as string,
-      issueDate: new Date(issueDate), // Convert to Date object
-      expiryDate: expiryDate ? new Date(expiryDate) : null,
+      issueDate: issueDate?new Date(issueDate) :undefined,
+      expiryDate: expiryDate ? new Date(expiryDate) : undefined,
       title,
       description,
       duration: Number(duration),
@@ -90,7 +90,8 @@ export const createCertificate = asyncHandler(async (req: Request, res: Response
 
 export const updateCertificates = asyncHandler(async (req: Request, res: Response) => {
 
-    const { id ,  issueDate,
+  const {id} = req.params
+    const { issueDate,
       expiryDate,
       title,
       description,
@@ -106,8 +107,8 @@ export const updateCertificates = asyncHandler(async (req: Request, res: Respons
       },
       data: {
         userId:req.user?.userId as string,
-        issueDate: new Date(issueDate), // Convert to Date object
-        expiryDate: expiryDate ? new Date(expiryDate) : null,
+        issueDate:issueDate ? new Date(issueDate) : undefined, // Convert to Date object
+        expiryDate: expiryDate ? new Date(expiryDate) : undefined,
         title,
         description,
         duration: Number(duration),

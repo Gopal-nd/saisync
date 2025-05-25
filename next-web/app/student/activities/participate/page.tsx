@@ -17,11 +17,11 @@ export default function ParticipatePage() {
   if (isError) return <p className="text-center text-red-500">Something went wrong!</p>;
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
+    <div className="p-6 max-w-6xl mx-auto">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-semibold tracking-tight">Your Participation</h1>
         <Link href="/student/activities/participate/new">
-          <Button variant="default" className="text-white">+ New</Button>
+          <Button variant="default" className="">+ New</Button>
         </Link>
       </div>
 
@@ -36,12 +36,12 @@ export default function ParticipatePage() {
               </CardHeader>
               <CardContent className="space-y-3">
                 <p className="text-sm text-muted-foreground">{project.description}</p>
-                <div className="flex gap-4">
+                <div className="flex gap-3 justify-end">
                   <Link href={`/student/activities/participate/${project.id}/edit`}>
-                    <Button variant="outline" className="text-blue-600 border-blue-600 hover:bg-blue-50">Edit</Button>
+                    <Button variant="outline" className="">Edit</Button>
                   </Link>
                   <Link href={`/student/activities/participate/${project.id}`}>
-                    <Button variant="outline" className="text-green-600 border-green-600 hover:bg-green-50">View</Button>
+                    <Button variant="outline" className="">View</Button>
                   </Link>
                   <Button
                     variant="destructive"
