@@ -9,7 +9,9 @@ import asyncHandler from '../utils/async-handler';
 import { APIError } from '../utils/api-error';
 import { ApiResponse } from '../utils/api-response';
 import { sendEmail } from '../lib/mail';
-
+import { Readable } from 'stream';
+import csv from 'csv-parser'
+import fs from 'fs/promises'
 
 
 export const register = asyncHandler(async (req: Request, res: Response) => {
@@ -51,7 +53,7 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
       semester:true,
     }
   })
-    
+
 
   // console.log('user created',user)
 
@@ -245,4 +247,55 @@ export const getProfile = asyncHandler(async (req: Request, res: Response) => {
   }
 
   res.status(200).json(new ApiResponse({ statusCode: 200, data: user }));
+});
+
+
+export const bulkRegister = asyncHandler(async (req: Request, res: Response) => {
+  console.log('server hit')
+  const userId = req.user?.userId; // Assuming authenticated user
+  if (!userId) {
+    throw new APIError({ status: 401, message: 'Unauthorized: No User ID' });
+  }
+  if (!req.file) {
+    throw new APIError({ status: 401, message: 'file not there' });
+
+  }
+
+  // Read the uploaded file asynchronously
+  const csvBuffer = await fs.readFile(req.file.path);
+  const csvString = csvBuffer.toString('utf-8');
+
+  // Parse CSV data
+  const records :any[] = await new Promise((resolve, reject) => {
+    const results: any[] = [];
+    Readable.from(csvString)
+      .pipe(csv())
+      .on('data', (data) => results.push(data))
+      .on('end', () => resolve(results))
+      .on('error', (error) => reject(error));
+  });
+
+  // Log the parsed data
+  console.log('Parsed CSV Records:', records);
+  records.map(async(row, index)=>{
+    await prisma.user.upsert({
+      where:{email:row.email},update:{},create:{
+        email:row.email,
+        password:row.password,
+        name:row.name,
+        usn:row.usn,
+        role:row.role,
+        branch:row.branch,
+        section:row.section,
+        semester:row.semester,
+        schema:row.schema
+      }
+    })
+  })
+
+  // Clean up the uploaded file asynchronously
+  await fs.unlink(req.file.path);
+ 
+  res.status(200).json(new ApiResponse({ statusCode: 200, data: '',message:'Registered Successfully'}));
+
 });

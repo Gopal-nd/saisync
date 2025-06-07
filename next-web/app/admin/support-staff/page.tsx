@@ -126,7 +126,7 @@ const AllSupportStaff = () => {
           </TableHeader>
           <TableBody>
            
-          {data?.data?.supportStaff.length==0 && (
+          {data?.data?.supportStaff?.length==0 && (
             <TableCell>No Results Found</TableCell>
 
             )}

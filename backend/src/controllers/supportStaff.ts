@@ -15,7 +15,7 @@ export const getSuportStaffById = asyncHandler(async (req: Request, res: Respons
       throw new APIError({ message: "Invalid or no Id", status: 400 });
     }
     
-      const supportStaff = await prisma.user.findUnique({
+      const subject = await prisma.user.findUnique({
         where:{
           id:id
         }
@@ -24,7 +24,7 @@ export const getSuportStaffById = asyncHandler(async (req: Request, res: Respons
       res.status(201).json(
         new ApiResponse({
           statusCode: 201,
-          data: supportStaff,
+          data: subject,
           message: "Subject success",
         })
       );
@@ -49,7 +49,7 @@ export const editSupportStaff = asyncHandler(async (req: Request, res: Response)
   }
   console.log(req.body)
     
-  const supportStaff = await prisma.user.update({
+  const hod = await prisma.user.update({
     where:{id},
     data: {
       name,
@@ -71,7 +71,7 @@ export const editSupportStaff = asyncHandler(async (req: Request, res: Response)
   res.status(201).json(
     new ApiResponse({
       statusCode: 201,
-      data: supportStaff,
+      data: hod,
       message: "HOD Updated Successfully ",
     })
   );
@@ -117,9 +117,13 @@ export const getAllSupportStaff = asyncHandler(async (req: Request, res: Respons
         ]
     }
 
-  const supportStaff = await prisma.user.findMany({
+   
+
+
+    
+  const hods = await prisma.user.findMany({
     where: {
-      role: 'SUPPORT_STAFF',
+      role: 'HOD',
       ...whereClause
     },
     take: limitNumber,
@@ -128,7 +132,7 @@ export const getAllSupportStaff = asyncHandler(async (req: Request, res: Respons
 
   const totalCount = await prisma.user.count({
     where: {
-      role: 'SUPPORT_STAFF',
+      role: 'HOD',
       ...whereClause}
   });
 
@@ -137,12 +141,12 @@ export const getAllSupportStaff = asyncHandler(async (req: Request, res: Respons
         new ApiResponse({
           statusCode: 201,
           data: {
-            supportStaff,
+            hods,
             totalPages: Math.ceil(totalCount / limitNumber),
             currentPage,
             totalCount,
           },
-          message: "Support staff fetched successfully",
+          message: "HODs fetched successfully",
         })
       );
 });

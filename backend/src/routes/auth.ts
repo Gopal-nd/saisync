@@ -1,11 +1,13 @@
 import express from 'express';
 
 import {  authenticateToken } from '../middleware/auth';
-import { getProfile, login, logout, register, ResetPassword, validate } from '../controllers/auth';
+import { bulkRegister, getProfile, login, logout, register, ResetPassword, validate } from '../controllers/auth';
+import { adminMiddleware } from '../middleware/adminMiddleware';
+import { upload } from '../middleware/upload';
 
 const router = express.Router();
-
-router.post('/sign-up', register);
+router.post('/sign-up',adminMiddleware, register);
+router.post('/bulk-sign-up',upload.single('file'),adminMiddleware,bulkRegister);
 router.post('/sign-in', login);
 router.post('/reset', ResetPassword);
 router.post('/logout', logout);
