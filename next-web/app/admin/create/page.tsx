@@ -264,6 +264,7 @@ export default function RegisterPage() {
                   <li>password (optional, will use default if not provided)</li>
                 </ul>
               </div>
+              <p>Download  <a href="/templets/users.csv" className="text-blue-500" download>The CSV Template here</a></p>
             </div>
           </TabsContent>
         </Tabs>
