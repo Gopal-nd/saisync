@@ -91,7 +91,7 @@ export function AdminSidebar() {
                   <CollapsibleTrigger asChild>
                     <SidebarMenuButton isActive={pathname?.startsWith("/admin/hods")}>
                       <GraduationCap className="size-4" />
-                      <span>HOD</span>
+                      <span>Hod</span>
                       <ChevronDown className="ml-auto size-4 transition-transform group-data-[state=open]/collapsible:rotate-180" />
                     </SidebarMenuButton>
                   </CollapsibleTrigger>
@@ -99,7 +99,34 @@ export function AdminSidebar() {
                     <SidebarMenuSub>
                       <SidebarMenuSubItem>
                           <SidebarMenuSubButton asChild isActive={pathname === "/admin/hods"}>
-                          <Link href="/admin/hods">All HOD</Link>
+                          <Link href="/admin/hods">All Hods</Link>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                      {/* <SidebarMenuSubItem>
+                        <SidebarMenuSubButton asChild isActive={pathname === "/admin/faculty/add"}>
+                          <Link href="/admin/faculty/add">Add Faculty</Link>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem> */}
+                    </SidebarMenuSub>
+                  </CollapsibleContent>
+                </Collapsible>
+              </SidebarMenuItem>
+
+               {/* support_staff with submenu */}
+               <SidebarMenuItem>
+                <Collapsible defaultOpen={pathname?.startsWith("/admin/support-staff")}>
+                  <CollapsibleTrigger asChild>
+                    <SidebarMenuButton isActive={pathname?.startsWith("/admin/support-staff")}>
+                      <GraduationCap className="size-4" />
+                      <span>Support Staff</span>
+                      <ChevronDown className="ml-auto size-4 transition-transform group-data-[state=open]/collapsible:rotate-180" />
+                    </SidebarMenuButton>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <SidebarMenuSub>
+                      <SidebarMenuSubItem>
+                          <SidebarMenuSubButton asChild isActive={pathname === "/admin/support-staff"}>
+                          <Link href="/admin/support-staff">All Support Staff</Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                       {/* <SidebarMenuSubItem>

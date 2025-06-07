@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import authRoutes from './routes/auth'
 import studentsRoute from './routes/students'
 import subjectsRoute from './routes/subjects'
+import supportStaffRoute from './routes/supportStaff'
 import hodRoutes from './routes/hods'
 import scheduleRoutes from './routes/schedule'
 import attendenceRoute from './routes/attendence'
@@ -47,6 +48,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/students',studentsRoute)
 app.use('/api/staff',staffRoute)
 app.use('/api/hod',hodRoutes)
+app.use('/api/support-staff',supportStaffRoute)
 app.use('/api/subjects',subjectsRoute)
 app.use('/api/study-materials',studyMaterialsRoute)
 app.use('/api/schedule',scheduleRoutes)

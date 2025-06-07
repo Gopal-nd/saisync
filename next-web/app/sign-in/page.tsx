@@ -55,7 +55,11 @@ export default function LoginPage() {
     onSuccess: (data) => {
       toast.success('Login successful');
       console.log(data.data.sendUser.role)
-      router.push(`/${data.data.sendUser.role.toLowerCase()}`)
+      if(data.data.sendUser.role === 'SUPPORT_STAFF'){
+        router.push(`/support-staff`)
+      }else{
+        router.push(`/${data.data.sendUser.role.toLowerCase()}`)
+      }
       console.log(data)
 
       setUser({
