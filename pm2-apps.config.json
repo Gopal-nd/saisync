@@ -1,0 +1,16 @@
+{
+    "apps": [
+        {
+            "name": "url-shortner",
+            "cwd": "/home/ubuntu/short-url-nodejs",
+            "script": "index.js",
+            "watch": true,
+            "env": {
+                "NODE_ENV": "production",
+                "MONGODB": "mongodb+srv://docode999:docode999@db1.tl0yr.mongodb.net/?retryWrites=true&w=majority&appName=db1",
+                "PORT": 8001,
+                "JWT_SECRET": "secret"
+            }
+        }
+    ]
+}

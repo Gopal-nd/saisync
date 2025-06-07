@@ -12,15 +12,15 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation"
 import { Suspense } from "react";
 
-const StudentDetails = () => {
+const HodDetails = () => {
     const params = useParams();
     const id = params.id
 
     const {data:userDataById,isLoading:userDataLoadingById,error} = useQuery({
-        queryKey:["student",id],
+          queryKey:["hod",id],
         queryFn: async () => {
             if(!id) throw new Error("No ID provided");
-            const res = await axiosInstance.get('/api/staff', {params: {id}})
+            const res = await axiosInstance.get('/api/hod', {params: {id}})
             return res.data.data
         },
     })
@@ -49,4 +49,4 @@ const StudentDetails = () => {
   )
 }
 
-export default StudentDetails
+export default HodDetails

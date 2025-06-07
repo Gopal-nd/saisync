@@ -4,13 +4,10 @@ import { prisma } from "../lib/db";
 import { ApiResponse } from "../utils/api-response";
 import { SubjectSchema } from "../types";
 import { APIError } from "../utils/api-error";
-import type { BranchType, SemesterType } from "@prisma/client";
-
-import { formatDate } from "date-fns";
 
 // ======================= Basic =========================
 
-export const getUserById = asyncHandler(async (req: Request, res: Response) => {
+export const getHodById = asyncHandler(async (req: Request, res: Response) => {
     const {id} = req.query
     
     
@@ -34,7 +31,7 @@ export const getUserById = asyncHandler(async (req: Request, res: Response) => {
 });
 
 
-export const editStudent = asyncHandler(async (req: Request, res: Response) => {
+export const editHod = asyncHandler(async (req: Request, res: Response) => {
   
   const { name,
     id,
@@ -52,7 +49,7 @@ export const editStudent = asyncHandler(async (req: Request, res: Response) => {
   }
   console.log(req.body)
     
-  const student = await prisma.user.update({
+  const hod = await prisma.user.update({
     where:{id},
     data: {
       name,
@@ -74,14 +71,14 @@ export const editStudent = asyncHandler(async (req: Request, res: Response) => {
   res.status(201).json(
     new ApiResponse({
       statusCode: 201,
-      data: student,
-      message: "Subject Updated Sucessfully ",
+      data: hod,
+      message: "HOD Updated Successfully ",
     })
   );
 });
 
 
-export const deleteUsers = asyncHandler(async (req: Request, res: Response) => {
+export const deleteHod = asyncHandler(async (req: Request, res: Response) => {
  
   const {id} = req.params
   if (!id || typeof id !== "string") {
@@ -96,13 +93,13 @@ await prisma.user.delete({where:{id}})
     new ApiResponse({
       statusCode: 201,
       data: null,
-      message: "Subject Deleted Sucessfully",
+      message: "HOD Deleted Successfully",
     })
   );
 });
 
 
-export const getAllStudents = asyncHandler(async (req: Request, res: Response) => {
+export const getAllHods = asyncHandler(async (req: Request, res: Response) => {
     
     const {query,  limit = "10", page = "1"} = req.query
     
@@ -124,9 +121,9 @@ export const getAllStudents = asyncHandler(async (req: Request, res: Response) =
 
 
     
-  const students = await prisma.user.findMany({
+  const hods = await prisma.user.findMany({
     where: {
-      role: 'STAFF',
+      role: 'HOD',
       ...whereClause
     },
     take: limitNumber,
@@ -135,7 +132,7 @@ export const getAllStudents = asyncHandler(async (req: Request, res: Response) =
 
   const totalCount = await prisma.user.count({
     where: {
-      role: 'STAFF',
+      role: 'HOD',
       ...whereClause}
   });
 
@@ -144,12 +141,12 @@ export const getAllStudents = asyncHandler(async (req: Request, res: Response) =
         new ApiResponse({
           statusCode: 201,
           data: {
-            students,
+            hods,
             totalPages: Math.ceil(totalCount / limitNumber),
             currentPage,
             totalCount,
           },
-          message: "student success",
+          message: "HODs fetched successfully",
         })
       );
 });
@@ -350,14 +347,14 @@ export const editWorkDetails = asyncHandler(async (req: Request, res: Response) 
 
 export const getAllFaculty = asyncHandler(async (req: Request, res: Response) => {
   const data = await prisma.user.findMany({where:{role:"STAFF"},select:{id:true,name:true,role:true,branch:true,semester:true,section:true,schema:true,email:true,usn:true}});
-  res.status(200).json(new ApiResponse({ statusCode: 200, data, message: "Faculties fetched successfully" }));
+  res.status(200).json(new ApiResponse({ statusCode: 200, data, message: "HODs fetched successfully" }));
 });
 
 
 
 export const getFacultyClasses = asyncHandler(async (req: Request, res: Response) => {
   const { day, staff} = req.query; 
-console.log('staff details :',staff,day)
+console.log('hod details :',staff,day)
 
 
   if (!staff || typeof staff !== "string") {
@@ -408,6 +405,6 @@ console.log('staff details :',staff,day)
   })
 
   // console.log(data[0].Periods)
-  res.status(200).json(new ApiResponse({ statusCode: 200, data:data, message: "Classes fetched successfully" }));
+  res.status(200).json(new ApiResponse({ statusCode: 200, data:data, message: "HOD classes fetched successfully" }));
 
 });

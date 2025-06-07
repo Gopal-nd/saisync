@@ -11,6 +11,8 @@ enum Role {
   STUDENT
   ADMIN
   STAFF
+  HOD 
+  SUPPORT_STAFF
 }
 
 enum BranchType {

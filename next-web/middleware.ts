@@ -12,7 +12,8 @@ export async function middleware(req:any) {
   const studentRoutes = ['/student'];
   const staffRoutes = ['/staff'];
   const dashboardRoutes = ['/dashboard'];
-
+  const hodRoute = ['/hod']
+  const supportStaffRoute = ['/support-staff']
 
   if (!authToken) {
 
@@ -52,6 +53,13 @@ export async function middleware(req:any) {
       return NextResponse.redirect(new URL('/', req.url));
     }
 
+    if (hodRoute.includes(req.nextUrl.pathname) && role !== 'HOD' && authToken) {
+      return NextResponse.redirect(new URL('/', req.url));
+    } 
+    
+    if (supportStaffRoute.includes(req.nextUrl.pathname) && role !== 'SUPPORT_STAFF' && authToken) {
+      return NextResponse.redirect(new URL('/', req.url));
+    }
     // return NextResponse.next();
   } catch (error) {
     // console.error('Error validating token:', error.message); );
@@ -63,5 +71,5 @@ export async function middleware(req:any) {
 
 // Apply middleware to relevant routes
 export const config = {
-  matcher: ['/dashboard', '/', '/admin/:path*','/staff/:path*' ,'/student/:path*' ,'/sign-in', '/sign-up'],
+  matcher: ['/dashboard', '/', '/admin/:path*','/staff/:path*' ,'/student/:path*' ,'/sign-in', '/sign-up','/hod', '/support-staff'],
 };

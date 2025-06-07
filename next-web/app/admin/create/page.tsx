@@ -27,7 +27,7 @@ const branches = ['AIML', 'ECE', 'CSE', 'EEE', 'ISE', 'MECH'] as const;
 const semesters = ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8'] as const;
 const sections = ['A', 'B', 'C', 'D', 'E', 'F', 'G'] as const;
 const schemas = ['Y_2022','Y_2021','Y_2018','Y_2024'] as const;
-const roles = ['STUDENT', 'ADMIN', 'STAFF']
+const roles = ['STUDENT', 'ADMIN', 'STAFF', 'HOD', 'SUPPORT_STAFF']
 
 
 
@@ -36,7 +36,7 @@ export default function RegisterPage() {
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
     defaultValues: {
-      password: 'sairam123',
+      password: '123123',
       name: ''
     }
   })

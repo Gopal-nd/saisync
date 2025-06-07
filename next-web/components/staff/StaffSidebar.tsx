@@ -98,6 +98,11 @@ export function StaffSidebar() {
                           <Link href="/staff/activites">Activites</Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
+                      <SidebarMenuSubItem>
+                        <SidebarMenuSubButton asChild isActive={pathname === "/staff/activites"}>
+                          <Link href="/staff/semexams">SemExams</Link>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
                     </SidebarMenuSub>
                   </CollapsibleContent>
                 </Collapsible>

@@ -85,6 +85,33 @@ export function AdminSidebar() {
                 </SidebarMenuButton>
               </SidebarMenuItem>
 
+              {/* HOD with submenu */}
+              <SidebarMenuItem>
+                <Collapsible defaultOpen={pathname?.startsWith("/admin/hods")}>
+                  <CollapsibleTrigger asChild>
+                    <SidebarMenuButton isActive={pathname?.startsWith("/admin/hods")}>
+                      <GraduationCap className="size-4" />
+                      <span>HOD</span>
+                      <ChevronDown className="ml-auto size-4 transition-transform group-data-[state=open]/collapsible:rotate-180" />
+                    </SidebarMenuButton>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <SidebarMenuSub>
+                      <SidebarMenuSubItem>
+                          <SidebarMenuSubButton asChild isActive={pathname === "/admin/hods"}>
+                          <Link href="/admin/hods">All HOD</Link>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                      {/* <SidebarMenuSubItem>
+                        <SidebarMenuSubButton asChild isActive={pathname === "/admin/faculty/add"}>
+                          <Link href="/admin/faculty/add">Add Faculty</Link>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem> */}
+                    </SidebarMenuSub>
+                  </CollapsibleContent>
+                </Collapsible>
+              </SidebarMenuItem>
+
               {/* Students with submenu */}
               <SidebarMenuItem>
                 <Collapsible defaultOpen={pathname?.startsWith("/admin/students")}>

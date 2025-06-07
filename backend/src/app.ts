@@ -5,11 +5,12 @@ import cookieParser from 'cookie-parser';
 import authRoutes from './routes/auth'
 import studentsRoute from './routes/students'
 import subjectsRoute from './routes/subjects'
-
+import hodRoutes from './routes/hods'
 import scheduleRoutes from './routes/schedule'
 import attendenceRoute from './routes/attendence'
 import mentorRoutes from './routes/mentor'
 import iaExamRoutes from './routes/iaexam'
+import semExamRoutes from './routes/semexam'
 import staffRoute from './routes/staff'
 import staffPeriodRoute from './routes/staff-attendence'
 import studentActivityRoute from './routes/student-activities';
@@ -45,12 +46,15 @@ app.use(
 app.use('/api/auth', authRoutes);
 app.use('/api/students',studentsRoute)
 app.use('/api/staff',staffRoute)
+app.use('/api/hod',hodRoutes)
 app.use('/api/subjects',subjectsRoute)
 app.use('/api/study-materials',studyMaterialsRoute)
 app.use('/api/schedule',scheduleRoutes)
 app.use('/api/attendence',authenticateToken,attendenceRoute)
 app.use('/api/mentor',authenticateToken,mentorRoutes)
 app.use('/api/iaexam',iaExamRoutes)
+app.use('/api/semexam',semExamRoutes)
+
 app.use('/api/students/activities',studentActivityRoute)
 
 
