@@ -15,7 +15,7 @@ export const getSuportStaffById = asyncHandler(async (req: Request, res: Respons
       throw new APIError({ message: "Invalid or no Id", status: 400 });
     }
     
-      const subject = await prisma.user.findUnique({
+      const user = await prisma.user.findUnique({
         where:{
           id:id
         }
@@ -24,8 +24,8 @@ export const getSuportStaffById = asyncHandler(async (req: Request, res: Respons
       res.status(201).json(
         new ApiResponse({
           statusCode: 201,
-          data: subject,
-          message: "Subject success",
+          data: user,
+          message: "user retrive success",
         })
       );
 });
@@ -49,7 +49,7 @@ export const editSupportStaff = asyncHandler(async (req: Request, res: Response)
   }
   console.log(req.body)
     
-  const hod = await prisma.user.update({
+  const supportStaff = await prisma.user.update({
     where:{id},
     data: {
       name,
@@ -71,8 +71,8 @@ export const editSupportStaff = asyncHandler(async (req: Request, res: Response)
   res.status(201).json(
     new ApiResponse({
       statusCode: 201,
-      data: hod,
-      message: "HOD Updated Successfully ",
+      data: supportStaff,
+      message: "supportStaff Updated Successfully ",
     })
   );
 });
@@ -93,7 +93,7 @@ await prisma.user.delete({where:{id}})
     new ApiResponse({
       statusCode: 201,
       data: null,
-      message: "HOD Deleted Successfully",
+      message: "supportStaff Deleted Successfully",
     })
   );
 });
@@ -121,9 +121,9 @@ export const getAllSupportStaff = asyncHandler(async (req: Request, res: Respons
 
 
     
-  const hods = await prisma.user.findMany({
+  const supportStaff = await prisma.user.findMany({
     where: {
-      role: 'HOD',
+      role: 'SUPPORT_STAFF',
       ...whereClause
     },
     take: limitNumber,
@@ -132,7 +132,7 @@ export const getAllSupportStaff = asyncHandler(async (req: Request, res: Respons
 
   const totalCount = await prisma.user.count({
     where: {
-      role: 'HOD',
+      role: 'SUPPORT_STAFF',
       ...whereClause}
   });
 
@@ -141,12 +141,12 @@ export const getAllSupportStaff = asyncHandler(async (req: Request, res: Respons
         new ApiResponse({
           statusCode: 201,
           data: {
-            hods,
+            supportStaff,
             totalPages: Math.ceil(totalCount / limitNumber),
             currentPage,
             totalCount,
           },
-          message: "HODs fetched successfully",
+          message: "supportStaff fetched successfully",
         })
       );
 });

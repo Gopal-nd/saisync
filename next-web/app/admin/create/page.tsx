@@ -111,7 +111,7 @@ export default function RegisterPage() {
     <div className="p-2">
       <h1 className="text-2xl font-bold">Register New Users</h1>
       <div className="max-w-xl mx-auto mt-10 p-6 border  rounded-lg">
-        <Tabs defaultValue="account">
+        <Tabs defaultValue="add">
           <TabsList className="flex items-center justify-between w-full mb-4">
             <TabsTrigger value="add">Add New User</TabsTrigger>
             <TabsTrigger value="upload">Upload CSV</TabsTrigger>

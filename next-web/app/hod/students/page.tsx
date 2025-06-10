@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -14,10 +14,13 @@ import { redirect } from 'next/navigation';
 import { toast } from 'sonner';
 
 
+const branches = ['AIML', 'ECE', 'CSE', 'EEE', 'ISE', 'MECH'];
+const semesters = ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8'];
+const sections = ['A','B','C']
 
-const fetchSubjects = async (query: string,  page: number) => {
-  const response = await axiosInstance.get('/api/hod/search', {
-    params: { query,  page, limit: 10 },
+const fetchSubjects = async (query: string, branch: string,section:string, semester: string, page: number) => {
+  const response = await axiosInstance.get('/api/students/search', {
+    params: { query, branch,section, semester, page, limit: 10 },
   });
   return response.data;
 };
@@ -25,20 +28,24 @@ const fetchSubjects = async (query: string,  page: number) => {
 const AllStudents = () => {
 
   const [searchTerm, setSearchTerm] = useState('');
+  const [branch, setBranch] = useState('');
+  const [semester, setSemester] = useState('');
   const [page, setPage] = useState(1);
+  const [section, setSection] = useState('');
+
   
   const debouncedSearch = debounce((value) => {
     setSearchTerm(value);
   }, 400);
 
   const { data, isLoading,refetch } = useQuery({
-    queryKey: ['hod', searchTerm,  page],
-    queryFn: () => fetchSubjects(searchTerm, page),
+    queryKey: ['subjects', searchTerm, branch, semester, page],
+    queryFn: () => fetchSubjects(searchTerm, branch,section, semester, page),
 
   });
   const mutate = useMutation({
     mutationFn: async (id: string) => {
-        const res = await axiosInstance.delete(`/api/hod/${id}`);
+        const res = await axiosInstance.delete(`/api/students/${id}`);
         return res.data;
       },
       onSuccess: (data) => {
@@ -53,9 +60,9 @@ const AllStudents = () => {
       },
   })
 
-  const handleEdit = async (id:string)=>{
+  const handleOnclick = async (id:string)=>{
     console.log(id)
-      redirect(`/admin/hods/${id}`)
+    redirect(`/admin/students/${id}`)
 
   }
 
@@ -66,20 +73,18 @@ const AllStudents = () => {
   console.log(data)
   return (
     <div className="container mx-auto p-6">
-          
-
         <div className='flex flex-row items-center justify-between m-2'>
-        <p className="text-2xl items-center font-bold mb-4">Search HOD Members {data?.data?.totalCount}</p>
-      {/* <Link href='/admin/courses/add'>
+      <p className="text-2xl items-center font-bold mb-4">Search Students {data?.data?.totalCount}</p>
+      <Link href='/admin/courses/add'>
       <Button className='flex items-center ' variant={'outline'}><Plus /> Add</Button>
-      </Link> */}
+      </Link>
         </div>
       <div className="flex gap-4 mb-4">
         <Input
-            placeholder="Search by Name or Email..."
+          placeholder="Search by Subject Name or Code..."
           onChange={(e) => debouncedSearch(e.target.value)}
         />
-        {/* <Select onValueChange={setBranch}>
+        <Select onValueChange={setBranch}>
           <SelectTrigger className="w-40">
             <SelectValue placeholder="Select Branch" />
           </SelectTrigger>
@@ -108,7 +113,7 @@ const AllStudents = () => {
               <SelectItem key={b} value={b}>{b}</SelectItem>
             ))}
           </SelectContent>
-        </Select> */}
+        </Select>
       </div>
       {isLoading ? (
         <p>Loading...</p>
@@ -120,24 +125,29 @@ const AllStudents = () => {
             <TableRow>
               <TableHead> Name</TableHead>
               <TableHead>Email</TableHead>
-              <TableHead>Branch</TableHead>
+              <TableHead>Schema</TableHead>
+              <TableHead>USN</TableHead>
               <TableHead>CollegeId</TableHead>
+              {/* <TableHead>Edit</TableHead>
+              <TableHead>Delete</TableHead> */}
 
             </TableRow>
           </TableHeader>
           <TableBody>
-           
-          {data?.data?.hods.length==0 && (
+          {data?.data?.students.length==0 && (
             <TableCell>No Results Found</TableCell>
 
             )}
 
-            {data?.data?.hods?.map((student: any) => (
-                <TableRow key={student.id} className='cursor-pointer' onClick={()=>handleEdit(student.id)}>
+            {data?.data?.students?.map((student: any) => (
+                <TableRow key={student.id} className='cursor-pointer' onClick={()=>handleOnclick(student.id)}>
                 <TableCell>{student.name}</TableCell>
                 <TableCell>{student.email}</TableCell>
-                <TableCell>{student.branch ?? "-"}</TableCell>
+                <TableCell>{student.schema ?? "-"}</TableCell>
+                <TableCell>{student.usn ?? "-"}</TableCell>
                 <TableCell>{student.collageId ?? "-"}</TableCell>
+                {/* <TableCell onClick={()=>handleOnclick(student.id)}><Edit className='text-blue-500 cursor-pointer'/></TableCell>
+                <TableCell onClick={()=>handleDelete(student.id)}><Trash2 className='text-red-500 cursor-pointer'/></TableCell> */}
               </TableRow>
             ))}
           </TableBody>
@@ -147,9 +157,9 @@ const AllStudents = () => {
       <div className="flex justify-between mt-4">
         <Button onClick={() => setPage((p) => Math.max(p - 1, 1))} disabled={page === 1}>
           Previous
-        </Button> 
+        </Button>
         <span>Page {page}...of...{data?.data.totalPages} Pages</span>
-        <Button onClick={() => setPage((p) => p + 1)} disabled={data?.data?.hods?.length < 10}>
+        <Button onClick={() => setPage((p) => p + 1)} disabled={data?.data?.students.length < 10}>
           Next
         </Button>
       </div>

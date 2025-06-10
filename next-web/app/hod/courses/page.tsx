@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -14,31 +14,34 @@ import { redirect } from 'next/navigation';
 import { toast } from 'sonner';
 
 
+const branches = ['AIML', 'ECE', 'CSE', 'EEE', 'ISE', 'MECH'];
+const semesters = ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8'];
 
 const fetchSubjects = async (query: string,  page: number) => {
-  const response = await axiosInstance.get('/api/hod/search', {
+  const response = await axiosInstance.get('/api/subjects/search', {
     params: { query,  page, limit: 10 },
   });
   return response.data;
 };
 
-const AllStudents = () => {
+const SearchPage = () => {
 
   const [searchTerm, setSearchTerm] = useState('');
+
   const [page, setPage] = useState(1);
   
   const debouncedSearch = debounce((value) => {
     setSearchTerm(value);
-  }, 400);
+  }, 700);
 
   const { data, isLoading,refetch } = useQuery({
-    queryKey: ['hod', searchTerm,  page],
-    queryFn: () => fetchSubjects(searchTerm, page),
+    queryKey: ['subjects', searchTerm, page],
+    queryFn: () => fetchSubjects(searchTerm,  page),
 
   });
   const mutate = useMutation({
     mutationFn: async (id: string) => {
-        const res = await axiosInstance.delete(`/api/hod/${id}`);
+        const res = await axiosInstance.delete(`/api/subjects/${id}`);
         return res.data;
       },
       onSuccess: (data) => {
@@ -46,6 +49,8 @@ const AllStudents = () => {
         toast.success(data?.message)
         refetch()
         // queryClient.invalidateQueries(['subjects', searchTerm, branch, semester, page]); 
+
+
 
       },
       onError: (error) => {
@@ -55,7 +60,8 @@ const AllStudents = () => {
 
   const handleEdit = async (id:string)=>{
     console.log(id)
-      redirect(`/admin/hods/${id}`)
+    redirect(`/admin/courses/${id}/edit`)
+
 
   }
 
@@ -65,50 +71,19 @@ const AllStudents = () => {
   }
   console.log(data)
   return (
-    <div className="container mx-auto p-6">
-          
-
+    <div className="max-w-4xl mx-auto p-6">
         <div className='flex flex-row items-center justify-between m-2'>
-        <p className="text-2xl items-center font-bold mb-4">Search HOD Members {data?.data?.totalCount}</p>
-      {/* <Link href='/admin/courses/add'>
+      <p className="text-2xl items-center font-bold mb-4">Search Subjects {data?.data?.totalCount}</p>
+      <Link href='/admin/courses/add'>
       <Button className='flex items-center ' variant={'outline'}><Plus /> Add</Button>
-      </Link> */}
+      </Link>
         </div>
       <div className="flex gap-4 mb-4">
         <Input
-            placeholder="Search by Name or Email..."
+          placeholder="Search by Subject Name or Code..."
           onChange={(e) => debouncedSearch(e.target.value)}
         />
-        {/* <Select onValueChange={setBranch}>
-          <SelectTrigger className="w-40">
-            <SelectValue placeholder="Select Branch" />
-          </SelectTrigger>
-          <SelectContent>
-            {branches.map((b) => (
-              <SelectItem key={b} value={b}>{b}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select onValueChange={setSemester}>
-          <SelectTrigger className="w-40">
-            <SelectValue placeholder="Select Semester" />
-          </SelectTrigger>
-          <SelectContent>
-            {semesters.map((s) => (
-              <SelectItem key={s} value={s}>{s}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select onValueChange={setSection}>
-          <SelectTrigger className="w-40">
-            <SelectValue placeholder="Select Section" />
-          </SelectTrigger>
-          <SelectContent>
-            {sections.map((b) => (
-              <SelectItem key={b} value={b}>{b}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select> */}
+       
       </div>
       {isLoading ? (
         <p>Loading...</p>
@@ -118,26 +93,31 @@ const AllStudents = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead> Name</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Branch</TableHead>
-              <TableHead>CollegeId</TableHead>
+              <TableHead>Subject Name</TableHead>
+              <TableHead>Subject Code</TableHead>
+              <TableHead>Exam Type</TableHead>
+              <TableHead>isLab</TableHead>
+              <TableHead>Year</TableHead>
+              <TableHead>Edit</TableHead>
+              <TableHead>Delete</TableHead>
 
             </TableRow>
           </TableHeader>
           <TableBody>
-           
-          {data?.data?.hods.length==0 && (
+          { data  && data?.data?.subjects.length==0 && (
             <TableCell>No Results Found</TableCell>
 
             )}
 
-            {data?.data?.hods?.map((student: any) => (
-                <TableRow key={student.id} className='cursor-pointer' onClick={()=>handleEdit(student.id)}>
-                <TableCell>{student.name}</TableCell>
-                <TableCell>{student.email}</TableCell>
-                <TableCell>{student.branch ?? "-"}</TableCell>
-                <TableCell>{student.collageId ?? "-"}</TableCell>
+            {data && data?.data?.subjects?.map((subject: any) => (
+                <TableRow key={subject.id} onClick={()=>redirect(`/admin/courses/${subject.id}`)}>
+                <TableCell>{subject.subjectName}</TableCell>
+                <TableCell>{subject.subjectCode}</TableCell>
+                <TableCell>{subject.examType}</TableCell>
+                <TableCell>{subject.isLab?'Yes':'-'}</TableCell>
+                <TableCell>{subject.year}</TableCell>
+                <TableCell onClick={()=>handleEdit(subject.id)}><Edit className='text-blue-500 cursor-pointer'/></TableCell>
+                <TableCell onClick={()=>handleDelete(subject.id)}><Trash2 className='text-red-500 cursor-pointer'/></TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -147,9 +127,9 @@ const AllStudents = () => {
       <div className="flex justify-between mt-4">
         <Button onClick={() => setPage((p) => Math.max(p - 1, 1))} disabled={page === 1}>
           Previous
-        </Button> 
+        </Button>
         <span>Page {page}...of...{data?.data.totalPages} Pages</span>
-        <Button onClick={() => setPage((p) => p + 1)} disabled={data?.data?.hods?.length < 10}>
+        <Button onClick={() => setPage((p) => p + 1)} disabled={data?.data?.subjects.length < 10}>
           Next
         </Button>
       </div>
@@ -157,4 +137,4 @@ const AllStudents = () => {
   );
 };
 
-export default AllStudents;
+export default SearchPage;

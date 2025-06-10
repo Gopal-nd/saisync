@@ -137,6 +137,9 @@ model User {
   receivedNotifications Notification[] @relation("NotificationReceiver") // as receiver
   placements Placements[]
 }
+
+
+
 model MedicalLeaves{
   id          String     @id @default(cuid())
   title         String?
