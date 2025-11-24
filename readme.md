@@ -11,8 +11,6 @@ prisma
 ## MobailApp - Expo
 react-native 
 
-
-
-# for the database connection install docker and spin a postgress container
+## Project Setup
 
 
