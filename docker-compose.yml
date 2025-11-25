@@ -1,8 +1,8 @@
-version: '3.8'
+version: "3.8"
 
 services:
   postgres:
-    image: postgres:latest
+    image: postgres:15
     container_name: postgres-db
     restart: always
     ports:
