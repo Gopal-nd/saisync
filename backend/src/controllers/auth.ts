@@ -77,7 +77,6 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
    if (!isMatch) {
     throw new APIError({status:401,message:"Invalid credentials"})
   }
-
    const token = generateToken(user.id, user.role);
 
    res.cookie('token',token,{
@@ -281,7 +280,7 @@ export const bulkRegister = asyncHandler(async (req: Request, res: Response) => 
     await prisma.user.upsert({
       where:{email:row.email},update:{},create:{
         email:row.email,
-        password:row.password,
+        password:await bcrypt.hash(row.password, 10),
         name:row.name,
         usn:row.usn,
         role:row.role,

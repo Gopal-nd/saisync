@@ -21,7 +21,7 @@ export const studentClasses = asyncHandler(async (req: Request, res: Response) =
           id: req.user.userId,
         },
       });
-
+      console.log(day, user?.semester,user?.section,user?.branch)
     const data = await prisma.timetableOfDay.findUnique({
       where: {
           date_branchName_semesterName_sectionName: {
@@ -35,6 +35,7 @@ export const studentClasses = asyncHandler(async (req: Request, res: Response) =
         Periods: true
       }
     });
+    console.log(data)
 
     res.status(200).json(new ApiResponse({ statusCode: 200, data, message: "Classes fetched successfully" }));
   });

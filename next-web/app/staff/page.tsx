@@ -21,7 +21,7 @@ const StaffPanel = () => {
   
   const [day, setDay] = useState<Date>(new Date())
   const { data: subjects, isLoading, isPending, isError } = useQuery({
-    queryKey: ['staff', day],
+    queryKey: ['staff',user?.id, day],
     queryFn: async () => {
       const response = await axiosInstance.get('/staff/class', { params: { day: dayjs(day).format("YYYY-M-D"), staff: user?.name } });
       return response.data;

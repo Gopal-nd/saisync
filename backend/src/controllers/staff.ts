@@ -357,16 +357,16 @@ export const getAllFaculty = asyncHandler(async (req: Request, res: Response) =>
 
 export const getFacultyClasses = asyncHandler(async (req: Request, res: Response) => {
   const { day, staff} = req.query; 
-console.log('staff details :',staff,day)
-
-
+  
+  
   if (!staff || typeof staff !== "string") {
     throw new APIError({ message: "Invalid or missing staff", status: 400 });
   }
-
+  
   if (!day || typeof day !== "string") {
     throw new APIError({ message: "Invalid or missing date", status: 400 });  
   }
+  console.log('staff details :',staff,day)
 
 
   const data = await prisma.timetableOfDay.findMany({
@@ -407,7 +407,7 @@ console.log('staff details :',staff,day)
     }
   })
 
-  // console.log(data[0].Periods)
+  console.log(data)
   res.status(200).json(new ApiResponse({ statusCode: 200, data:data, message: "Classes fetched successfully" }));
 
 });
