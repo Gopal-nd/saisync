@@ -1,55 +1,98 @@
 'use client'
-import React from "react";
-import { BookOpen, Users, Calendar, Database, ShieldCheck, Mail } from "lucide-react";
+
+import React, { useState } from "react";
+import { BookOpen, Users, Calendar, Database, ShieldCheck, Mail, Menu, X } from "lucide-react";
 import Link from "next/link";
 import useAuthStore from "@/store/useAuthStore";
-// Edumate-ERP Landing Page
-// Single-file React component using Tailwind CSS classes.
-// Paste this file into a React + Tailwind project (e.g., Next.js / CRA) and render <EdumateLanding />.
+
+// Polished, fully responsive single-file React component using Tailwind CSS.
+// Paste into a Next.js / React + Tailwind project and render <EdumateLanding />.
 
 export default function EdumateLanding() {
-  const {user} = useAuthStore()
+  const { user } = useAuthStore();
+  const [open, setOpen] = useState(false);
+
+  // safe role -> path helper
+  const rolePath = (() => {
+    if (!user?.role) return '/dashboard';
+    const r = String(user.role).toLowerCase();
+    if (r === 'support_staff' || r === 'support-staff') return '/support-staff';
+    return `/${r.replace(/\s+/g, '-')}`;
+  })();
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 text-slate-900">
-      <header className="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-600 to-sky-400 flex items-center justify-center text-white font-bold">EM</div>
-          <div>
-            <div className="font-semibold">Edumate</div>
-            <div className="text-xs text-slate-500">ERP for modern schools & colleges</div>
+      <header className="sticky top-0 bg-white/60 backdrop-blur-md z-30 border-b border-slate-100">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-600 to-sky-400 flex items-center justify-center text-white font-bold">EM</div>
+            <div>
+              <div className="font-semibold">Edumate</div>
+              <div className="text-xs text-slate-500">ERP for modern schools & colleges</div>
+            </div>
+          </div>
+
+          {/* Desktop nav */}
+          <nav className="hidden md:flex gap-6 items-center text-sm text-slate-700">
+            <a href="#features" className="hover:text-slate-900">Features</a>
+            <a href="#pricing" className="hover:text-slate-900">Pricing</a>
+            <a href="#testimonials" className="hover:text-slate-900">Testimonials</a>
+            <a href="#contact" className="hover:text-slate-900">Contact</a>
+
+            <div className="border-l pl-4 ml-2 flex items-center gap-4">
+              {user?.email ? (
+                <Link href={rolePath} className="px-4 py-2 rounded-md bg-slate-900 text-white text-sm">Dashboard</Link>
+              ) : (
+                <Link href="/sign-in" className="px-4 py-2 rounded-md bg-indigo-600 text-white text-sm">Login</Link>
+              )}
+            </div>
+          </nav>
+
+          {/* Mobile menu button */}
+          <div className="md:hidden">
+            <button aria-label="Toggle menu" onClick={() => setOpen(!open)} className="p-2 rounded-md bg-slate-100">
+              {open ? <X size={18} /> : <Menu size={18} />}
+            </button>
           </div>
         </div>
-        <nav className="hidden md:flex gap-6 items-center text-sm text-slate-700">
-          <a href="#features" className="hover:text-slate-900">Features</a>
-          <a href="#pricing" className="hover:text-slate-900">Pricing</a>
-          <a href="#testimonials" className="hover:text-slate-900">Testimonials</a>
-          <p>{user?.name}</p>
-          {
-            user?.email ? (
-            <Link href={user?.role.toLocaleLowerCase()==='SUPPORT_STAFF'?'/support-staff':`/${user?.role.toLocaleLowerCase()}`} className="px-4 py-2 rounded-md bg-slate-900 text-white">Dashboard</Link>
-                  ):(
-          <Link href="/sign-in" className="px-4 py-2 rounded-md bg-slate-900 text-white">Login</Link>
-            )
-          }
-        </nav>
-        <button className="md:hidden p-2 rounded-md bg-slate-100">Menu</button>
+
+        {/* Mobile nav panel */}
+        {open && (
+          <div className="md:hidden border-t border-slate-100 bg-white">
+            <div className="max-w-7xl mx-auto px-4 py-4 space-y-3">
+              <a href="#features" className="block py-2">Features</a>
+              <a href="#pricing" className="block py-2">Pricing</a>
+              <a href="#testimonials" className="block py-2">Testimonials</a>
+              <a href="#contact" className="block py-2">Contact</a>
+              <div className="pt-2 border-t border-slate-100">
+                <div className="pt-3 flex items-center justify-between">
+                  {user?.email ? (
+                    <Link href={rolePath} className="px-4 py-2 rounded-md bg-slate-900 text-white text-sm">Dashboard</Link>
+                  ) : (
+                    <Link href="/sign-in" className="px-4 py-2 rounded-md bg-indigo-600 text-white text-sm">Login</Link>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </header>
 
       <main className="max-w-7xl mx-auto px-6 py-12">
         {/* HERO */}
         <section className="grid gap-8 md:grid-cols-2 items-center">
           <div>
-            <h1 className="text-4xl md:text-5xl font-extrabold leading-tight">Edumate ERP — run your institution with clarity</h1>
-            <p className="mt-4 text-lg text-slate-600 max-w-xl">A unified school and college management system: admissions, attendance, exams, fees, staff payroll, and parent communication — all in one beautiful dashboard.</p>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight">Edumate ERP — run your institution with clarity</h1>
+            <p className="mt-4 text-base sm:text-lg text-slate-600 max-w-xl">A unified school and college management system: admissions, attendance, exams, fees, staff payroll, and parent communication — all in one beautiful dashboard.</p>
 
-            <div className="mt-6 flex flex-wrap gap-3">
-              <a href="#contact" className="inline-flex items-center gap-3 px-5 py-3 rounded-lg bg-indigo-600 text-white font-medium shadow-md">Request a demo</a>
-              <a href="#features" className="inline-flex items-center gap-3 px-5 py-3 rounded-lg border border-slate-200 text-slate-700">Explore features</a>
+            <div className="mt-6 flex flex-col sm:flex-row sm:items-center gap-3">
+              <a href="#contact" className="inline-flex items-center justify-center gap-3 px-5 py-3 rounded-lg bg-indigo-600 text-white font-medium shadow-md w-full sm:w-auto">Request a demo</a>
+              <a href="#features" className="inline-flex items-center justify-center gap-3 px-5 py-3 rounded-lg border border-slate-200 text-slate-700 w-full sm:w-auto">Explore features</a>
             </div>
 
-            <div className="mt-8 flex items-center gap-6">
+            <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="flex items-center gap-3">
-                <div className="p-3 rounded-full bg-slate-100"><Users size={20} /></div>
+                <div className="p-3 rounded-full bg-slate-100"><Users size={20} aria-hidden /></div>
                 <div>
                   <div className="text-sm font-semibold">300+ Institutions</div>
                   <div className="text-xs text-slate-500">Trusted worldwide</div>
@@ -57,7 +100,7 @@ export default function EdumateLanding() {
               </div>
 
               <div className="flex items-center gap-3">
-                <div className="p-3 rounded-full bg-slate-100"><Calendar size={20} /></div>
+                <div className="p-3 rounded-full bg-slate-100"><Calendar size={20} aria-hidden /></div>
                 <div>
                   <div className="text-sm font-semibold">Real-time Attendance</div>
                   <div className="text-xs text-slate-500">Mobile & kiosk friendly</div>
@@ -66,7 +109,7 @@ export default function EdumateLanding() {
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6">
+          <aside className="bg-white rounded-2xl shadow-lg p-6">
             <div className="rounded-xl overflow-hidden border border-slate-100">
               {/* Mock dashboard preview */}
               <div className="px-6 py-5 bg-gradient-to-r from-indigo-600 to-sky-400 text-white">
@@ -79,15 +122,15 @@ export default function EdumateLanding() {
                 </div>
               </div>
 
-              <div className="p-5 grid gap-4 md:grid-cols-2">
-                <div className="p-4 rounded-lg bg-slate-50 border">Students <div className="text-2xl font-bold mt-2">4,832</div></div>
-                <div className="p-4 rounded-lg bg-slate-50 border">Teachers <div className="text-2xl font-bold mt-2">234</div></div>
-                <div className="p-4 rounded-lg bg-slate-50 border">Pending Fees <div className="text-2xl font-bold mt-2">₹1.2L</div></div>
-                <div className="p-4 rounded-lg bg-slate-50 border">Upcoming Exams <div className="text-2xl font-bold mt-2">3</div></div>
+              <div className="p-5 grid gap-4 sm:grid-cols-2">
+                <SmallStat label="Students" value="4,832" />
+                <SmallStat label="Teachers" value="234" />
+                <SmallStat label="Pending Fees" value="₹1.2L" />
+                <SmallStat label="Upcoming Exams" value="3" />
               </div>
 
             </div>
-          </div>
+          </aside>
         </section>
 
         {/* FEATURES */}
@@ -95,7 +138,7 @@ export default function EdumateLanding() {
           <h2 className="text-2xl font-bold">Powerful features built for education teams</h2>
           <p className="mt-2 text-slate-600 max-w-2xl">Everything you need to manage students, staff, academics and finance — with powerful automations and a friendly UI.</p>
 
-          <div className="mt-8 grid gap-6 md:grid-cols-3">
+          <div className="mt-8 grid gap-6 sm:grid-cols-2 md:grid-cols-3">
             <FeatureCard Icon={BookOpen} title="Academic Management" desc="Course planning, timetables, lesson tracking and exam generation." />
             <FeatureCard Icon={Users} title="Student & Staff" desc="Admission workflows, ID cards, staff payroll, and role based access." />
             <FeatureCard Icon={Calendar} title="Attendance & Events" desc="Daily attendance, event calendars, and SMS/email reminders." />
@@ -110,7 +153,7 @@ export default function EdumateLanding() {
           <h2 className="text-2xl font-bold">Simple pricing that grows with you</h2>
           <p className="mt-2 text-slate-600 max-w-2xl">Transparent plans — switch anytime. No hidden onboarding fees for standard configurations.</p>
 
-          <div className="mt-8 grid gap-6 md:grid-cols-3">
+          <div className="mt-8 grid gap-6 sm:grid-cols-2 md:grid-cols-3">
             <PricingCard title="Starter" price="₹4,999/mo" bullets={["Up to 500 students","Core modules","Email support"]} />
             <PricingCard title="Growth" price="₹11,999/mo" featured bullets={["Unlimited students","SMS bundle","Priority support"]} />
             <PricingCard title="Enterprise" price="Custom" bullets={["Dedicated account manager","Custom integrations","On-prem or cloud"]} />
@@ -120,7 +163,7 @@ export default function EdumateLanding() {
         {/* TESTIMONIALS */}
         <section id="testimonials" className="mt-16">
           <h2 className="text-2xl font-bold">Loved by administrators & teachers</h2>
-          <div className="mt-6 grid gap-6 md:grid-cols-3">
+          <div className="mt-6 grid gap-6 sm:grid-cols-2 md:grid-cols-3">
             <Testimonial name="Smt. Radha Iyer" title="Principal, Sunrise Academy" quote="Edumate simplified our fees management and reduced manual work by 60%. The support team is excellent." />
             <Testimonial name="Mr. Arun Kumar" title="Exam Coordinator" quote="Scheduling exams used to be a nightmare. Now it's a single click and parents get notified automatically." />
             <Testimonial name="Ms. Leena Shah" title="Accountant" quote="Reconciliations are faster and the exportable reports made audits painless." />
@@ -128,17 +171,17 @@ export default function EdumateLanding() {
         </section>
 
         {/* CONTACT / CTA */}
-        <section id="contact" className="mt-16 bg-white rounded-2xl p-8 shadow-md">
+        <section id="contact" className="mt-16 bg-white rounded-2xl p-6 sm:p-8 shadow-md">
           <div className="md:flex md:items-center md:justify-between">
             <div>
               <h3 className="text-xl font-bold">Ready to transform your institution?</h3>
               <p className="mt-2 text-slate-600">Book a walkthrough with our product specialist and get a free pilot setup.</p>
             </div>
 
-            <form onSubmit={(e) => e.preventDefault()} className="mt-6 md:mt-0 flex gap-3">
-              <input aria-label="Name" className="rounded-md border border-gray-500 px-4 py-3" placeholder="Your name" />
-              <input aria-label="Email" className="rounded-md border border-gray-500 px-4 py-3" placeholder="Email" />
-              <button className="rounded-md bg-indigo-600 px-4 py-3 text-white">Request demo</button>
+            <form onSubmit={(e) => e.preventDefault()} className="mt-6 md:mt-0 flex flex-col xl:flex-row gap-3 w-full max-w-2xl">
+              <input aria-label="Name" name="name" className="rounded-md border border-gray-200 px-4 py-3 flex-1" placeholder="Your name" />
+              <input aria-label="Email" name="email" className="rounded-md border border-gray-200 px-4 py-3 flex-1" placeholder="Email" />
+              <button className="rounded-md bg-indigo-600 px-4 py-3 text-white w-full sm:w-auto">Request demo</button>
             </form>
           </div>
         </section>
@@ -146,7 +189,7 @@ export default function EdumateLanding() {
         <footer className="mt-12 text-sm text-slate-500">
           <div className="max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between">
             <div>© {new Date().getFullYear()} Edumate — All rights reserved.</div>
-            <div className="mt-3 md:mt-0">Made with ❤️ for educators</div>
+            <div className="mt-3 md:mt-0">Made with <span aria-hidden>❤️</span> for educators</div>
           </div>
         </footer>
       </main>
@@ -154,11 +197,20 @@ export default function EdumateLanding() {
   );
 }
 
-function FeatureCard({ Icon, title, desc }:any){
+function SmallStat({ label, value }: any) {
   return (
-    <div className="p-6 bg-white rounded-lg shadow-sm border">
-      <div className="flex items-center gap-4">
-        <div className="p-3 rounded-md bg-slate-50"><Icon size={22} /></div>
+    <div className="p-3 rounded-lg bg-slate-50 border flex flex-col">
+      <div className="text-xs text-slate-500">{label}</div>
+      <div className="text-lg font-semibold mt-2">{value}</div>
+    </div>
+  );
+}
+
+function FeatureCard({ Icon, title, desc }: any) {
+  return (
+    <div className="p-6 bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow">
+      <div className="flex items-start gap-4">
+        <div className="p-3 rounded-md bg-slate-50"><Icon size={22} aria-hidden /></div>
         <div>
           <div className="font-semibold">{title}</div>
           <div className="text-slate-500 text-sm mt-1">{desc}</div>
@@ -168,24 +220,24 @@ function FeatureCard({ Icon, title, desc }:any){
   )
 }
 
-function PricingCard({ title, price, bullets = [], featured = false }:any){
+function PricingCard({ title, price, bullets = [], featured = false }: any) {
   return (
-    <div className={`p-6 rounded-lg border ${featured ? 'scale-105 shadow-lg border-indigo-200' : ''} bg-white`}>
+    <div className={`p-6 rounded-lg border ${featured ? 'scale-105 shadow-lg border-indigo-200' : ''} bg-white`}> 
       <div className="flex items-center justify-between">
         <div className="font-semibold">{title}</div>
         <div className="text-sm text-slate-500">{price}</div>
       </div>
       <ul className="mt-4 space-y-2 text-slate-600 text-sm">
-        {bullets.map((b:string,i:number)=> <li key={i}>• {b}</li>)}
+        {bullets.map((b: string, i: number) => <li key={i}>• {b}</li>)}
       </ul>
       <div className="mt-6">
-        <button className="w-full rounded-md py-2 bg-indigo-600 text-white">Choose</button>
+        <button className={`w-full rounded-md py-2 ${featured ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-800'}`}>Choose</button>
       </div>
     </div>
   )
 }
 
-function Testimonial({ name, title, quote }:any){
+function Testimonial({ name, title, quote }: any) {
   return (
     <div className="p-6 bg-white rounded-lg border shadow-sm">
       <div className="text-slate-700 italic">“{quote}”</div>
