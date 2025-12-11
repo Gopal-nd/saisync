@@ -71,5 +71,5 @@ export async function middleware(req:any) {
 
 // Apply middleware to relevant routes
 export const config = {
-  matcher: ['/dashboard', '/admin/:path*','/staff/:path*' ,'/student/:path*' ,'/sign-in', '/sign-up','/hod', '/support-staff'],
+  matcher: [ '/admin/:path*','/staff/:path*' ,'/student/:path*' ,'/sign-in', '/sign-up','/hod', '/support-staff'],
 };

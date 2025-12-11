@@ -1,4 +1,4 @@
-"use client"
+ "use client"
 import React from 'react';
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -19,78 +19,71 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import {LoginSchema} from '@/schema'
-import { Select, SelectItem, SelectTrigger, SelectContent } from '@/components/ui/select';
-import { Label } from '@/components/ui/label';
+import Link from 'next/link';
 import axiosInstance from '@/lib/axiosInstance';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import useAuthStore from '@/store/useAuthStore';
-
-const branches = ['AIML', 'ECE', 'CSE', 'EEE', 'ISE', 'MECH'] as const;
-const semesters = ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8'] as const;
-const sections = ['A', 'B', 'C', 'D', 'E', 'F', 'G'] as const;
-const schemas = ['2021', '2022', '2023'] as const;
-const roles = ['STUDENT', 'ADMIN', 'STAFF']
-
-
+import { axiosFrontend } from '@/lib/axios';
 
 export default function LoginPage() {
-  const  {setUser} = useAuthStore()
+  const { setUser } = useAuthStore();
 
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
-    defaultValues:{
-      // password:'sairam123',
-    }
-  })
+  });
 
-  const router = useRouter()
+  const router = useRouter();
 
   const mutation = useMutation({
     mutationFn: async (data: any) => {
-      const response = await axiosInstance.post('/api/auth/sign-in', data);
-
+      // Call Next.js server route which will set the cookie on the frontend origin
+      const response = await axiosFrontend.post('/api/auth/sign-in', data);
       return response.data;
     },
     onSuccess: (data) => {
-      toast.success('Login successful');
-      console.log(data.data.sendUser.role)
-      if(data.data.sendUser.role === 'SUPPORT_STAFF'){
-        router.push(`/support-staff`)
-      }else{
-        router.push(`/${data.data.sendUser.role.toLowerCase()}`)
+       console.log(data.data.data)
+      // Adjust these accesses to match your backend response shape
+      const sendUser = data?.data?.data?.sendUser ?? data?.sendUser ?? null;
+      if (!sendUser) {
+        toast.success('Login successful');
+        router.push('/');
+        return;
       }
-      console.log(data)
+
+      if (sendUser.role === 'SUPPORT_STAFF') {
+        router.push(`/support-staff`);
+      } else {
+        router.push(`/${sendUser.role.toLowerCase()}`);
+      }
+
+      toast.success('Login successful');
 
       setUser({
-        email:data.data.sendUser.email,
-        id:data.data.sendUser.id,
-        role:data.data.sendUser.role,
-        branch:data.data.sendUser.branch,
-        name:data.data.sendUser.name,
-        semester:data.data.sendUser.semester,
-        section:data.data.sendUser.section,
-        usn:data.data.sendUser.usn,
-        schema:data.data.sendUser.schema,
-        mentor:data.data.sendUser.mentor
-      })
-
+        email: sendUser.email,
+        id: sendUser.id,
+        role: sendUser.role,
+        branch: sendUser.branch,
+        name: sendUser.name,
+        semester: sendUser.semester,
+        section: sendUser.section,
+        usn: sendUser.usn,
+        schema: sendUser.schema,
+        mentor: sendUser.mentor,
+      });
     },
     onError: (error) => {
-      console.log(error)
-      if(axios.isAxiosError(error)){
-        toast.error(error.response?.data.message);
-      }else{
-        toast.error('something went wrong ,Login Failed')
+      console.log(error);
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data?.message || 'Login failed');
+      } else {
+        toast.error('Something went wrong, login failed');
       }
     },
   });
 
   const onSubmit = (data: any) => {
-    // console.log(data)
-   const output =  mutation.mutate(data)
-
-  }
+    mutation.mutate(data);
+  };
 
   return (
     <div className="max-w-md mx-auto mt-10 p-6 border rounded-xl">
@@ -121,7 +114,6 @@ export default function LoginPage() {
                 <FormLabel>Password</FormLabel>
                 <FormControl>
                   <Input
-
                     {...field}
                     placeholder='******'
                     type='password'
@@ -132,12 +124,14 @@ export default function LoginPage() {
             )}
           />
           <p className='text-blue-500'>
-          <Link href={'/reset-password'}>Forgot Password?</Link>
+            <Link href={'/reset-password'}>Forgot Password?</Link>
           </p>
-          <Button type="submit">Submit</Button>
+          <Button type="submit" disabled={mutation.isPending}>
+            {mutation.isPending ? 'Logging in...' : 'Submit'}
+          </Button>
         </form>
       </Form>
-      
     </div>
   );
 }
+

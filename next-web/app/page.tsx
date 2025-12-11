@@ -1,12 +1,14 @@
 'use client'
 import React from "react";
 import { BookOpen, Users, Calendar, Database, ShieldCheck, Mail } from "lucide-react";
-
+import Link from "next/link";
+import useAuthStore from "@/store/useAuthStore";
 // Edumate-ERP Landing Page
 // Single-file React component using Tailwind CSS classes.
 // Paste this file into a React + Tailwind project (e.g., Next.js / CRA) and render <EdumateLanding />.
 
 export default function EdumateLanding() {
+  const {user} = useAuthStore()
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 text-slate-900">
       <header className="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between">
@@ -21,7 +23,14 @@ export default function EdumateLanding() {
           <a href="#features" className="hover:text-slate-900">Features</a>
           <a href="#pricing" className="hover:text-slate-900">Pricing</a>
           <a href="#testimonials" className="hover:text-slate-900">Testimonials</a>
-          <a href="#contact" className="px-4 py-2 rounded-md bg-slate-900 text-white">Get a demo</a>
+          <p>{user?.name}</p>
+          {
+            user?.email ? (
+            <Link href={user?.role.toLocaleLowerCase()==='SUPPORT_STAFF'?'/support-staff':`/${user?.role.toLocaleLowerCase()}`} className="px-4 py-2 rounded-md bg-slate-900 text-white">Dashboard</Link>
+                  ):(
+          <Link href="/sign-in" className="px-4 py-2 rounded-md bg-slate-900 text-white">Login</Link>
+            )
+          }
         </nav>
         <button className="md:hidden p-2 rounded-md bg-slate-100">Menu</button>
       </header>
