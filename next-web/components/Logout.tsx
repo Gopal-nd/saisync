@@ -11,6 +11,8 @@ const Logout = () => {
     const handlelogout = async()=>{
         const res = await axiosInstance.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/logout`,{})
         console.log(res.data)
+     await axios.post("/api/auth/logout", {}, { withCredentials: true });
+
         logout()
         router.push('/sign-in')
     }

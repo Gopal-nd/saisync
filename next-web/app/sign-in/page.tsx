@@ -41,7 +41,15 @@ export default function LoginPage() {
       return response.data;
     },
     onSuccess: (data) => {
-       console.log(data.data.data)
+       const token =  data.data.data.token
+       console.log(token)
+        if (token) {
+    // 1) set in axios default so every subsequent call to EC2 includes Authorization header
+    axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+    // 2) store in memory (Zustand) so UI and logout can clear it — avoid localStorage if possible
+    useAuthStore.getState().setToken(token); // or however your store sets token
+  }
       // Adjust these accesses to match your backend response shape
       const sendUser = data?.data?.data?.sendUser ?? data?.sendUser ?? null;
       if (!sendUser) {
