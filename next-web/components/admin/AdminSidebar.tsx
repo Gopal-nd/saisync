@@ -46,7 +46,7 @@ export function AdminSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <Link href="/admin/dashboard">
+              <Link href="/admin">
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg ">
                   <Home className="size-4" />
                 </div>
@@ -77,8 +77,8 @@ export function AdminSidebar() {
               </SidebarMenuItem>
 
               <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={pathname === "/admin/dashboard"}>
-                  <Link href="/admin/dashboard">
+                <SidebarMenuButton asChild isActive={pathname === "/admin"}>
+                  <Link href="/admin">
                     <LayoutDashboard className="size-4" />
                     <span>Dashboard</span>
                   </Link>
@@ -278,35 +278,7 @@ export function AdminSidebar() {
               </SidebarMenuItem>
 
               {/* Reports */}
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={pathname?.startsWith("/admin/reports")}>
-                  <Link href="/admin/reports">
-                    <BarChart3 className="size-4" />
-                    <span>Reports</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-
-              {/* Settings */}
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={pathname?.startsWith("/admin/settings")}>
-                  <Link href="/admin/settings">
-                    <Settings className="size-4" />
-                    <span>Settings</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-
-              {/* Help */}
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={pathname?.startsWith("/admin/help")}>
-                  <Link href="/admin/help">
-                    <LifeBuoy className="size-4" />
-                    <span>Help</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
+                        </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>

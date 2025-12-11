@@ -86,14 +86,7 @@ export default function SupportStaffSidebar() {
 
              
               {/* User */}
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={pathname?.startsWith("/support-staff/profile")}>
-                  <Link href="/support-staff/profile">
-                    <User  className="size-4" />
-                    <span>Profile</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              
 
             </SidebarMenu>
           </SidebarGroupContent>

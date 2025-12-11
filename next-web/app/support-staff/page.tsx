@@ -1,8 +1,17 @@
+'use client'
+import useAuthStore from '@/store/useAuthStore'
 import React from 'react'
 
 const SupportStaff = () => {
+  const {user} = useAuthStore()
   return (
-    <div>SupportStaff</div>
+    <>
+    <div>Welcome {user?.name}</div>
+      <p>
+      Your Role is Comming Soon
+      </p>
+    </>
+
   )
 }
 

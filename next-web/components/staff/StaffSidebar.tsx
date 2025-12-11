@@ -46,7 +46,7 @@ export function StaffSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <Link href="/staff/dashboard">
+              <Link href="/staff">
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg ">
                   <Home className="size-4" />
                 </div>
@@ -93,7 +93,7 @@ export function StaffSidebar() {
                           <Link href="/staff/iatest">IA Test</Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
-                      <SidebarMenuSubItem>
+                      {/* <SidebarMenuSubItem>
                         <SidebarMenuSubButton asChild isActive={pathname === "/staff/activites"}>
                           <Link href="/staff/activites">Activites</Link>
                         </SidebarMenuSubButton>
@@ -102,7 +102,7 @@ export function StaffSidebar() {
                         <SidebarMenuSubButton asChild isActive={pathname === "/staff/activites"}>
                           <Link href="/staff/semexams">SemExams</Link>
                         </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
+                      </SidebarMenuSubItem> */}
                     </SidebarMenuSub>
                   </CollapsibleContent>
                 </Collapsible>
@@ -132,24 +132,10 @@ export function StaffSidebar() {
               </SidebarMenuItem>
 
               {/* Attendance */}
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={pathname?.startsWith("/staff/attendance")}>
-                  <Link href="/staff/attendance">
-                    <ClipboardList className="size-4" />
-                    <span>Attendance</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              
 
               {/* Timetable */}
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={pathname?.startsWith("/staff/timetable")}>
-                  <Link href="/staff/timetable">
-                    <Calendar className="size-4" />
-                    <span>Timetable</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              
               <SidebarMenuItem>
                 <SidebarMenuButton asChild isActive={pathname?.startsWith("/staff/mentor")}>
                   <Link href="/staff/mentor">
@@ -160,34 +146,13 @@ export function StaffSidebar() {
               </SidebarMenuItem>
 
               {/* Reports */}
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={pathname?.startsWith("/staff/reports")}>
-                  <Link href="/staff/reports">
-                    <BarChart3 className="size-4" />
-                    <span>Reports</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              
 
               {/* Settings */}
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={pathname?.startsWith("/staff/settings")}>
-                  <Link href="/staff/settings">
-                    <Settings className="size-4" />
-                    <span>Settings</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              
 
               {/* Help */}
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={pathname?.startsWith("/staff/help")}>
-                  <Link href="/staff/help">
-                    <LifeBuoy className="size-4" />
-                    <span>Help</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

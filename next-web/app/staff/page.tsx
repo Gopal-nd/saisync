@@ -1,10 +1,8 @@
 'use client'
-import React, { use, useEffect, useState } from 'react';
+import React, {  useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
-import StudentPeriodCard from '@/components/student/StudentPeriodCard';
 import axiosInstance from '@/lib/axiosInstance';
 import { ScheduleHeader } from '@/components/student/schedule/ScheduleHeader';
 import { ScheduleCalendar } from '@/components/student/schedule/ScheduleCalendar';

@@ -36,7 +36,6 @@ import {
   SidebarRail,
   useSidebar,
 } from "@/components/ui/sidebar"
-import SideBarFooter from "../common/SideBarFooter"
 
 export default function HodSidebar() {
   const pathname = usePathname()
@@ -125,11 +124,7 @@ export default function HodSidebar() {
                           <Link href="/hod/students/lab">Lab</Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
-                      <SidebarMenuSubItem>
-                        <SidebarMenuSubButton asChild isActive={pathname === "/hod/students/open-elective"}>
-                          <Link href="/hod/students/profile">Open Elective</Link>
-                        </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
+                      
                     </SidebarMenuSub>
                   </CollapsibleContent>
                 </Collapsible>
@@ -190,14 +185,7 @@ export default function HodSidebar() {
               </SidebarMenuItem>
 
               {/* Attendance */}
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={pathname?.startsWith("/hod/attendance")}>
-                  <Link href="/hod/attendance">
-                    <ClipboardList className="size-4" />
-                    <span>Attendance</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              
 
               {/* Timetable */}
               <SidebarMenuItem>
@@ -242,45 +230,22 @@ export default function HodSidebar() {
               </SidebarMenuItem>
 
               {/* Reports */}
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={pathname?.startsWith("/hod/reports")}>
-                  <Link href="/hod/reports">
-                    <BarChart3 className="size-4" />
-                    <span>Reports</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              
 
               {/* Settings */}
-              <SidebarMenuItem>
-                  <SidebarMenuButton asChild isActive={pathname?.startsWith("/hod/settings")}>
-                  <Link href="/hod/settings">
-                    <Settings className="size-4" />
-                    <span>Settings</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              
 
              
 
              
               {/* User */}
-              <SidebarMenuItem>
-                    <SidebarMenuButton asChild isActive={pathname?.startsWith("/hod/profile")}>
-                  <Link href="/hod/profile">
-                    <User  className="size-4" />
-                    <span>Profile</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              
 
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
 
-      <SideBarFooter />
-      <SidebarRail />
     </Sidebar>
   )
 }

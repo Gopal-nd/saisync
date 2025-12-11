@@ -15,6 +15,7 @@ import semExamRoutes from './routes/semexam'
 import staffRoute from './routes/staff'
 import staffPeriodRoute from './routes/staff-attendence'
 import studentActivityRoute from './routes/student-activities';
+import dashboardRoute from './routes/dashboard'
 import { authenticateToken } from './middleware/auth';
 import { getSubjectDetails, getSubjectNames } from './controllers/subject';
 import studyMaterialsRoute from './routes/study-materials'
@@ -31,7 +32,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 app.use(cors({
   origin: ['http://localhost:3000','http://localhost:5173','http://localhost:8081'] ,
-  credentials: true,               
+  credentials: true,
 }));
 app.use(cookieParser());
 app.use(express.json());
@@ -57,6 +58,7 @@ app.use('/api/attendence',authenticateToken,attendenceRoute)
 app.use('/api/mentor',authenticateToken,mentorRoutes)
 app.use('/api/iaexam',iaExamRoutes)
 app.use('/api/semexam',semExamRoutes)
+app.use('/api/dashboard', dashboardRoute)
 
 app.use('/api/students/activities',studentActivityRoute)
 

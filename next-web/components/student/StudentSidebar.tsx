@@ -93,21 +93,9 @@ export function StudentSidebar() {
                   </CollapsibleTrigger>
                   <CollapsibleContent>
                     <SidebarMenuSub>
-                      <SidebarMenuSubItem>
-                        <SidebarMenuSubButton asChild isActive={pathname === "/student/academics"}>
-                          <Link href="/student/academics">IA Exams</Link>
-                        </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
-                      <SidebarMenuSubItem>
-                        <SidebarMenuSubButton asChild isActive={pathname === "/student/academics/activities"}>
-                          <Link href="/student/academics/activities">Activities</Link>
-                        </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
-                      <SidebarMenuSubItem>
-                        <SidebarMenuSubButton asChild isActive={pathname === "/student/academics/semester-exams"}>
-                          <Link href="/student/academics/semester-exams">Sem Exams</Link>
-                        </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
+                      
+                      
+                      
                       <SidebarMenuSubItem>
                         <SidebarMenuSubButton asChild isActive={pathname === "/student/academics/attendance"}>
                           <Link href="/student/academics/attendance">Attendance</Link>

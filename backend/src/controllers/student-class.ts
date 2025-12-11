@@ -21,11 +21,17 @@ export const studentClasses = asyncHandler(async (req: Request, res: Response) =
           id: req.user.userId,
         },
       });
+
+      const start = new Date(day);            // if you want local midnight
+start.setHours(0, 0, 0, 0);
+
+const next = new Date(start);
+next.setDate(next.getDate() + 1); 
       console.log(day, user?.semester,user?.section,user?.branch)
     const data = await prisma.timetableOfDay.findUnique({
       where: {
           date_branchName_semesterName_sectionName: {
-              date: new Date(day),
+             date: start,
               sectionName: user?.section ?? "A",
               semesterName: user?.semester ?? "S1",
               branchName: user?.branch ?? "AIML",

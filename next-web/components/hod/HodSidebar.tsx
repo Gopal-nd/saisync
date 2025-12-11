@@ -242,37 +242,16 @@ export default function HodSidebar() {
               </SidebarMenuItem>
 
               {/* Reports */}
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={pathname?.startsWith("/hod/reports")}>
-                  <Link href="/hod/reports">
-                    <BarChart3 className="size-4" />
-                    <span>Reports</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              
 
               {/* Settings */}
-              <SidebarMenuItem>
-                  <SidebarMenuButton asChild isActive={pathname?.startsWith("/hod/settings")}>
-                  <Link href="/hod/settings">
-                    <Settings className="size-4" />
-                    <span>Settings</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              
 
              
 
              
               {/* User */}
-              <SidebarMenuItem>
-                    <SidebarMenuButton asChild isActive={pathname?.startsWith("/hod/profile")}>
-                  <Link href="/hod/profile">
-                    <User  className="size-4" />
-                    <span>Profile</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              
 
             </SidebarMenu>
           </SidebarGroupContent>

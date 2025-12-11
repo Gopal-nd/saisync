@@ -25,7 +25,7 @@ export const adminOrStaffMiddleware = (req: any, res: Response, next: NextFuncti
         res.status(403).json(new ApiResponse({ data: null, statusCode: 403, message: "Unauthorized: Invalid token or role missing" }));
       }
   
-      if (decoded.role !== "ADMIN" && decoded.role !="STAFF") {
+      if (decoded.role !== "ADMIN" && decoded.role !="STAFF" && decoded.role !='HOD') {
         res.status(403).json(new ApiResponse({ data: null, statusCode: 403, message: "Forbidden: Admin or Staff access required" }));
       }
 

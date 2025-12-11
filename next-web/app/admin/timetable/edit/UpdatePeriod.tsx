@@ -1,6 +1,5 @@
-"use client";
-export const dynamic = "force-dynamic";
 
+"use client";
 
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
@@ -45,17 +44,8 @@ interface Period {
   subjectCode: string;
   isLab: boolean;
 }
-import { Suspense } from "react";
 
-export default function Page() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <UpdatePeriod />
-    </Suspense>
-  );
-}
-
-function UpdatePeriod() {
+export default function UpdatePeriod() {
   const searchParams = useSearchParams();
   const semester = searchParams.get("sem");
   const branch = searchParams.get("branch");

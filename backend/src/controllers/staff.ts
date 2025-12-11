@@ -360,18 +360,25 @@ export const getFacultyClasses = asyncHandler(async (req: Request, res: Response
   
   
   if (!staff || typeof staff !== "string") {
-    throw new APIError({ message: "Invalid or missing staff", status: 400 });
+    throw new APIError({ message: "Invalid or missing staff debugger", status: 400 });
   }
   
   if (!day || typeof day !== "string") {
     throw new APIError({ message: "Invalid or missing date", status: 400 });  
   }
   console.log('staff details :',staff,day)
+const start = new Date(day);            // if you want local midnight
+start.setHours(0, 0, 0, 0);
 
+const next = new Date(start);
+next.setDate(next.getDate() + 1);  
 
-  const data = await prisma.timetableOfDay.findMany({
+  const newdate = await prisma.timetableOfDay.findMany({
     where: {
-      date: new Date(day),
+      date: {
+        gte:start,
+        lt:next
+      },
       Periods: {
         some:{
           staff:{
@@ -406,8 +413,6 @@ export const getFacultyClasses = asyncHandler(async (req: Request, res: Response
     
     }
   })
-
-  console.log(data)
-  res.status(200).json(new ApiResponse({ statusCode: 200, data:data, message: "Classes fetched successfully" }));
+  res.status(200).json(new ApiResponse({ statusCode: 200, data:newdate, message: "Classes fetched successfully" }));
 
 });
