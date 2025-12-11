@@ -10,7 +10,8 @@
     "clean": "bun run prisma/dataCleanUp.ts",
     "generate": "prisma generate",
     "push": "bunx prisma db push",
-    "migrate": "bunx prisma migrate dev"
+    "migrate": "bunx prisma migrate dev",
+     "postinstall": "prisma generate"
   },
   "devDependencies": {
     "@tanstack/eslint-plugin-query": "^5.68.0",
