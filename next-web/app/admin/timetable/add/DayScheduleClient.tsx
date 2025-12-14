@@ -126,7 +126,124 @@ export default function DayScheduleClient() {
               </FormItem>
             )}
           />
-          {/* ... rest of fields, button ... */}
+                    <FormField
+            control={form.control}
+            name="startTime"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Start Time</FormLabel>
+                <FormControl>
+                  <Input type="time" placeholder="Start Time" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="endTime"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>End Time</FormLabel>
+                <FormControl>
+                  <Input type="time" placeholder="End Time" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="subject"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Subject</FormLabel>
+                <FormControl>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select Subject" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {subjectData?.map((sub: any) => (
+                        <SelectItem key={sub.id} value={sub.subjectName}>
+                          {sub.subjectName}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="staff"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Staff</FormLabel>
+                <FormControl>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select Staff" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {staffData?.map((staff: any) => (
+                        <SelectItem key={staff.id} value={staff.name}>
+                          {staff.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="subjectCode"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Subject Code</FormLabel>
+                <FormControl>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select Subject Code" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {subjectData?.map((sub: any) => (
+                        <SelectItem key={sub.id} value={sub.subjectCode}>
+                          {sub.subjectCode}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="isLab"
+            render={({ field }) => (
+              <FormItem className="flex items-center space-x-2">
+                <FormControl>
+                  <input
+                    type="checkbox"
+                    checked={field.value}
+                    onChange={(e) => field.onChange(e.target.checked)}
+                    className="w-4 h-4"
+                  />
+                </FormControl>
+                <FormLabel>Is this a Lab Period?</FormLabel>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          
           <Button className="w-full" type="submit">
             Add Period
           </Button>
