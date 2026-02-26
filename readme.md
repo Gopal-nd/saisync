@@ -221,4 +221,3 @@ PRs and contributions are welcome!
 If you find Sai Sync useful, please leave a **star** on GitHub!
 
 ---
-
