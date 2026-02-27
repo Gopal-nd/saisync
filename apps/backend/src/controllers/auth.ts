@@ -276,7 +276,7 @@ export const bulkRegister = asyncHandler(async (req: Request, res: Response) => 
 
   // Log the parsed data
   console.log('Parsed CSV Records:', records);
-  records.map(async(row, index)=>{
+  records.slice(1).map(async(row, index)=>{
     await prisma.user.upsert({
       where:{email:row.email},update:{},create:{
         email:row.email,

@@ -4,8 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "bun --watch src/index.ts",
-    "build": "tsc",
-    "start": "index.ts",
+    "build": "echo 'No build step required for backend'",
+    "start": "bun run src/index.ts",
     "seed": "bun run  src/db/seed.ts",
     "clean": "bun run prisma/dataCleanUp.ts",
     "generate": "prisma generate",
