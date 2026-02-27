@@ -31,7 +31,7 @@ const app = express();
 
 const PORT = process.env.PORT || 5000;
 app.use(cors({
-  origin: ['http://localhost:3000','http://localhost:5173','http://localhost:8081'] ,
+  origin: ['http://localhost:3000','http://localhost:5173','http://localhost:8081','http://localhost:9001',process.env.FRONTEND_URL!],
   credentials: true,
 }));
 app.use(cookieParser());
