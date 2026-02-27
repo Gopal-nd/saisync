@@ -1,6 +1,6 @@
 // scripts/cleanupWrittenType.ts
 
-import { prisma } from "../src/lib/db";
+import { prisma } from "@repo/db";
 
 
 async function main() {

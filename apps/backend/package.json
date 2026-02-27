@@ -6,12 +6,11 @@
     "dev": "bun --watch src/index.ts",
     "build": "tsc",
     "start": "index.ts",
-    "seed": "bun run  prisma/seed.ts",
+    "seed": "bun run  src/db/seed.ts",
     "clean": "bun run prisma/dataCleanUp.ts",
     "generate": "prisma generate",
     "push": "bunx prisma db push",
-    "migrate": "bunx prisma migrate dev",
-     "postinstall": "prisma generate"
+    "migrate": "bunx prisma migrate dev"
   },
   "devDependencies": {
     "@tanstack/eslint-plugin-query": "^5.68.0",
@@ -29,8 +28,11 @@
   },
   "dependencies": {
     "@prisma/client": "^6.7.0",
+    "@repo/db": "*",
+    "@types/bcrypt": "^6.0.0",
     "@types/cookie-parser": "^1.4.8",
     "@types/nodemailer": "^6.4.17",
+    "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.2",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",

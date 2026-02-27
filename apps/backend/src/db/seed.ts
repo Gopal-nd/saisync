@@ -1,7 +1,8 @@
 // prisma/seed.ts
-import bcrypt from "bcryptjs";
-import { prisma } from "../src/lib/db"; // adjust path if needed
-import { BranchType, SemesterType, SectionType } from "@prisma/client";
+import bcrypt from "bcrypt";
+import { prisma } from  "@repo/db"; // adjust path if needed
+import { BranchType, SemesterType } from "../types"; // adjust path if needed
+import { SectionType } from "@prisma/client";
 
 async function main() {
   // 1) Create / upsert branches
