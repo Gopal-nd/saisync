@@ -26,7 +26,12 @@
       "cache": false,
       "persistent": true
     },
+    
       "db:generate": {
+      "cache": false,
+      "persistent": true
+    },
+    "db:seed": {
       "cache": false,
       "persistent": true
     }

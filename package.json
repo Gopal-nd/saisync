@@ -5,6 +5,7 @@
     "build": "turbo run build",
     "start": "turbo run start",
     "db:push": "turbo run db:push",
+      "db:seed": "turbo run db:seed",
     "db:generate": "turbo run db:generate",
     "dev": "turbo run dev",
     "lint": "turbo run lint",

@@ -176,7 +176,7 @@ chmod +x start.sh
 Web app will be live at:
 
 ```
-http://localhost:3000
+http://localhost:9001
 ```
 
 ---

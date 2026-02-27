@@ -8,7 +8,7 @@ import { ApiResponse } from './utils/api-response';
 import asyncHandler from './utils/async-handler';
 import { adminOrStaffMiddleware } from './middleware/adminOrStaffMiddleware';
 
-
+const PORT = process.env.PORT || 9000;
 app.get('/',(req,res)=>{
   res.send("i am alive")
 })
@@ -37,6 +37,6 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 });
 
 
-app.listen(process.env.PORT!, () => {
-  console.log('Server running on localhost:5000');
+app.listen(PORT, () => {
+  console.log(`Server running on localhost:${PORT}`);
 });
