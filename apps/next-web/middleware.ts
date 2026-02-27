@@ -11,7 +11,7 @@ export async function middleware(req:any) {
   const adminRoutes = ['/admin'];
   const studentRoutes = ['/student'];
   const staffRoutes = ['/staff'];
-  const dashboardRoutes = ['/dashboard'];
+
   const hodRoute = ['/hod']
   const supportStaffRoute = ['/support-staff']
 
@@ -23,9 +23,6 @@ export async function middleware(req:any) {
     return NextResponse.next();
   }
 
-  if (publicRoutes.includes(req.nextUrl.pathname)) {
-    return NextResponse.redirect(new URL('/dashboard', req.url));
-  }
 
   try {
 

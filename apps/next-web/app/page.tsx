@@ -73,7 +73,7 @@ const Index = () => {
                 {l.label}
               </button>
             ))}
-            <Button size="sm" onClick={goLogin}>Request a demo</Button>
+            <Button size="sm" onClick={goLogin}>Get Started</Button>
           </div>
           <button className="md:hidden" onClick={() => setMobileOpen(!mobileOpen)}>
             {mobileOpen ? <X size={22} /> : <Menu size={22} />}
@@ -86,7 +86,7 @@ const Index = () => {
                 {l.label}
               </button>
             ))}
-            <Button size="sm" className="w-fit" onClick={goLogin}>Request a demo</Button>
+            <Button size="sm" className="w-fit" onClick={goLogin}>Get Started</Button>
           </div>
         )}
       </nav>
@@ -102,7 +102,7 @@ const Index = () => {
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <Button size="lg" onClick={goLogin}>
-            Request a demo <ArrowRight size={16} />
+            Get Started <ArrowRight size={16} />
           </Button>
           <Button size="lg" variant="outline" onClick={() => scrollTo("#features")}>
             Explore features
@@ -165,7 +165,7 @@ const Index = () => {
             Book a walkthrough with our product specialist and get a free pilot setup.
           </p>
           <Button size="lg" onClick={goLogin}>
-            Request demo <ArrowRight size={16} />
+            Get Started <ArrowRight size={16} />
           </Button>
         </div>
       </section>
