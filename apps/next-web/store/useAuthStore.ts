@@ -1,5 +1,17 @@
 import { create } from 'zustand';
-import { persist, PersistOptions } from 'zustand/middleware';
+import { createJSONStorage, persist, PersistOptions, StateStorage } from 'zustand/middleware';
+
+
+const storage: StateStorage =
+  typeof window !== "undefined" &&
+  typeof window.localStorage !== "undefined" &&
+  typeof window.localStorage.getItem === "function"
+    ? window.localStorage
+    : {
+        getItem: () => null,
+        setItem: () => {},
+        removeItem: () => {},
+      };
 
 export type User = {
   id: string;
@@ -71,7 +83,10 @@ const useAuthStore = create<AuthState>()(
         })),
 
       logout: () => {
-        localStorage.removeItem('auth-storage'); 
+        // use the same storage abstraction so we don't accidentally hit the
+        // real `localStorage` during SSR/Node. the guard above ensures this is
+        // a no-op on the server.
+        storage.removeItem('auth-storage');
         set(() => ({
           token: null,
           user: null,
@@ -80,9 +95,11 @@ const useAuthStore = create<AuthState>()(
         }));
       },
     }),
-    {
-      name: 'auth-storage', 
-      getStorage: () => localStorage, 
+       {
+      name: 'auth-storage',
+
+
+      storage: createJSONStorage(() => storage),
     } as PersistOptions<AuthState>
   )
 );

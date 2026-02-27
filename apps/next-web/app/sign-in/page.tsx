@@ -36,7 +36,7 @@ export default function LoginPage() {
 
   const mutation = useMutation({
     mutationFn: async (data: any) => {
-      // Call Next.js server route which will set the cookie on the frontend origin
+  
       const response = await axiosFrontend.post('/api/auth/sign-in', data);
       return response.data;
     },

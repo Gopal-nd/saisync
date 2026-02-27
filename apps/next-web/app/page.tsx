@@ -1,249 +1,184 @@
 'use client'
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  GraduationCap,
+  Users,
+  CalendarCheck,
+  IndianRupee,
+  ShieldCheck,
+  MessageSquare,
+  Menu,
+  X,
+  BookOpen,
+  UserCheck,
+  Clock,
+  FileText,
+  Building,
+  Star,
+  ArrowRight,
+  Heart,
+} from "lucide-react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
-import React, { useState } from "react";
-import { BookOpen, Users, Calendar, Database, ShieldCheck, Mail, Menu, X } from "lucide-react";
-import Link from "next/link";
-import useAuthStore from "@/store/useAuthStore";
 
-// Polished, fully responsive single-file React component using Tailwind CSS.
-// Paste into a Next.js / React + Tailwind project and render <EdumateLanding />.
+const navLinks = [
+  { label: "Features", href: "#features" },
+  { label: "Testimonials", href: "#testimonials" },
+  { label: "Contact", href: "#contact" },
+];
 
-export default function EdumateLanding() {
-  const { user } = useAuthStore();
-  const [open, setOpen] = useState(false);
+const features = [
+  { icon: BookOpen, title: "Academic Management", desc: "Course planning, timetables, lesson tracking and exam generation." },
+  { icon: Users, title: "Student & Staff", desc: "Admission workflows, ID cards, staff payroll, and role based access." },
+  { icon: CalendarCheck, title: "Attendance & Events", desc: "Daily attendance, event calendars, and SMS/email reminders." },
+  { icon: IndianRupee, title: "Fee & Finance", desc: "Flexible invoicing, receipts, concessions and financial reports." },
+  { icon: ShieldCheck, title: "Secure & Compliant", desc: "Role-level security, audit logs and data export for regulators." },
+  { icon: MessageSquare, title: "Parent Communication", desc: "Automated emails, SMS & parent portal with progress reports." },
+];
 
-  // safe role -> path helper
-  const rolePath = (() => {
-    if (!user?.role) return '/dashboard';
-    const r = String(user.role).toLowerCase();
-    if (r === 'support_staff' || r === 'support-staff') return '/support-staff';
-    return `/${r.replace(/\s+/g, '-')}`;
-  })();
+const testimonials = [
+  { quote: "Edumate simplified our fees management and reduced manual work by 60%. The support team is excellent.", name: "Smt. Radha Iyer", role: "Principal, Sunrise Academy" },
+  { quote: "Scheduling exams used to be a nightmare. Now it's a single click and parents get notified automatically.", name: "Mr. Arun Kumar", role: "Exam Coordinator" },
+  { quote: "Reconciliations are faster and the exportable reports made audits painless.", name: "Ms. Leena Shah", role: "Accountant" },
+];
+
+
+
+
+
+const Index = () => {
+  const [mobileOpen, setMobileOpen] = useState(false);
+ const router = useRouter();
+
+  const goLogin = () => router.push("/sign-in");
+
+  const scrollTo = (href: string) => {
+    setMobileOpen(false);
+    const el = document.querySelector(href);
+    el?.scrollIntoView({ behavior: "smooth" });
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 text-slate-900">
-      <header className="sticky top-0 bg-white/60 backdrop-blur-md z-30 border-b border-slate-100">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-600 to-sky-400 flex items-center justify-center text-white font-bold">EM</div>
-            <div>
-              <div className="font-semibold">Edumate</div>
-              <div className="text-xs text-slate-500">ERP for modern schools & colleges</div>
-            </div>
+    <div className="min-h-screen animated-gradient-bg text-foreground">
+      {/* Navbar */}
+      <nav className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-md">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
+          <span className="text-xl font-bold text-primary">Edumate</span>
+          <div className="hidden items-center gap-6 md:flex">
+            {navLinks.map((l) => (
+              <button key={l.label} onClick={() => scrollTo(l.href)} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                {l.label}
+              </button>
+            ))}
+            <Button size="sm" onClick={goLogin}>Request a demo</Button>
           </div>
-
-          {/* Desktop nav */}
-          <nav className="hidden md:flex gap-6 items-center text-sm text-slate-700">
-            <a href="#features" className="hover:text-slate-900">Features</a>
-            <a href="#pricing" className="hover:text-slate-900">Pricing</a>
-            <a href="#testimonials" className="hover:text-slate-900">Testimonials</a>
-            <a href="#contact" className="hover:text-slate-900">Contact</a>
-
-            <div className="border-l pl-4 ml-2 flex items-center gap-4">
-              {user?.email ? (
-                <Link href={rolePath} className="px-4 py-2 rounded-md bg-slate-900 text-white text-sm">Dashboard</Link>
-              ) : (
-                <Link href="/sign-in" className="px-4 py-2 rounded-md bg-indigo-600 text-white text-sm">Login</Link>
-              )}
-            </div>
-          </nav>
-
-          {/* Mobile menu button */}
-          <div className="md:hidden">
-            <button aria-label="Toggle menu" onClick={() => setOpen(!open)} className="p-2 rounded-md bg-slate-100">
-              {open ? <X size={18} /> : <Menu size={18} />}
-            </button>
-          </div>
+          <button className="md:hidden" onClick={() => setMobileOpen(!mobileOpen)}>
+            {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
         </div>
-
-        {/* Mobile nav panel */}
-        {open && (
-          <div className="md:hidden border-t border-slate-100 bg-white">
-            <div className="max-w-7xl mx-auto px-4 py-4 space-y-3">
-              <a href="#features" className="block py-2">Features</a>
-              <a href="#pricing" className="block py-2">Pricing</a>
-              <a href="#testimonials" className="block py-2">Testimonials</a>
-              <a href="#contact" className="block py-2">Contact</a>
-              <div className="pt-2 border-t border-slate-100">
-                <div className="pt-3 flex items-center justify-between">
-                  {user?.email ? (
-                    <Link href={rolePath} className="px-4 py-2 rounded-md bg-slate-900 text-white text-sm">Dashboard</Link>
-                  ) : (
-                    <Link href="/sign-in" className="px-4 py-2 rounded-md bg-indigo-600 text-white text-sm">Login</Link>
-                  )}
-                </div>
-              </div>
-            </div>
+        {mobileOpen && (
+          <div className="flex flex-col gap-3 border-t px-4 py-4 md:hidden">
+            {navLinks.map((l) => (
+              <button key={l.label} onClick={() => scrollTo(l.href)} className="text-sm text-muted-foreground text-left">
+                {l.label}
+              </button>
+            ))}
+            <Button size="sm" className="w-fit" onClick={goLogin}>Request a demo</Button>
           </div>
         )}
-      </header>
+      </nav>
 
-      <main className="max-w-7xl mx-auto px-6 py-12">
-        {/* HERO */}
-        <section className="grid gap-8 md:grid-cols-2 items-center">
-          <div>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight">Edumate ERP — run your institution with clarity</h1>
-            <p className="mt-4 text-base sm:text-lg text-slate-600 max-w-xl">A unified school and college management system: admissions, attendance, exams, fees, staff payroll, and parent communication — all in one beautiful dashboard.</p>
-
-            <div className="mt-6 flex flex-col sm:flex-row sm:items-center gap-3">
-              <a href="#contact" className="inline-flex items-center justify-center gap-3 px-5 py-3 rounded-lg bg-indigo-600 text-white font-medium shadow-md w-full sm:w-auto">Request a demo</a>
-              <a href="#features" className="inline-flex items-center justify-center gap-3 px-5 py-3 rounded-lg border border-slate-200 text-slate-700 w-full sm:w-auto">Explore features</a>
-            </div>
-
-            <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="flex items-center gap-3">
-                <div className="p-3 rounded-full bg-slate-100"><Users size={20} aria-hidden /></div>
-                <div>
-                  <div className="text-sm font-semibold">300+ Institutions</div>
-                  <div className="text-xs text-slate-500">Trusted worldwide</div>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <div className="p-3 rounded-full bg-slate-100"><Calendar size={20} aria-hidden /></div>
-                <div>
-                  <div className="text-sm font-semibold">Real-time Attendance</div>
-                  <div className="text-xs text-slate-500">Mobile & kiosk friendly</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <aside className="bg-white rounded-2xl shadow-lg p-6">
-            <div className="rounded-xl overflow-hidden border border-slate-100">
-              {/* Mock dashboard preview */}
-              <div className="px-6 py-5 bg-gradient-to-r from-indigo-600 to-sky-400 text-white">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="text-sm opacity-90">Overview</div>
-                    <div className="text-2xl font-bold mt-2">Edumate Dashboard</div>
-                  </div>
-                  <div className="text-xs opacity-90">Admin • 2m ago</div>
-                </div>
-              </div>
-
-              <div className="p-5 grid gap-4 sm:grid-cols-2">
-                <SmallStat label="Students" value="4,832" />
-                <SmallStat label="Teachers" value="234" />
-                <SmallStat label="Pending Fees" value="₹1.2L" />
-                <SmallStat label="Upcoming Exams" value="3" />
-              </div>
-
-            </div>
-          </aside>
-        </section>
-
-        {/* FEATURES */}
-        <section id="features" className="mt-16">
-          <h2 className="text-2xl font-bold">Powerful features built for education teams</h2>
-          <p className="mt-2 text-slate-600 max-w-2xl">Everything you need to manage students, staff, academics and finance — with powerful automations and a friendly UI.</p>
-
-          <div className="mt-8 grid gap-6 sm:grid-cols-2 md:grid-cols-3">
-            <FeatureCard Icon={BookOpen} title="Academic Management" desc="Course planning, timetables, lesson tracking and exam generation." />
-            <FeatureCard Icon={Users} title="Student & Staff" desc="Admission workflows, ID cards, staff payroll, and role based access." />
-            <FeatureCard Icon={Calendar} title="Attendance & Events" desc="Daily attendance, event calendars, and SMS/email reminders." />
-            <FeatureCard Icon={Database} title="Fee & Finance" desc="Flexible invoicing, receipts, concessions and financial reports." />
-            <FeatureCard Icon={ShieldCheck} title="Secure & Compliant" desc="Role-level security, audit logs and data export for regulators." />
-            <FeatureCard Icon={Mail} title="Parent Communication" desc="Automated emails, SMS & parent portal with progress reports." />
-          </div>
-        </section>
-
-        {/* PRICING */}
-        <section id="pricing" className="mt-16">
-          <h2 className="text-2xl font-bold">Simple pricing that grows with you</h2>
-          <p className="mt-2 text-slate-600 max-w-2xl">Transparent plans — switch anytime. No hidden onboarding fees for standard configurations.</p>
-
-          <div className="mt-8 grid gap-6 sm:grid-cols-2 md:grid-cols-3">
-            <PricingCard title="Starter" price="₹4,999/mo" bullets={["Up to 500 students","Core modules","Email support"]} />
-            <PricingCard title="Growth" price="₹11,999/mo" featured bullets={["Unlimited students","SMS bundle","Priority support"]} />
-            <PricingCard title="Enterprise" price="Custom" bullets={["Dedicated account manager","Custom integrations","On-prem or cloud"]} />
-          </div>
-        </section>
-
-        {/* TESTIMONIALS */}
-        <section id="testimonials" className="mt-16">
-          <h2 className="text-2xl font-bold">Loved by administrators & teachers</h2>
-          <div className="mt-6 grid gap-6 sm:grid-cols-2 md:grid-cols-3">
-            <Testimonial name="Smt. Radha Iyer" title="Principal, Sunrise Academy" quote="Edumate simplified our fees management and reduced manual work by 60%. The support team is excellent." />
-            <Testimonial name="Mr. Arun Kumar" title="Exam Coordinator" quote="Scheduling exams used to be a nightmare. Now it's a single click and parents get notified automatically." />
-            <Testimonial name="Ms. Leena Shah" title="Accountant" quote="Reconciliations are faster and the exportable reports made audits painless." />
-          </div>
-        </section>
-
-        {/* CONTACT / CTA */}
-        <section id="contact" className="mt-16 bg-white rounded-2xl p-6 sm:p-8 shadow-md">
-          <div className="md:flex md:items-center md:justify-between">
-            <div>
-              <h3 className="text-xl font-bold">Ready to transform your institution?</h3>
-              <p className="mt-2 text-slate-600">Book a walkthrough with our product specialist and get a free pilot setup.</p>
-            </div>
-
-            <form onSubmit={(e) => e.preventDefault()} className="mt-6 md:mt-0 flex flex-col xl:flex-row gap-3 w-full max-w-2xl">
-              <input aria-label="Name" name="name" className="rounded-md border border-gray-200 px-4 py-3 flex-1" placeholder="Your name" />
-              <input aria-label="Email" name="email" className="rounded-md border border-gray-200 px-4 py-3 flex-1" placeholder="Email" />
-              <button className="rounded-md bg-indigo-600 px-4 py-3 text-white w-full sm:w-auto">Request demo</button>
-            </form>
-          </div>
-        </section>
-
-        <footer className="mt-12 text-sm text-slate-500">
-          <div className="max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between">
-            <div>© {new Date().getFullYear()} Edumate — All rights reserved.</div>
-            <div className="mt-3 md:mt-0">Made with <span aria-hidden>❤️</span> for educators</div>
-          </div>
-        </footer>
-      </main>
-    </div>
-  );
-}
-
-function SmallStat({ label, value }: any) {
-  return (
-    <div className="p-3 rounded-lg bg-slate-50 border flex flex-col">
-      <div className="text-xs text-slate-500">{label}</div>
-      <div className="text-lg font-semibold mt-2">{value}</div>
-    </div>
-  );
-}
-
-function FeatureCard({ Icon, title, desc }: any) {
-  return (
-    <div className="p-6 bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow">
-      <div className="flex items-start gap-4">
-        <div className="p-3 rounded-md bg-slate-50"><Icon size={22} aria-hidden /></div>
-        <div>
-          <div className="font-semibold">{title}</div>
-          <div className="text-slate-500 text-sm mt-1">{desc}</div>
+      {/* Hero */}
+      <section className="mx-auto max-w-6xl px-4 py-20 text-center md:py-28">
+        <Badge variant="secondary" className="mb-4">ERP for modern schools & colleges</Badge>
+        <h1 className="mx-auto max-w-3xl text-4xl font-bold leading-tight md:text-5xl">
+          Edumate ERP run your institution with <span className="text-primary">clarity</span>
+        </h1>
+        <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
+          A unified school and college management system: admissions, attendance, exams, fees, staff payroll, and parent communication all in one beautiful dashboard.
+        </p>
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <Button size="lg" onClick={goLogin}>
+            Request a demo <ArrowRight size={16} />
+          </Button>
+          <Button size="lg" variant="outline" onClick={() => scrollTo("#features")}>
+            Explore features
+          </Button>
         </div>
-      </div>
-    </div>
-  )
-}
+ 
+      </section>
 
-function PricingCard({ title, price, bullets = [], featured = false }: any) {
-  return (
-    <div className={`p-6 rounded-lg border ${featured ? 'scale-105 shadow-lg border-indigo-200' : ''} bg-white`}> 
-      <div className="flex items-center justify-between">
-        <div className="font-semibold">{title}</div>
-        <div className="text-sm text-slate-500">{price}</div>
-      </div>
-      <ul className="mt-4 space-y-2 text-slate-600 text-sm">
-        {bullets.map((b: string, i: number) => <li key={i}>• {b}</li>)}
-      </ul>
-      <div className="mt-6">
-        <button className={`w-full rounded-md py-2 ${featured ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-800'}`}>Choose</button>
-      </div>
-    </div>
-  )
-}
+ 
 
-function Testimonial({ name, title, quote }: any) {
-  return (
-    <div className="p-6 bg-white rounded-lg border shadow-sm">
-      <div className="text-slate-700 italic">“{quote}”</div>
-      <div className="mt-4 font-semibold">{name}</div>
-      <div className="text-xs text-slate-500">{title}</div>
-    </div>
-  )
-}
+      {/* Features */}
+      <section id="features" className="bg-secondary/30 py-20">
+        <div className="mx-auto max-w-6xl px-4">
+          <h2 className="text-center text-3xl font-bold">Powerful features built for education teams</h2>
+          <p className="mx-auto mt-3 max-w-xl text-center text-muted-foreground">
+            Everything you need to manage students, staff, academics and finance — with powerful automations and a friendly UI.
+          </p>
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {features.map((f) => (
+              <Card key={f.title} className="border-0 shadow-sm hover:shadow-md transition-shadow">
+                <CardContent className="p-6">
+                  <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                    <f.icon size={20} className="text-primary" />
+                  </div>
+                  <h3 className="font-semibold">{f.title}</h3>
+                  <p className="mt-1 text-sm text-muted-foreground">{f.desc}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
 
+
+      {/* Testimonials */}
+      <section id="testimonials" className="bg-secondary/30 py-20">
+        <div className="mx-auto max-w-6xl px-4">
+          <h2 className="text-center text-3xl font-bold">Loved by administrators & teachers</h2>
+          <div className="mt-12 grid gap-6 md:grid-cols-3">
+            {testimonials.map((t) => (
+              <Card key={t.name} className="border-0 shadow-sm">
+                <CardContent className="p-6">
+                  <p className="text-sm leading-relaxed text-muted-foreground">"{t.quote}"</p>
+                  <div className="mt-4 border-t pt-4">
+                    <p className="text-sm font-semibold">{t.name}</p>
+                    <p className="text-xs text-muted-foreground">{t.role}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section id="contact" className="py-20">
+        <div className="mx-auto max-w-3xl px-4 text-center">
+          <h2 className="text-3xl font-bold">Ready to transform your institution?</h2>
+          <p className="mt-3 text-muted-foreground">
+            Book a walkthrough with our product specialist and get a free pilot setup.
+          </p>
+          <Button size="lg" onClick={goLogin}>
+            Request demo <ArrowRight size={16} />
+          </Button>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t py-8">
+        <div className="mx-auto max-w-6xl px-4 text-center">
+          <p className="text-sm text-muted-foreground">© 2026 Edumate — All rights reserved.</p>
+          <p className="mt-1 text-xs text-muted-foreground">Made with <Heart size={12} className="inline text-primary" /> for educators</p>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default Index;
