@@ -20,17 +20,19 @@
     "typescript": "^5"
   },
   "dependencies": {
-    "@prisma/adapter-pg": "^7.3.0",
-    "@prisma/client": "^7.3.0",
+    "@prisma/adapter-pg": "^7.4.1",
+    "@prisma/client": "^7.4.1",
     "@prisma/client-runtime-utils": "^7.4.1",
+    "@repo/typescript-config": "*",
     "@types/bcrypt": "^6.0.0",
+    "@types/node": "^25.3.2",
     "@types/pg": "^8.16.0",
     "bcrypt": "^6.0.0",
     "dotenv": "^17.3.1",
-    "pg": "^8.18.0",
+    "pg": "^8.19.0",
     "prisma": "^7.4.1"
   },
   "exports": {
-    ".": "./index.ts"
+    ".": "./src/index.ts"
   }
 }

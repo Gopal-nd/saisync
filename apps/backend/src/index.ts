@@ -1,4 +1,4 @@
-import { prisma } from './lib/db';
+import { prisma } from '@repo/db';
 
 import { startOfDay, endOfDay } from 'date-fns';
 import app from './app';
@@ -9,9 +9,10 @@ import asyncHandler from './utils/async-handler';
 import { adminOrStaffMiddleware } from './middleware/adminOrStaffMiddleware';
 
 const PORT = process.env.PORT || 9000;
-app.get('/',(req,res)=>{
-  res.send("i am alive")
-})
+app.get('/',asyncHandler(async (req,res)=>{
+  const data = await prisma.user.findMany()
+  res.json({message:'Welcome to the SAISync API', data})
+}))
 
 app.get('/user', asyncHandler(async (req, res) => {
   const {id} = req.query

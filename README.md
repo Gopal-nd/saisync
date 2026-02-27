@@ -181,6 +181,14 @@ http://localhost:9001
 
 ---
 
+## Importent Note
+
+keep the `DATABASE_URL` in the backend env too
+
+---
+
+---
+
 ## 🤝 **Contributing**
 
 PRs and contributions are welcome!

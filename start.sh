@@ -18,6 +18,11 @@ cat > packages/db/.env <<EOF
 DATABASE_URL=$DATABASE_URL
 EOF
 
+# apps/`backend`
+mkdir -p apps/backend
+cat > apps/backend/.env <<EOF
+DATABASE_URL=$DATABASE_URL
+EOF
 echo "Install Packages!"
 bun install
 
