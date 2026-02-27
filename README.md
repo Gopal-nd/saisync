@@ -161,45 +161,16 @@ git clone https://github.com/Gopal-nd/saisync.git
 cd saisync
 ```
 
-### 2️⃣ Start Database (Docker)
+### 2️⃣ Start Project with the Script
 
 ```bash
-docker-compose up -d
+chmod +x start.sh
 ```
 
-### 3️⃣ Configure Environment Variables
-
-Add `.env` in:
-
-* `backend/`
-* `next-web/`
-* `mobile/` (if used)
-
-### 4️⃣ Backend Setup
+### 3️⃣ Run Application
 
 ```bash
-cd backend
-bun i
-bunx prisma generate
-bunx prisma db push
-bun seed
-bun dev
-```
-
-### 5️⃣ Frontend Setup
-
-```bash
-cd next-web
-bun i
-bun dev
-```
-
-### Optional – Mobile App
-
-```bash
-cd mobile
-bun i
-bun start
+./start.sh
 ```
 
 Web app will be live at:
