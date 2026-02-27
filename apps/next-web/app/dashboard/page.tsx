@@ -1,14 +1,13 @@
 'use client';
-import useAuthValidate from '@/hooks/useAuthValidate';
-import useAuthStore from '@/store/useAuthStore';
 
+import useUserRedirect from "@/hooks/useUserRedirect";
 
 export default function Dashboard() {
-const {role} = useAuthStore()
+useUserRedirect();
 
-  
-
-  return <h1>Welcome to Dashboard, {role === 'ADMIN' ? 'Admin' : 'User'}!</h1>;
-
-
+return (
+  <div className="flex items-center justify-center h-screen">
+    <h1 className="text-2xl font-bold">Redirecting...</h1>
+  </div>
+);
 }

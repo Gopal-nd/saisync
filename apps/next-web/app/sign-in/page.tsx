@@ -1,4 +1,4 @@
- "use client"
+"use client"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -17,15 +17,31 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import {LoginSchema} from '@/schema'
+import { LoginSchema } from '@/schema'
 import Link from 'next/link';
 import axiosInstance from '@/lib/axiosInstance';
 import { useRouter } from 'next/navigation';
 import useAuthStore from '@/store/useAuthStore';
 import { axiosFrontend } from '@/lib/axios';
+import { useEffect } from "react";
+import useUserRedirect from "@/hooks/useUserRedirect";
+import { isTokenExpired } from "@/lib/tokenUtils";
+
 
 export default function LoginPage() {
   const { setUser } = useAuthStore();
+  useEffect(() => {
+    const token = useAuthStore.getState().token;
+    if (token) {
+      useAuthStore.getState().logout();
+      // if(isTokenExpired(token)){
+      //   useAuthStore.getState().logout();
+      // }else{
+
+      //   useUserRedirect();
+      // }
+    }
+  }, []);
 
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
@@ -35,20 +51,20 @@ export default function LoginPage() {
 
   const mutation = useMutation({
     mutationFn: async (data: any) => {
-  
+
       const response = await axiosFrontend.post('/api/auth/sign-in', data);
       return response.data;
     },
     onSuccess: (data) => {
-       const token =  data.data.data.token
-       console.log(token)
-        if (token) {
-    // 1) set in axios default so every subsequent call to EC2 includes Authorization header
-    axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      const token = data.data.data.token
+      console.log(token)
+      if (token) {
+        // 1) set in axios default so every subsequent call to EC2 includes Authorization header
+        axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
-    // 2) store in memory (Zustand) so UI and logout can clear it — avoid localStorage if possible
-    useAuthStore.getState().setToken(token); // or however your store sets token
-  }
+        // 2) store in memory (Zustand) so UI and logout can clear it — avoid localStorage if possible
+        useAuthStore.getState().setToken(token); // or however your store sets token
+      }
       // Adjust these accesses to match your backend response shape
       const sendUser = data?.data?.data?.sendUser ?? data?.sendUser ?? null;
       if (!sendUser) {
