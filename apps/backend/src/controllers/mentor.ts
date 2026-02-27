@@ -1,4 +1,4 @@
-import type { BranchType, SectionType, SemesterType } from "@prisma/client";
+import type { BranchType, SectionType, SemesterType } from "@repo/db";
 import { prisma } from "../lib/db";
 import asyncHandler from "../utils/async-handler";
 import type {Request , Response} from 'express'

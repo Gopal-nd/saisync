@@ -1,5 +1,5 @@
 import { prisma } from './lib/db';
-import type { AttendanceStatus, BranchType, SemesterType } from '@prisma/client';
+
 import { startOfDay, endOfDay } from 'date-fns';
 import app from './app';
 import errorHandler from './middleware/errorHandler';

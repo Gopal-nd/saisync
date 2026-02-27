@@ -4,7 +4,7 @@ import { prisma } from "../lib/db";
 import { ApiResponse } from "../utils/api-response";
 import { SubjectSchema } from "../types";
 import { APIError } from "../utils/api-error";
-import type { BranchType, SemesterType } from "@prisma/client";
+import type { BranchType, SemesterType } from "@repo/db";
 
 
 

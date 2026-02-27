@@ -2,7 +2,7 @@ import type { Request, Response } from "express";
 import asyncHandler from "../utils/async-handler";
 import { ApiResponse } from "../utils/api-response";
 import { prisma } from "../lib/db";
-import type { BranchType, SectionType, SemesterType } from "@prisma/client";
+import type { BranchType, SectionType, SemesterType } from "@repo/db";
 
 
 export const getAttendence = asyncHandler(async(req:Request,res:Response)=>{

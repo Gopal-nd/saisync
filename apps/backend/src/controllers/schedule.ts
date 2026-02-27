@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import { prisma } from "../lib/db";
 import dayjs from 'dayjs';
-import { BranchType, SectionType, SemesterType } from "@prisma/client";
+import { BranchType, SectionType, SemesterType } from "@repo/db";
 import asyncHandler from "../utils/async-handler";
 import { ApiResponse } from "../utils/api-response";
 import { APIError } from "../utils/api-error";

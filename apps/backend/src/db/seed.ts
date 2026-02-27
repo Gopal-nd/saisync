@@ -2,7 +2,7 @@
 import bcrypt from "bcrypt";
 import { prisma } from  "@repo/db"; // adjust path if needed
 import { BranchType, SemesterType } from "../types"; // adjust path if needed
-import { SectionType } from "@prisma/client";
+import { SectionType } from "@repo/db";
 
 async function main() {
   // 1) Create / upsert branches

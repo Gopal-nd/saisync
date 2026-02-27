@@ -3,7 +3,7 @@
 // import asyncHandler from "../utils/async-handler";
 // import { ApiResponse } from "../utils/api-response";
 // import { prisma } from "../lib/db";
-// import type { BranchType, IATestType, SectionType, SemesterType, User } from "@prisma/client";
+// import type { BranchType, IATestType, SectionType, SemesterType, User } from "@repo/db";
 // import { APIError } from "../utils/api-error";
 
 // export const getSemExamMarks = asyncHandler(async(req:Request,res:Response)=>{

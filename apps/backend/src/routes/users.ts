@@ -1,5 +1,5 @@
 // import express from 'express';
-// import { PrismaClient } from '@prisma/client';
+// import { PrismaClient } from '@repo/db';
 // import { authorizeRole } from '../middleware/auth';
 
 // const router = express.Router();

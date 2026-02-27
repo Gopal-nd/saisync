@@ -3,7 +3,7 @@
 
 import type { Request, Response, NextFunction } from "express";
 import { ZodError } from "zod";
-import { Prisma } from "@prisma/client";
+import { Prisma } from "@repo/db";
 import { APIError } from "../utils/api-error";
 import { ApiResponse } from "../utils/api-response";
 

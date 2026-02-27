@@ -3,7 +3,7 @@ import type { Request, Response } from "express";
 import { prisma } from "../lib/db";
 import { ApiResponse } from "../utils/api-response";
 import { APIError } from "../utils/api-error";
-import type { AttendanceStatus } from "@prisma/client";
+import type { AttendanceStatus } from "@repo/db";
 
 export const staffPeriodDetails = asyncHandler(async(req:Request,res:Response)=>{
     const { periodId} = req.query;

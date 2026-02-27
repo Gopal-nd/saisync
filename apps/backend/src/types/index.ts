@@ -1,4 +1,4 @@
-import type{ Role } from '@prisma/client'
+import type{ Role } from '@repo/db'
 import * as z from 'zod'
 import { AvilableUserRoles } from '../utils/constants'
 

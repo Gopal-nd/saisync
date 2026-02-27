@@ -2,9 +2,10 @@
 import type { Request, Response } from "express";
 import asyncHandler from "../utils/async-handler";
 import { ApiResponse } from "../utils/api-response";
-import { prisma } from "../lib/db";
-import type { BranchType, IATestType, SectionType, SemesterType, User } from "@prisma/client";
+import { prisma } from "../lib/db"
 import { APIError } from "../utils/api-error";
+import type { BranchType, SectionType, SemesterType } from "@repo/db";
+
 
 export const getIATestMarks = asyncHandler(async(req:Request,res:Response)=>{
 
