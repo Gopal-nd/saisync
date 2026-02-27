@@ -1,17 +1,5 @@
 import { create } from 'zustand';
-import { createJSONStorage, persist, PersistOptions, StateStorage } from 'zustand/middleware';
-
-
-const storage: StateStorage =
-  typeof window !== "undefined" &&
-  typeof window.localStorage !== "undefined" &&
-  typeof window.localStorage.getItem === "function"
-    ? window.localStorage
-    : {
-        getItem: () => null,
-        setItem: () => {},
-        removeItem: () => {},
-      };
+import { createJSONStorage, persist } from 'zustand/middleware';
 
 export type User = {
   id: string;
@@ -22,9 +10,9 @@ export type User = {
   branch?: string;
   semester?: string;
   section?: string;
-  schema?:string;
-  image?:string;
-  mentor?:string
+  schema?: string;
+  image?: string;
+  mentor?: string;
 };
 
 export type AuthState = {
@@ -40,6 +28,7 @@ export type AuthState = {
   logout: () => void;
 };
 
+// ✅ No module-level window access at all
 const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
@@ -49,58 +38,48 @@ const useAuthStore = create<AuthState>()(
       token: null,
 
       setUser: (user) =>
-        set(() => ({
-          user: { ...user },
-          role: user.role,
-          isAuthenticated: true,
-        })),
+        set({ user: { ...user }, role: user.role, isAuthenticated: true }),
 
       clearUser: () =>
-        set(() => ({
-          user: null,
-          role: null,
-          isAuthenticated: false,
-        })),
+        set({ user: null, role: null, isAuthenticated: false }),
 
       setToken: (token) =>
-        set(() => ({
-          token,
-          isAuthenticated: true,
-        })),
+        set({ token, isAuthenticated: true }),
 
       clearToken: () =>
-        set(() => ({
-          token: null,
-          isAuthenticated: false,
-        })),
+        set({ token: null, isAuthenticated: false }),
 
       setAuth: (token, user) =>
-        set(() => ({
-          token,
-          user: { ...user },
-          role: user.role,
-          isAuthenticated: true,
-        })),
+        set({ token, user: { ...user }, role: user.role, isAuthenticated: true }),
 
       logout: () => {
-        // use the same storage abstraction so we don't accidentally hit the
-        // real `localStorage` during SSR/Node. the guard above ensures this is
-        // a no-op on the server.
-        storage.removeItem('auth-storage');
-        set(() => ({
-          token: null,
-          user: null,
-          role: null,
-          isAuthenticated: false,
-        }));
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('auth-storage');
+        }
+        set({ token: null, user: null, role: null, isAuthenticated: false });
       },
     }),
-       {
+    {
       name: 'auth-storage',
-
-
-      storage: createJSONStorage(() => storage),
-    } as PersistOptions<AuthState>
+      // ✅ The function is only CALLED in the browser, never on the server
+      storage: createJSONStorage(() => {
+        if (typeof window === 'undefined') {
+          // SSR: return a no-op storage so Zustand doesn't crash
+          return {
+            getItem: () => null,
+            setItem: () => {},
+            removeItem: () => {},
+          };
+        }
+        return window.localStorage;
+      }),
+      partialize: (state) => ({
+        token: state.token,
+        user: state.user,
+        role: state.role,
+        isAuthenticated: state.isAuthenticated,
+      }),
+    }
   )
 );
 

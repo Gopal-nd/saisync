@@ -6,6 +6,7 @@ import "./globals.css";
 import { Providers } from "@/lib/ReactQuery";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
+import { AuthHydration } from "@/components/AuthHydration";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -43,6 +44,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
+        
             {children}
           </ThemeProvider>
 
