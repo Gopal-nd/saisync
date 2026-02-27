@@ -19,10 +19,25 @@ DATABASE_URL=$DATABASE_URL
 EOF
 
 # apps/`backend`
+
 mkdir -p apps/backend
+
 cat > apps/backend/.env <<EOF
 DATABASE_URL=$DATABASE_URL
+PORT=9000
+FRONTEND_URL='https://saisync.gopalnd.cloud'
+SECRET_KEY='secret'
 EOF
+
+
+
+cat > apps/next-web/.env <<EOF
+NEXT_PUBLIC_BACKEND_URL='https://saisync-api.gopalnd.cloud'
+NEXT_PUBLIC_URL='https://saisync.gopalnd.cloud'
+NEXT_PUBLIC_GOOGLE_API_KEY=''
+UPLOADTHING_TOKEN=''
+EOF
+
 echo "Install Packages!"
 bun install
 
