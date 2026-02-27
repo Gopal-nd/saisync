@@ -27,6 +27,9 @@ bun db:push
 echo "🔁 Running Prisma generate..."
 bun db:generate
 
+echo "🔁 Running Prisma seed..."
+bun db:seed
+
 echo "🏗 Building application..."
 bun run build
 
